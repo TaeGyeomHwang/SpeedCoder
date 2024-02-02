@@ -1,10 +1,12 @@
 package view;
 
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 public class Main extends JFrame {
