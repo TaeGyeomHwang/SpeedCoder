@@ -3,11 +3,12 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.TextField;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -18,18 +19,20 @@ public class Login extends JFrame{
 	private Font fontTitle;
 	private Font fontSignup;
 	private JTextField textFieldId;
-	private JTextField textFieldPw;
+	private JPasswordField passwordFieldPw;
 	private JButton btnLogin;
 	private JButton btnSignup;
 
 	public Login() {
-		this.setTitle("SPEED C()DER");
+		this.setTitle("SPEED C( )DER - Login");
 		this.setSize(500, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		
 		this.getContentPane().setLayout(null);
 		this.getContentPane().add(getTitleLabel());
+		this.getContentPane().add(getIdTextField());
+		this.getContentPane().add(getPwTextField());		
 		this.getContentPane().add(getLoginBtn());
 		this.getContentPane().add(getSignupBtn());
 		this.getContentPane().add(getIdLabel());
@@ -40,20 +43,20 @@ public class Login extends JFrame{
 	}
 	
 	/* 라벨 */
-	// 제목 문구 설정
+	// 제목 라벨 설정
 	private JLabel getTitleLabel() {
 		if(lblTitle == null	) {
 			lblTitle = new JLabel();
-			lblTitle.setText("SPEED C()DER");
+			lblTitle.setText("SPEED C( )DER");
 			lblTitle.setBounds(100, 80, 300, 50);
 			lblTitle.setFont(getTitleFont());
 		}
 		return lblTitle;
 	}
 
-	// ID 문구 설정
+	// ID 라벨 설정
 	private JLabel getIdLabel() {
-		if(lblId == null	) {
+		if(lblId == null) {
 			lblId = new JLabel();
 			lblId.setText("ID  : ");
 			lblId.setBounds(65, 200, 100, 40);
@@ -62,9 +65,9 @@ public class Login extends JFrame{
 		return lblId;
 	}
 	
-	// PW 문구 설정
+	// PW 라벨 설정
 	private JLabel getPwLabel() {
-		if(lblPw == null	) {
+		if(lblPw == null) {
 			lblPw = new JLabel();
 			lblPw.setText("PW : ");
 			lblPw.setBounds(55, 250, 100, 40);
@@ -95,57 +98,55 @@ public class Login extends JFrame{
 		if(textFieldId == null) {
 			textFieldId = new JTextField();
 		}
-		textFieldId.setBounds(125, 300, 100, 40);
-		textFieldId.addActionListener(e -> {
-			
-		});
+		textFieldId.setBounds(125, 200, 250, 40);
 		return textFieldId;
 	}
 	
-	// 비밀먼호 텍스트 필드
-	private JTextField getPwTextFiePw() {
-		if(textFieldPw == null) {
-			textFieldPw = new JTextField();
+	// 비밀먼호 패스워드 필드
+	private JPasswordField getPwTextField() {
+		if(passwordFieldPw == null) {
+			passwordFieldPw = new JPasswordField();
 		}
-		textFieldPw.setBounds(125, 300, 100, 40);
-		textFieldPw.addActionListener(e -> {
-			
-		});
-		return textFieldPw;
+		passwordFieldPw.setBounds(125, 250, 250, 40);
+		return passwordFieldPw;
 	}
 	
 	/* 버튼 */
 	// 로그인 버튼
-		private JButton getLoginBtn() {
-			if (btnLogin == null) {
-				btnLogin = new JButton();
-				btnLogin.setText("로그인");
-				btnLogin.setBounds(125, 300, 100, 40);
-				btnLogin.addActionListener(e -> {
-					// 조건문을 통해 "ID님 안녕하세요!" 팝업 출력 후 메인 화면으로 전환 또는
-					// 실패의 경우 "잘못 입력했습니다." 출력하며 텍스트 필드와 패스워드 필드를 초기화함
-				});
-			}
-			return btnLogin;
+	private JButton getLoginBtn() {
+		if (btnLogin == null) {
+			btnLogin = new JButton();
+			btnLogin.setText("로그인");
+			btnLogin.setBounds(130, 300, 110, 40);
+			btnLogin.addActionListener(e -> {
+				JOptionPane.showMessageDialog(Login.this, "ID님 안녕하세요!");
+				dispose();
+				Main main = new Main();
+				main.setVisible(true);
+				// 조건문을 통해 "ID님 안녕하세요!" 팝업 출력 후 메인 화면으로 전환 또는
+				// 실패의 경우 "잘못 입력했습니다." 출력하며 텍스트 필드와 패스워드 필드를 초기화함
+			});
 		}
+		return btnLogin;
+	}
 
-		// 블록 연습 화면 출력
-		private JButton getSignupBtn() {
-			if (btnSignup == null) {
-				btnSignup = new JButton();
-				btnSignup.setText("블록 연습");
-				btnSignup.setBounds(275, 300, 100, 40);
-				btnSignup.addActionListener(e -> {
-					
-					new Signup();
-					// 회원가입 버튼을 클릭하는 경우 회원가입 화면을 보여줌(다이얼로그 형식)
-					// 회원가입 화면은 아이디를 입력받는 텍스트 필드, 패스워드 필드, 패스워드 확인 필드, 회원가입 버튼, 취소 버튼으로 구성
-					// 회원 가입 성공의 경우 화면에 "회원가입이 완료되었습니다." 를 팝업을 띄우고 닫으면 로그인 화면을 출력한다.
-					// 취소 버튼을 누를 경우 회원가입 화면을 닫고 로그인 화면을 출력한다.
-				});
-			}
-			return btnSignup;
+	// 회원가입 버튼
+	private JButton getSignupBtn() {
+		if (btnSignup == null) {
+			btnSignup = new JButton();
+			btnSignup.setText("회원가입");
+			btnSignup.setBounds(260, 300, 110, 40);
+			btnSignup.addActionListener(e -> {
+				Signup signup = new Signup();
+				signup.setVisible(true);
+				// 회원가입 버튼을 클릭하는 경우 회원가입 화면을 보여줌(다이얼로그 형식)
+				// 회원가입 화면은 아이디를 입력받는 텍스트 필드, 패스워드 필드, 패스워드 확인 필드, 회원가입 버튼, 취소 버튼으로 구성
+				// 회원 가입 성공의 경우 화면에 "회원가입이 완료되었습니다." 를 팝업을 띄우고 닫으면 로그인 화면을 출력한다.
+				// 취소 버튼을 누를 경우 회원가입 화면을 닫고 로그인 화면을 출력한다.
+			});
 		}
+		return btnSignup;
+	}
 	
 	//창 중앙 정렬
 	private void locationCenter() {
