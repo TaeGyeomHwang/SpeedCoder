@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,7 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+
+import model.BlockDAO;
+import model.BlockDTO;
 
 public class BlockExercise extends JFrame {
 	private JPanel panelNorth, panelCenter;
@@ -28,6 +33,15 @@ public class BlockExercise extends JFrame {
 		this.getContentPane().add(getPanelNorth(), BorderLayout.NORTH);
 		this.getContentPane().add(getPanelCenter(), BorderLayout.CENTER);
 		locationCenter();
+		// x 클릭시 메인으로 이동
+		addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	dispose();
+				Main main = new Main();
+				main.setVisible(true);
+            }
+        });
 	}
 
 	// 상단 패널 생성
@@ -60,6 +74,9 @@ public class BlockExercise extends JFrame {
 		if (btnReset == null) {
 			btnReset = new JButton();
 			btnReset.setText("초기화");
+			btnReset.addActionListener(e->{
+				refreshTextArea();
+	        });
 		}
 		return btnReset;
 	}
@@ -67,17 +84,25 @@ public class BlockExercise extends JFrame {
 	// 단어 추가 버튼 생성
 	private JButton getBtnAdd() {
 		if (btnAdd == null) {
-			btnAdd = new JButton();
-			btnAdd.setText("단어 추가");
-		}
-		return btnAdd;
+	        btnAdd = new JButton();
+	        btnAdd.setText("블록 추가");
+	        btnAdd.addActionListener(e->{
+	        	BlockDialogAdd dialog = new BlockDialogAdd(this);
+	            dialog.setVisible(true);
+	        });
+	    }
+	    return btnAdd;
 	}
 
 	// 단어 삭제 버튼 생성
 	private JButton getBtnDelete() {
 		if (btnDelete == null) {
 			btnDelete = new JButton();
-			btnDelete.setText("단어 삭제");
+			btnDelete.setText("블록 삭제");
+			btnDelete.addActionListener(e->{
+	        	BlockDialogDelete dialog = new BlockDialogDelete(this);
+	            dialog.setVisible(true);
+	        });
 		}
 		return btnDelete;
 	}
@@ -120,6 +145,16 @@ public class BlockExercise extends JFrame {
 	private JTextArea getTxtCenter() {
 		if (txtCenter == null) {
 			txtCenter = new JTextArea();
+			txtCenter = new JTextArea(15, 100); // 크기 설정
+            txtCenter.setEditable(false); // 편집 불가능 설정
+            
+            BlockDAO blockDAO = BlockDAO.getInstance();
+            List<BlockDTO> blocks = blockDAO.getBlocks();
+            StringBuilder sb = new StringBuilder();
+            for (BlockDTO board : blocks) {
+                sb.append(board.getBlockTitle()).append("\n");
+            }
+            txtCenter.setText(sb.toString());
 		}
 		return txtCenter;
 	}
@@ -132,12 +167,15 @@ public class BlockExercise extends JFrame {
 		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
 	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			BlockExercise jFrame = new BlockExercise();
-			jFrame.setVisible(true);
-		});
+	
+	// 텍스트에리어 초기화
+	void refreshTextArea() {
+	    BlockDAO blockDAO = BlockDAO.getInstance();
+	    List<BlockDTO> blocks = blockDAO.getBlocks();
+	    StringBuilder sb = new StringBuilder();
+	    for (BlockDTO board : blocks) {
+	        sb.append(board.getBlockTitle()).append("\n");
+	    }
+	    txtCenter.setText(sb.toString());
 	}
-
 }

@@ -45,7 +45,8 @@ public class Main extends JFrame {
 			btnBlockExcercise.setBounds(125, 190, 250, 55);
 			btnBlockExcercise.addActionListener(e -> {
 				dispose();
-				new BlockExercise();
+				BlockExercise block = new BlockExercise();
+				block.setVisible(true);
 			});
 		}
 		return btnBlockExcercise;
