@@ -3,8 +3,11 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 public class BlockDAO extends SpeedCoderDAO {
 
@@ -104,12 +107,13 @@ public class BlockDAO extends SpeedCoderDAO {
     public void insertScore(String id, int acc, int speed) {
     	try {
 			connect();
-			String sql = "INSERT INTO score (id, acc, speed, kind) VALUES (?, ?, ?, ?)";
+			String sql = "INSERT INTO score (id, acc, speed, kind, regdate) VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
 			pstmt.setInt(2, acc);
 			pstmt.setInt(3, speed);
 			pstmt.setString(4, "block");
+			pstmt.setTimestamp(5, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
             e.printStackTrace();

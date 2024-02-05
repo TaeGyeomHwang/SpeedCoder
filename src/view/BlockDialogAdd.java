@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -46,14 +47,14 @@ public class BlockDialogAdd extends JDialog {
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dispose(); 
+				dispose();
 			}
 		});
 
 		JPanel titlePanel = new JPanel();
 		titlePanel.add(new JLabel("제목:"));
 		titlePanel.add(textFieldTitle);
-//		titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0)); // 텍스트필드에 패딩 설정
+		titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0)); // 텍스트필드에 패딩 설정
 
 		JPanel contentPanel = new JPanel();
 		contentPanel.add(new JLabel("내용:"));
@@ -74,25 +75,31 @@ public class BlockDialogAdd extends JDialog {
 		setLocationRelativeTo(parent);
 	}
 
-    // DB에 블록 문제 추가
+	// DB에 블록 문제 추가
 	private void addBlock() {
-		String id = "jihuhw";
-	    String title = textFieldTitle.getText();
-	    String content = textAreaContent.getText();
+		try {
+			String id = "jihuhw";
+			String title = textFieldTitle.getText();
+			String content = textAreaContent.getText();
 
-	    BlockDTO blockDTO = new BlockDTO();
-	    blockDTO.setId(id); 
-	    blockDTO.setBlockTitle(title);
-	    blockDTO.setBlockText(content);
+			BlockDTO blockDTO = new BlockDTO();
+			blockDTO.setId(id);
+			blockDTO.setBlockTitle(title);
+			blockDTO.setBlockText(content);
 
-	    BlockDAO blockDAO = BlockDAO.getInstance();
-	    blockDAO.insertBlock(blockDTO);
+			BlockDAO blockDAO = BlockDAO.getInstance();
 
-	    JOptionPane.showMessageDialog(this, "블록 문제가 추가되었습니다.");
-
-	    textFieldTitle.setText("");
-	    textAreaContent.setText("");
-
-	    ((BlockExercise) getParent()).refreshTextArea();
+			blockDAO.insertBlock(blockDTO);
+			
+			// 필드, 화면 초기화
+			textFieldTitle.setText("");
+			textAreaContent.setText("");
+			((BlockExercise) getParent()).refreshTextArea();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "중복된 제목입니다.");
+			dispose();
+		} finally {
+			JOptionPane.showMessageDialog(this, "블록 문제가 추가되었습니다.");
+		}
 	}
 }

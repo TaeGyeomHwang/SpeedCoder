@@ -37,10 +37,11 @@ public class BlockExercise extends JFrame {
 	private String id = "jihuhw";
 	private int index = 0;
 	private int randomIndex = 0;
-	
-	private int speed;
-	private double acc = 0.0; 
-	private double totalChar=0.0;
+
+	private double speed = 0.0;
+	private long beforeTime, afterTime;
+	private double acc = 0.0;
+	private double totalChar = 0.0;
 
 	private BlockDAO blockDAO = BlockDAO.getInstance();
 	private List<BlockDTO> blocks = blockDAO.getBlockById(id);
@@ -255,23 +256,37 @@ public class BlockExercise extends JFrame {
 		}
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
+			// 타이머 종료
+			afterTime = System.currentTimeMillis();
+			// 정확도 계산
+			acc = (acc / totalChar) * 100;
+			// 타수 계산
+			long diffSec = (afterTime - beforeTime)/1000;
+			speed = totalChar * 60 / diffSec;
+			// 기록 DB에 저장
+			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
+			// 변수 초기화
 			index = 0;
+			acc = 0.0;
+			totalChar = 0.0;
+			speed = 0.0;
+			// 화면 초기화
 			refreshTextArea();
-			
-//		    BlockDAO.getInstance().insertScore(id, acc/totalChar, speed);
-			System.out.println(acc/totalChar*10);
 		}
 	}
 
 	// 블록 문제 시작하기
 	private void gameStart() {
+		// 타이머 시작
+		beforeTime = System.currentTimeMillis();
 		// 접근할 인덱스 랜덤으로 설정
 		randomIndex = (int) (Math.random() * blocks.size());
 		// 추가, 삭제 버튼 비활성화
 		btnAdd.setEnabled(false);
 		btnDelete.setEnabled(false);
-		// 텍스트필드 활성화
+		// 텍스트필드 활성화, 포커스
 		txtNorth.setEditable(true);
+		txtNorth.requestFocusInWindow();
 		labelCenter.setText("문장을 입력한 후 엔터를 눌러주세요:");
 		// 블록 문제 출력
 		validateText("초기 문제 출력");
