@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
 import model.WordDAO;
 
 public class WordExercise extends JFrame {
@@ -25,7 +27,7 @@ public class WordExercise extends JFrame {
 	private JTextArea txtContent;
 	private JTextField textEnter;
 	private JLabel txtlbl, lblWordList;
-
+	
 	public WordExercise() {
 		setTitle("단어 연습");
 		setSize(500, 450);
@@ -96,7 +98,8 @@ public class WordExercise extends JFrame {
 							}
 						}
 					});
-
+					
+					
 					// 랜덤하게 단어 배치하기
 					placeWordsRandomly();
 
@@ -166,9 +169,6 @@ public class WordExercise extends JFrame {
 			txtContent = new JTextArea(15, 100);
 			JScrollPane scrollPane = new JScrollPane(txtContent);
 
-			// 텍스트 영역의 스크롤 기능 제거
-			scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
 			// 텍스트 영역의 글자 색 설정
 			txtContent.setForeground(Color.BLACK);
 
@@ -221,7 +221,7 @@ public class WordExercise extends JFrame {
 
 	// 입력된 단어를 삭제하는 메서드
 	private void deleteEnteredWord(String enteredWord) {
-		// 텍스트 영역에서 입력된 단어 찾아서 삭제
+		// 텍스트 영역에서 입력된 찾아서 삭제
 		String content = txtContent.getText();
 		content = content.replace(enteredWord, "");
 		txtContent.setText(content);
@@ -234,7 +234,6 @@ public class WordExercise extends JFrame {
 		}
 	}
 
-	// 랜덤하게 단어 배치하는 메서드
 	// 랜덤하게 단어 배치하는 메서드
 	private void placeWordsRandomly() {
 		// 데이터베이스에서 단어 목록 가져오기
