@@ -3,6 +3,7 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,6 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import model.SignupDAO;
+import model.SignupDTO;
 
 public class Signup extends JFrame{
 	
@@ -24,6 +28,8 @@ public class Signup extends JFrame{
 	private JPasswordField pwFieldPwVerify; 
 	private JButton btnSignup;
 	private JButton btnCancel;
+	
+	private String loginID;
 	
 	
 	public Signup() {
@@ -169,6 +175,20 @@ public class Signup extends JFrame{
 			});
 		}
 		return btnCancel;
+	}
+	
+	//
+	private void addUser() {
+		
+		SignupDAO signupDAO = SignupDAO.getInstance();
+		List<SignupDTO> signups = signupDAO.getSignups();
+
+		for(SignupDTO signupDTO : signups){
+			if(txtFieldId.getText() != signupDTO.getId()&&pwFieldPw.getText()==pwFieldPwVerify.getText()) {
+				
+			}
+		}	
+		
 	}
 	
 	//창 중앙 정렬

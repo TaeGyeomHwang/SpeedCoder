@@ -23,6 +23,8 @@ public class Login extends JFrame{
 	private JPasswordField passwordFieldPw;
 	private JButton btnLogin;
 	private JButton btnSignup;
+	
+	private String id;
 
 	public Login() {
 		this.setTitle("SPEED C( )DER - Login");
@@ -141,8 +143,6 @@ public class Login extends JFrame{
 				dispose();
 				Signup signup = new Signup();
 				signup.setVisible(true);
-				// 회원가입 버튼을 클릭하는 경우 회원가입 화면을 보여줌(다이얼로그 형식)
-				// 회원가입 화면은 아이디를 입력받는 텍스트 필드, 패스워드 필드, 패스워드 확인 필드, 회원가입 버튼, 취소 버튼으로 구성
 				// 회원 가입 성공의 경우 화면에 "회원가입이 완료되었습니다." 를 팝업을 띄우고 닫으면 로그인 화면을 출력한다.
 				// 취소 버튼을 누를 경우 회원가입 화면을 닫고 로그인 화면을 출력한다.
 			});
