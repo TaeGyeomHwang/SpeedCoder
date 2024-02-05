@@ -5,7 +5,6 @@ import java.awt.Point;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 public class Main extends JFrame {
 	private JButton btnWordExcercise, btnBlockExcercise, btnMyInfo;
@@ -21,9 +20,10 @@ public class Main extends JFrame {
 		this.getContentPane().add(getMyInfoBtn());
 
 		this.locationCenter();
+		
 	}
 
-	// 단어 연습 화면 출력
+	// 단어 연습 버튼
 	private JButton getWordExerciseBtn() {
 		if (btnWordExcercise == null) {
 			btnWordExcercise = new JButton();
@@ -37,7 +37,7 @@ public class Main extends JFrame {
 		return btnWordExcercise;
 	}
 
-	// 블록 연습 화면 출력
+	// 블록 연습 버튼
 	private JButton getBlockExerciseBtn() {
 		if (btnBlockExcercise == null) {
 			btnBlockExcercise = new JButton();
@@ -52,7 +52,7 @@ public class Main extends JFrame {
 		return btnBlockExcercise;
 	}
 
-	// 내 정보 화면 출력
+	// 내 정보 버튼
 	private JButton getMyInfoBtn() {
 		if (btnMyInfo == null) {
 			btnMyInfo = new JButton();
@@ -60,7 +60,8 @@ public class Main extends JFrame {
 			btnMyInfo.setBounds(125, 290, 250, 55);
 			btnMyInfo.addActionListener(e -> {
 				dispose();
-				new MyInfo();
+				MyInfo myInfo = new MyInfo();
+				myInfo.setVisible(true);
 			});
 		}
 		return btnMyInfo;
@@ -74,14 +75,4 @@ public class Main extends JFrame {
 		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
 	}
-	
-	
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			Main main = new Main();
-			main.setVisible(true);
-		});
-	}
-
 }
