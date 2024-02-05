@@ -7,9 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
-	private JButton btnWordExcercise;
-	private JButton btnBlockExcercise;
-	private JButton btnMyInfo;
+	private JButton btnWordExcercise, btnBlockExcercise, btnMyInfo;
 
 	// 메인 화면 출력
 	public Main() {
@@ -20,7 +18,7 @@ public class Main extends JFrame {
 		this.getContentPane().add(getWordExerciseBtn());
 		this.getContentPane().add(getBlockExerciseBtn());
 		this.getContentPane().add(getMyInfoBtn());
-		
+
 		this.locationCenter();
 		
 	}
@@ -30,7 +28,7 @@ public class Main extends JFrame {
 		if (btnWordExcercise == null) {
 			btnWordExcercise = new JButton();
 			btnWordExcercise.setText("단어 연습");
-			btnWordExcercise.setBounds(125,90,250,55);
+			btnWordExcercise.setBounds(125, 90, 250, 55);
 			btnWordExcercise.addActionListener(e -> {
 				dispose();
 				new WordExercise();
@@ -47,7 +45,8 @@ public class Main extends JFrame {
 			btnBlockExcercise.setBounds(125, 190, 250, 55);
 			btnBlockExcercise.addActionListener(e -> {
 				dispose();
-				new BlockExercise();
+				BlockExercise block = new BlockExercise();
+				block.setVisible(true);
 			});
 		}
 		return btnBlockExcercise;
@@ -67,13 +66,13 @@ public class Main extends JFrame {
 		}
 		return btnMyInfo;
 	}
-	
-	//창 중앙 정렬
+
+	// 창 중앙 정렬
 	private void locationCenter() {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
-		int leftTopX = centerPoint.x - this.getWidth()/2;
-		int leftTopY = centerPoint.y - this.getHeight()/2;
+		int leftTopX = centerPoint.x - this.getWidth() / 2;
+		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
 	}
 }
