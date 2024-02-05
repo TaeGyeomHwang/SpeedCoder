@@ -7,6 +7,7 @@ import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 
 public class MyInfo extends JFrame{
 
@@ -26,9 +27,9 @@ public class MyInfo extends JFrame{
 	private Font fontNormal;
 	private Font fontAcc;
 	
-	private String wordAvgHit = "80%";
+	private String wordAvgHit = "95%";
 	private String wordAvgAcc = "250타";
-	private String blockAvgHit = "80%";
+	private String blockAvgHit = "95%";
 	private String blockAvgAcc = "250타";
 	
 	public MyInfo() {
@@ -105,6 +106,18 @@ public class MyInfo extends JFrame{
 			};
 			tblWord = new JTable(rowData, columnNames);
 			tblWord.setBounds(50, 200, 150, 160);
+			
+			JTableHeader header = tblWord.getTableHeader();
+	        header.setBounds(
+	        		tblWord.getBounds().x,
+	        		tblWord.getBounds().y - header.getPreferredSize().height,
+	        		tblWord.getBounds().width,
+	        		header.getPreferredSize().height
+	        		);
+	        tblWord.getColumn("번호").setPreferredWidth(50);
+	        tblWord.getColumn("타수").setPreferredWidth(100);
+	        tblWord.getColumn("정확도(%)").setPreferredWidth(150);
+	        this.getContentPane().add(header);
 		}
 		return tblWord;
 	}
@@ -127,6 +140,18 @@ public class MyInfo extends JFrame{
 			};
 			tblBlock = new JTable(rowData, columnNames);
 			tblBlock.setBounds(280, 200, 150, 160);
+			
+			JTableHeader header = tblBlock.getTableHeader();
+	        header.setBounds(
+	        		tblBlock.getBounds().x,
+	        		tblBlock.getBounds().y - header.getPreferredSize().height,
+	        		tblBlock.getBounds().width,
+	        		header.getPreferredSize().height
+	        		);
+	        tblBlock.getColumn("번호").setPreferredWidth(50);
+	        tblBlock.getColumn("타수").setPreferredWidth(100);
+	        tblBlock.getColumn("정확도(%)").setPreferredWidth(150);
+	        this.getContentPane().add(header);
 		}
 		return tblBlock;
 	}
