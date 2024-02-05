@@ -138,6 +138,7 @@ public class Login extends JFrame{
 			btnSignup.setText("회원가입");
 			btnSignup.setBounds(260, 300, 110, 40);
 			btnSignup.addActionListener(e -> {
+				dispose();
 				Signup signup = new Signup();
 				signup.setVisible(true);
 				// 회원가입 버튼을 클릭하는 경우 회원가입 화면을 보여줌(다이얼로그 형식)

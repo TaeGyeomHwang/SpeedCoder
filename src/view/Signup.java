@@ -66,8 +66,8 @@ public class Signup extends JFrame{
 		private JLabel getIdLabel() {
 			if(lblId == null) {
 				lblId = new JLabel();
-				lblId.setText("ID     : ");
-				lblId.setBounds(79, 170, 100, 40);
+				lblId.setText("ID      :  ");
+				lblId.setBounds(70, 170, 100, 40);
 				lblId.setFont(getSignupFont());
 			}
 			return lblId;
@@ -77,8 +77,8 @@ public class Signup extends JFrame{
 		private JLabel getPwLabel() {
 			if(lblPw == null) {
 				lblPw = new JLabel();
-				lblPw.setText("PW    : ");
-				lblPw.setBounds(75, 220, 100, 40);
+				lblPw.setText("PW     :   ");
+				lblPw.setBounds(68, 220, 100, 40);
 				lblPw.setFont(getSignupFont());
 			}
 			return lblPw;
@@ -149,6 +149,8 @@ public class Signup extends JFrame{
 			btnSignup.addActionListener(e -> {
 				JOptionPane.showMessageDialog(Signup.this, "회원가입이 완료되었습니다.");
 				dispose();
+				Login login = new Login();
+				login.setVisible(true);
 			});
 		}
 		return btnSignup;
@@ -162,6 +164,8 @@ public class Signup extends JFrame{
 			btnCancel.setBounds(285, 320, 110, 40);
 			btnCancel.addActionListener(e -> {
 				dispose();
+				Login login = new Login();
+				login.setVisible(true);
 			});
 		}
 		return btnCancel;

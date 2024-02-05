@@ -3,6 +3,8 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,7 +38,7 @@ public class MyInfo extends JFrame{
 	public MyInfo() {
 		this.setTitle("SPEED C( )DER - MyInfo");
 		this.setSize(500, 550);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		
 		this.getContentPane().setLayout(null);
@@ -108,6 +110,7 @@ public class MyInfo extends JFrame{
 			tblWord = new JTable(rowData, columnNames);
 			tblWord.setBounds(50, 200, 150, 160);
 			
+			//테이블 헤더 생성
 			JTableHeader header = tblWord.getTableHeader();
 	        header.setBounds(
 	        		tblWord.getBounds().x,
@@ -150,6 +153,7 @@ public class MyInfo extends JFrame{
 			tblBlock = new JTable(rowData, columnNames);
 			tblBlock.setBounds(280, 200, 150, 160);
 			
+			//테이블 헤더 생성
 			JTableHeader header = tblBlock.getTableHeader();
 	        header.setBounds(
 	        		tblBlock.getBounds().x,
@@ -157,6 +161,7 @@ public class MyInfo extends JFrame{
 	        		tblBlock.getBounds().width,
 	        		header.getPreferredSize().height
 	        		);
+	        
 	        tblBlock.getColumn("번호").setPreferredWidth(50);
 	        tblBlock.getColumn("타수").setPreferredWidth(100);
 	        tblBlock.getColumn("정확도(%)").setPreferredWidth(150);

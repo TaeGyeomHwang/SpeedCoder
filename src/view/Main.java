@@ -63,7 +63,6 @@ public class Main extends JFrame {
 			btnMyInfo.setText("내 정보");
 			btnMyInfo.setBounds(125, 290, 250, 55);
 			btnMyInfo.addActionListener(e -> {
-				dispose();
 				MyInfo myInfo = new MyInfo();
 				myInfo.setVisible(true);
 			});
