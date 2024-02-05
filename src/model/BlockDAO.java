@@ -99,4 +99,22 @@ public class BlockDAO extends SpeedCoderDAO {
             close();
         }
 	}
+    
+    // 기록 저장하기
+    public void insertScore(String id, int acc, int speed) {
+    	try {
+			connect();
+			String sql = "INSERT INTO score (id, acc, speed, kind) VALUES (?, ?, ?, ?)";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setInt(2, acc);
+			pstmt.setInt(3, speed);
+			pstmt.setString(4, "block");
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
 }
