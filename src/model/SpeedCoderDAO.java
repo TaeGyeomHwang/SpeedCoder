@@ -21,7 +21,7 @@ public class SpeedCoderDAO {
 
     }
 
-    public static SpeedCoderDAO getInstance() {
+    private static SpeedCoderDAO getInstance() {
         return instance;
     }
 

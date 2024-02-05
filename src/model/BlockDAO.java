@@ -83,4 +83,20 @@ public class BlockDAO extends SpeedCoderDAO {
         }
         return blockList;
     }
+    
+    // 블록 문제 id와 title로 삭제하기
+    public void deleteBoard(String id, String title) {
+		try {
+			connect();
+			String sql = "delete from block where id=? and block_title=?";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setString(2, title);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+	}
 }

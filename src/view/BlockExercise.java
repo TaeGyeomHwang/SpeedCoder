@@ -53,7 +53,6 @@ public class BlockExercise extends JFrame {
 			panelNorth.add(getBtnReset());
 			panelNorth.add(getBtnAdd());
 			panelNorth.add(getBtnDelete());
-			panelNorth.add(getBtnSave());
 			// 위쪽에 패딩 추가
 			panelNorth.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 		}
@@ -107,23 +106,14 @@ public class BlockExercise extends JFrame {
 		return btnDelete;
 	}
 
-	// 저장 버튼 생성
-	private JButton getBtnSave() {
-		if (btnSave == null) {
-			btnSave = new JButton();
-			btnSave.setText("저장하기");
-		}
-		return btnSave;
-	}
-
 	// 중앙 패널 생성
 	private JPanel getPanelCenter() {
 		// 패널에 텍스트필드, 텍스트에리어 부착
 		if (panelCenter == null) {
 			panelCenter = new JPanel();
 			panelCenter.setLayout(new BorderLayout());
-	        JPanel northPanel = new JPanel(new GridLayout(2, 1));	
-	        northPanel.add(new JLabel("문장을 입력해주세요:"));
+	        JPanel northPanel = new JPanel(new GridLayout(2, 1));
+	        northPanel.add(new JLabel("블록 문제를 연습하려면 시작하기를 누른 후, 문장을 입력해주세요:"));
 	        northPanel.add(getTxtNorth());
 	        northPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0)); // 텍스트필드에 여백 설정
 	        panelCenter.add(northPanel, BorderLayout.NORTH);

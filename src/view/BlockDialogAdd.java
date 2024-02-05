@@ -28,8 +28,8 @@ public class BlockDialogAdd extends JDialog {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		textFieldTitle = new JTextField(30);
-		textAreaContent = new JTextArea(15, 30);
+		textFieldTitle = new JTextField(50);
+		textAreaContent = new JTextArea(15, 50);
 		JScrollPane scrollPane = new JScrollPane(textAreaContent);
 
 		// 추가하기 버튼
@@ -53,7 +53,7 @@ public class BlockDialogAdd extends JDialog {
 		JPanel titlePanel = new JPanel();
 		titlePanel.add(new JLabel("제목:"));
 		titlePanel.add(textFieldTitle);
-		titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0)); // 텍스트필드에 패딩 설정
+//		titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0)); // 텍스트필드에 패딩 설정
 
 		JPanel contentPanel = new JPanel();
 		contentPanel.add(new JLabel("내용:"));
@@ -67,13 +67,14 @@ public class BlockDialogAdd extends JDialog {
 		panel.add(contentPanel);
 		panel.add(buttonPanel);
 
-		panel.setPreferredSize(new Dimension(400, 400));
+		panel.setPreferredSize(new Dimension(500, 300));
 
 		getContentPane().add(panel);
 		pack();
 		setLocationRelativeTo(parent);
 	}
 
+    // DB에 블록 문제 추가
 	private void addBlock() {
 		String id = "jihuhw";
 	    String title = textFieldTitle.getText();
@@ -93,6 +94,5 @@ public class BlockDialogAdd extends JDialog {
 	    textAreaContent.setText("");
 
 	    ((BlockExercise) getParent()).refreshTextArea();
-	    dispose();
 	}
 }
