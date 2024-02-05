@@ -21,8 +21,8 @@ public class BlockDAO extends SpeedCoderDAO {
         return instance;
     }
 
-    // 블록 문제 추가하기
-    public void insertBlock(BlockDTO blockDTO) {
+ // 블록 문제 추가하기
+    public void insertBlock(BlockDTO blockDTO) throws SQLException {
         connect();
         try {
             String sql = "INSERT INTO block (id, block_title, block_text) VALUES (?, ?, ?)";
@@ -32,7 +32,11 @@ public class BlockDAO extends SpeedCoderDAO {
             pstmt.setString(3, blockDTO.getBlockText());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                throw (SQLIntegrityConstraintViolationException) e;
+            } else {
+                e.printStackTrace();
+            }
         } finally {
             close();
         }

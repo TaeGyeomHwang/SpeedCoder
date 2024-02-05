@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.swing.BorderFactory;
@@ -19,6 +20,8 @@ import javax.swing.JTextField;
 
 import model.BlockDAO;
 import model.BlockDTO;
+
+import exception.EmptyTitleContentException;
 
 public class BlockDialogAdd extends JDialog {
 	private JTextField textFieldTitle;
@@ -77,29 +80,42 @@ public class BlockDialogAdd extends JDialog {
 
 	// DB에 블록 문제 추가
 	private void addBlock() {
-		try {
-			String id = "jihuhw";
-			String title = textFieldTitle.getText();
-			String content = textAreaContent.getText();
+	    try {
+	        String id = "jihuhw";
+	        String title = textFieldTitle.getText();
+	        String content = textAreaContent.getText();
 
-			BlockDTO blockDTO = new BlockDTO();
-			blockDTO.setId(id);
-			blockDTO.setBlockTitle(title);
-			blockDTO.setBlockText(content);
+	        // 공백을 입력할 경우 예외처리
+	        if (title.isEmpty()) {
+	            throw new EmptyTitleContentException();
+	        }
+	        if (content.isEmpty()) {
+	        	throw new EmptyTitleContentException();
+	        }
 
-			BlockDAO blockDAO = BlockDAO.getInstance();
+	        BlockDTO blockDTO = new BlockDTO();
+	        blockDTO.setId(id);
+	        blockDTO.setBlockTitle(title);
+	        blockDTO.setBlockText(content);
 
-			blockDAO.insertBlock(blockDTO);
-			
-			// 필드, 화면 초기화
-			textFieldTitle.setText("");
-			textAreaContent.setText("");
-			((BlockExercise) getParent()).refreshTextArea();
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "중복된 제목입니다.");
-			dispose();
-		} finally {
-			JOptionPane.showMessageDialog(this, "블록 문제가 추가되었습니다.");
-		}
+	        BlockDAO blockDAO = BlockDAO.getInstance();
+
+	        blockDAO.insertBlock(blockDTO);
+
+	        // 필드, 화면 초기화
+	        textFieldTitle.setText("");
+	        textAreaContent.setText("");
+	        ((BlockExercise) getParent()).refreshTextArea();
+
+	        JOptionPane.showMessageDialog(this, "블록 문제가 추가되었습니다.");
+
+	    } catch (EmptyTitleContentException e) {
+	        JOptionPane.showMessageDialog(this, e.getMessage());
+	    } catch (SQLIntegrityConstraintViolationException e) {	// 중복된 제목일 경우 예외처리
+	        JOptionPane.showMessageDialog(this, "중복된 제목입니다.");
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(this, "SQL에서 오류가 발생했습니다.");
+	        e.printStackTrace();
+	    }
 	}
 }
