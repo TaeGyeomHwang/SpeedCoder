@@ -68,6 +68,7 @@ public class WordDialog extends JDialog {
 
                 // 모든 조건 통과 시 단어 추가
                 dao.addWord(word);
+                // 단어 목록 갱신
                 wordex.refreshWordList();
                 dispose(); // 다이얼로그 닫기
             }
