@@ -28,8 +28,8 @@ public class BlockDialogAdd extends JDialog {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		textFieldTitle = new JTextField(50);
-		textAreaContent = new JTextArea(15, 50);
+		textFieldTitle = new JTextField(80);
+		textAreaContent = new JTextArea(15, 80);
 		JScrollPane scrollPane = new JScrollPane(textAreaContent);
 
 		// 추가하기 버튼
@@ -67,7 +67,7 @@ public class BlockDialogAdd extends JDialog {
 		panel.add(contentPanel);
 		panel.add(buttonPanel);
 
-		panel.setPreferredSize(new Dimension(500, 300));
+		panel.setPreferredSize(new Dimension(800, 300));
 
 		getContentPane().add(panel);
 		pack();

@@ -141,7 +141,6 @@ public class BlockDialogDelete extends JDialog {
 		final DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 		// 기존 행 지우기
 		tableModel.setNumRows(0);
-		tableModel.addColumn("제목");
 		BlockDAO blockDAO = BlockDAO.getInstance();
 		List<BlockDTO> blocks = blockDAO.getBlockById(id);
 		StringBuilder sb = new StringBuilder();
