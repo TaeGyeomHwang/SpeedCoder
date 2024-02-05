@@ -1,11 +1,12 @@
 package view;
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,9 +17,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import model.SpeedCoderDAO;
+
 public class WordExercise extends JFrame {
     private JPanel topPanel, middlePanel, bottomPanel;
-    private JButton btnStart, btnReset, btnAddWord, btnDeleteWord, btnSaveWord;
+    private JButton btnStart, btnReset, btnAddWord, btnDeleteWord;
     private JTextArea txtContent;
     private JTextField textEnter;
     private JLabel txtlbl;
@@ -36,7 +39,8 @@ public class WordExercise extends JFrame {
 
         setLocationRelativeTo(null);
     }
-    //상단 패널(버튼추가)
+
+    // 상단 패널(버튼 추가)
     private JPanel getTopPanel() {
         if (topPanel == null) {
             topPanel = new JPanel();
@@ -44,17 +48,32 @@ public class WordExercise extends JFrame {
             btnReset = new JButton("초기화");
             btnAddWord = new JButton("단어 추가");
             btnDeleteWord = new JButton("단어 삭제");
-            btnSaveWord = new JButton("단어 저장");
-            
-            topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20)); 
-            
-            
+
+            topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20));
             topPanel.setPreferredSize(new Dimension(500, 60));
 
             // 시작하기 버튼 동작
             btnStart.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    // 데이터베이스에서 단어 목록을 다시 가져옴
+                    SpeedCoderDAO dao = SpeedCoderDAO.getInstance();
+                    List<String> words = dao.getWord();
+                    // 텍스트 영역을 초기화
+                    txtContent.setText("");
+
+                    // 텍스트 영역에 단어 배치
+                    Random random = new Random();
+                    for (int i = 0; i < 15; i++) {
+                        // 좌우 랜덤으로 배치하도록 함
+                        String word = words.get(random.nextInt(words.size()));
+                        if (random.nextBoolean()) {
+                            txtContent.append(word + "\t");
+                        } else {
+                            txtContent.append("\t" + word);
+                        }
+                        txtContent.append("\n");
+                    }
                 }
             });
 
@@ -69,7 +88,8 @@ public class WordExercise extends JFrame {
             btnAddWord.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                	 WordDialog();
+                    WordDialog dialog = new WordDialog(WordExercise.this);
+                    dialog.setVisible(true);
                 }
             });
 
@@ -77,13 +97,8 @@ public class WordExercise extends JFrame {
             btnDeleteWord.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                }
-            });
-
-            // 단어 저장 버튼 동작
-            btnSaveWord.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+                    DeleteWordDialog dialog = new DeleteWordDialog(WordExercise.this);
+                    dialog.setVisible(true);
                 }
             });
 
@@ -91,21 +106,28 @@ public class WordExercise extends JFrame {
             topPanel.add(btnReset);
             topPanel.add(btnAddWord);
             topPanel.add(btnDeleteWord);
-            topPanel.add(btnSaveWord);
         }
         return topPanel;
     }
-    //중앙 패널
-    private JPanel getMiddlePanel() {
+
+    // 중앙 패널
+    public JPanel getMiddlePanel() {
         if (middlePanel == null) {
             middlePanel = new JPanel();
             txtContent = new JTextArea(15, 100);
             JScrollPane scrollPane = new JScrollPane(txtContent);
             middlePanel.add(scrollPane);
+
+            SpeedCoderDAO dao = SpeedCoderDAO.getInstance();
+            List<String> words = dao.getWord();
+            for (String word : words) {
+                txtContent.append(word + "\n");
+            }
         }
         return middlePanel;
     }
-  //하단 패널
+
+    // 하단 패널
     private JPanel getBottomPanel() {
         if (bottomPanel == null) {
             bottomPanel = new JPanel();
@@ -115,28 +137,31 @@ public class WordExercise extends JFrame {
             textEnter = new JTextField(35);
 
             JPanel centerPanel = new JPanel();
-            
-            centerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20)); 
+
+            centerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20));
             centerPanel.add(txtlbl);
             centerPanel.add(textEnter);
-            
+
             txtlbl.setFont(txtlbl.getFont().deriveFont(15.0f));
-            
+
             bottomPanel.add(centerPanel, BorderLayout.CENTER);
         }
         return bottomPanel;
     }
-    
+
+    public JTextArea getTxtContent() {
+        return txtContent;
+    }
+
     private void WordDialog() {
         WordDialog dialog = new WordDialog(this);
         dialog.setVisible(true);
     }
-    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-        	WordExercise wordExercise = new WordExercise();
-        	wordExercise.setVisible(true);
+            WordExercise wordExercise = new WordExercise();
+            wordExercise.setVisible(true);
         });
     }
 }
