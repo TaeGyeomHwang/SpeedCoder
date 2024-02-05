@@ -37,6 +37,10 @@ public class BlockExercise extends JFrame {
 	private String id = "jihuhw";
 	private int index = 0;
 	private int randomIndex = 0;
+	
+	private int speed;
+	private double acc = 0.0; 
+	private double totalChar=0.0;
 
 	private BlockDAO blockDAO = BlockDAO.getInstance();
 	private List<BlockDTO> blocks = blockDAO.getBlockById(id);
@@ -213,38 +217,50 @@ public class BlockExercise extends JFrame {
 
 	// 엔터 입력시 정답인지 검증
 	private void validateText(String input) {
-	    // 랜덤 블록 문제 선택
-	    StringBuilder sb = new StringBuilder();
-	    sb.append(blocks.get(randomIndex).getBlockText());
-	    // 가져온 문제를 줄바꿈을 기준으로 파싱
-	    String lines[] = sb.toString().split("\\r?\\n");
-	    sb.setLength(0);
-	    // 남아있는 문장 출력
-	    if (input.equals(lines[index])) {
-	        index++;
-	        for (int i = index; i < lines.length; i++) {
-	            sb.append(lines[i]).append("\n");
-	        }
-	        txtCenterPane.setText(sb.toString());
-	        // 하이라이트 적용
-	        if (index < lines.length) {
-	            highlightText(lines[index]);
-	        }
-	    }
-	    // 시작하기 버튼 눌렀을 경우
-	    else if (input.equals("초기 문제 출력")) {
-	        for (String s : lines) {
-	            sb.append(s).append("\n");
-	        }
-	        txtCenterPane.setText(sb.toString());
-	        // 하이라이트 적용
-	        highlightText(lines[0]);
-	    }
-	    // 모든 문장을 입력했을 경우
-	    if (index == lines.length) {
-	        index = 0;
-	        refreshTextArea();
-	    }
+		// 랜덤 블록 문제 선택
+		StringBuilder sb = new StringBuilder();
+		sb.append(blocks.get(randomIndex).getBlockText());
+		// 가져온 문제를 줄바꿈을 기준으로 파싱
+		String lines[] = sb.toString().split("\\r?\\n");
+		sb.setLength(0);
+		// 입력한 값의 길이가 하이라이트된 문장의 사이즈와 동일할 경우, 다음 문장 출력
+		if (input.length() == lines[index].length()) {
+			System.out.println(lines[index].length());
+			// 맞은 문자 개수
+			for (int j = 0; j < lines[index].length(); j++) {
+				if (input.charAt(j) == lines[index].charAt(j)) {
+					acc++;
+				}
+				totalChar++;
+			}
+			// 인덱스 증가
+			index++;
+			for (int i = index; i < lines.length; i++) {
+				sb.append(lines[i]).append("\n");
+			}
+			txtCenterPane.setText(sb.toString());
+			// 하이라이트 적용
+			if (index < lines.length) {
+				highlightText(lines[index]);
+			}
+		}
+		// 시작하기 버튼 눌렀을 경우
+		else if (input.equals("초기 문제 출력")) {
+			for (String s : lines) {
+				sb.append(s).append("\n");
+			}
+			txtCenterPane.setText(sb.toString());
+			// 하이라이트 적용
+			highlightText(lines[0]);
+		}
+		// 모든 문장을 입력했을 경우
+		if (index == lines.length) {
+			index = 0;
+			refreshTextArea();
+			
+//		    BlockDAO.getInstance().insertScore(id, acc/totalChar, speed);
+			System.out.println(acc/totalChar*10);
+		}
 	}
 
 	// 블록 문제 시작하기
