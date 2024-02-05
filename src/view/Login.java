@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 public class Login extends JFrame{
+	private static String enteredText;
 	private JLabel lblTitle;
 	private JLabel lblId;
 	private JLabel lblPw;
@@ -70,7 +71,7 @@ public class Login extends JFrame{
 		if(lblPw == null) {
 			lblPw = new JLabel();
 			lblPw.setText("PW : ");
-			lblPw.setBounds(55, 250, 100, 40);
+			lblPw.setBounds(60, 250, 100, 40);
 			lblPw.setFont(getSignupFont());
 		}
 		return lblPw;
@@ -80,7 +81,7 @@ public class Login extends JFrame{
 	// 제목 폰트 설정
 		private Font getTitleFont() {
 			if(fontTitle == null) {
-				fontTitle = new Font("Arial", Font.PLAIN, 40);			
+				fontTitle = new Font("Malgun Gothic", Font.PLAIN, 40);			
 			}
 			return fontTitle;
 		}
@@ -88,7 +89,7 @@ public class Login extends JFrame{
 	// 제목 폰트 설정
 	private Font getSignupFont() {
 		if(fontSignup == null) {
-			fontSignup = new Font("Arial", Font.PLAIN, 25);			
+			fontSignup = new Font("Malgun Gothic", Font.PLAIN, 25);			
 		}
 		return fontSignup;
 	}
@@ -147,6 +148,19 @@ public class Login extends JFrame{
 		}
 		return btnSignup;
 	}
+
+    public static String getEnteredText() {
+        return enteredText;
+    }
+
+    public static void setEnteredText(String text) {
+        enteredText = text;
+    }
+    
+//    private void disposeWindow() {
+//        UserData.setEnteredText(textField.getText());
+//        dispose();
+//    }
 	
 	//창 중앙 정렬
 	private void locationCenter() {

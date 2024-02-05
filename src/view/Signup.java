@@ -66,8 +66,8 @@ public class Signup extends JFrame{
 		private JLabel getIdLabel() {
 			if(lblId == null) {
 				lblId = new JLabel();
-				lblId.setText("ID    : ");
-				lblId.setBounds(85, 170, 100, 40);
+				lblId.setText("ID     : ");
+				lblId.setBounds(79, 170, 100, 40);
 				lblId.setFont(getSignupFont());
 			}
 			return lblId;
@@ -78,7 +78,7 @@ public class Signup extends JFrame{
 			if(lblPw == null) {
 				lblPw = new JLabel();
 				lblPw.setText("PW    : ");
-				lblPw.setBounds(68, 220, 100, 40);
+				lblPw.setBounds(75, 220, 100, 40);
 				lblPw.setFont(getSignupFont());
 			}
 			return lblPw;
@@ -140,7 +140,7 @@ public class Signup extends JFrame{
 		}
 	
 	/* 버튼 */
-	// 로그인 버튼
+	// 회원가입 버튼
 	private JButton getSignupBtn() {
 		if (btnSignup == null) {
 			btnSignup = new JButton();
@@ -154,7 +154,7 @@ public class Signup extends JFrame{
 		return btnSignup;
 	}
 
-	// 블록 연습 화면 출력
+	// 나가기 버튼
 	private JButton getCancelBtn() {
 		if (btnCancel == null) {
 			btnCancel = new JButton();
@@ -162,10 +162,6 @@ public class Signup extends JFrame{
 			btnCancel.setBounds(285, 320, 110, 40);
 			btnCancel.addActionListener(e -> {
 				dispose();
-				// 회원가입 버튼을 클릭하는 경우 회원가입 화면을 보여줌(다이얼로그 형식)
-				// 회원가입 화면은 아이디를 입력받는 텍스트 필드, 패스워드 필드, 패스워드 확인 필드, 회원가입 버튼, 취소 버튼으로 구성
-				// 회원 가입 성공의 경우 화면에 "회원가입이 완료되었습니다." 를 팝업을 띄우고 닫으면 로그인 화면을 출력한다.
-				// 취소 버튼을 누를 경우 회원가입 화면을 닫고 로그인 화면을 출력한다.
 			});
 		}
 		return btnCancel;
