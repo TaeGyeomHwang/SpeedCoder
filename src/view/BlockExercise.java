@@ -257,9 +257,9 @@ public class BlockExercise extends JFrame {
 		if (index == lines.length) {
 			index = 0;
 			refreshTextArea();
-			
+			acc = (acc/totalChar)*100;
 //		    BlockDAO.getInstance().insertScore(id, acc/totalChar, speed);
-			System.out.println(acc/totalChar*10);
+			System.out.println();
 		}
 	}
 
