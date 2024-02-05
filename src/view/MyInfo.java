@@ -7,6 +7,7 @@ import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
 public class MyInfo extends JFrame{
@@ -114,10 +115,18 @@ public class MyInfo extends JFrame{
 	        		tblWord.getBounds().width,
 	        		header.getPreferredSize().height
 	        		);
+	        
 	        tblWord.getColumn("번호").setPreferredWidth(50);
 	        tblWord.getColumn("타수").setPreferredWidth(100);
 	        tblWord.getColumn("정확도(%)").setPreferredWidth(150);
 	        this.getContentPane().add(header);
+	        
+	        //열 내용 가운데 정렬
+	        for (int i = 0; i < tblWord.getColumnCount(); i++) {
+	        	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	        	centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+	        	tblWord.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	        }
 		}
 		return tblWord;
 	}
@@ -152,6 +161,13 @@ public class MyInfo extends JFrame{
 	        tblBlock.getColumn("타수").setPreferredWidth(100);
 	        tblBlock.getColumn("정확도(%)").setPreferredWidth(150);
 	        this.getContentPane().add(header);
+	        
+	        //열 내용 가운데 정렬
+	        for (int i = 0; i < tblBlock.getColumnCount(); i++) {
+	        	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	        	centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+	        	tblBlock.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	        }
 		}
 		return tblBlock;
 	}
@@ -161,8 +177,8 @@ public class MyInfo extends JFrame{
 	private JLabel getWordAvgHitLabel() {
 		if(lblWordAvgHit == null) {
 			lblWordAvgHit = new JLabel();
-			lblWordAvgHit.setText("평균 타수     :   " + wordAvgHit);
-			lblWordAvgHit.setBounds(40, 370, 170, 40);
+			lblWordAvgHit.setText("평균 타수     :    " + wordAvgHit);
+			lblWordAvgHit.setBounds(48, 370, 170, 40);
 			lblWordAvgHit.setFont(getAccFont());
 		}
 		return lblWordAvgHit;
@@ -172,8 +188,8 @@ public class MyInfo extends JFrame{
 	private JLabel getWordAvgAccLabel() {
 		if(lblWordAvgAcc == null) {
 			lblWordAvgAcc = new JLabel();
-			lblWordAvgAcc.setText("평균 정확도 :    " + wordAvgAcc);
-			lblWordAvgAcc.setBounds(40, 410, 170, 40);
+			lblWordAvgAcc.setText("평균 정확도  :   " + wordAvgAcc);
+			lblWordAvgAcc.setBounds(48, 405, 170, 40);
 			lblWordAvgAcc.setFont(getAccFont());
 		}
 		return lblWordAvgAcc;
@@ -183,8 +199,8 @@ public class MyInfo extends JFrame{
 	private JLabel getBlockAvgHitLabel() {
 		if(lblBlockAvgHit == null) {
 			lblBlockAvgHit = new JLabel();
-			lblBlockAvgHit.setText("평균 타수     :   " + blockAvgHit);
-			lblBlockAvgHit.setBounds(270, 370, 170, 40);
+			lblBlockAvgHit.setText("평균 타수     :    " + blockAvgHit);
+			lblBlockAvgHit.setBounds(278, 370, 170, 40);
 			lblBlockAvgHit.setFont(getAccFont());
 		}
 		return lblBlockAvgHit;
@@ -194,8 +210,8 @@ public class MyInfo extends JFrame{
 	private JLabel getBlockAvgAccLabel() {
 		if(lblBlockAvgAcc == null) {
 			lblBlockAvgAcc = new JLabel();
-			lblBlockAvgAcc.setText("평균 정확도 :    " + blockAvgAcc);
-			lblBlockAvgAcc.setBounds(270, 410, 170, 40);
+			lblBlockAvgAcc.setText("평균 정확도  :   " + blockAvgAcc);
+			lblBlockAvgAcc.setBounds(278, 405, 170, 40);
 			lblBlockAvgAcc.setFont(getAccFont());
 		}
 		return lblBlockAvgAcc;
