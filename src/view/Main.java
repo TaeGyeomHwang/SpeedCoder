@@ -74,6 +74,8 @@ public class Main extends JFrame {
 		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
 	}
+	
+	
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
