@@ -2,6 +2,8 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -13,11 +15,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
+import javax.swing.SwingUtilities;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -27,23 +30,32 @@ import model.BlockDAO;
 import model.BlockDTO;
 
 public class BlockExercise extends JFrame {
-	private JPanel panelNorth, panelCenter;
-	private JButton btnStart, btnReset, btnAdd, btnDelete, btnSave;
+	// 컴포넌트
+	private JPanel panelNorth, panelCenter, panelTimer;
+	private JButton btnStart, btnReset, btnAdd, btnDelete;
 	private JTextField txtNorth;
 	private JTextPane txtCenterPane;
-	private JLabel labelCenter;
+	private JLabel labelCenter, labelMin, labelSec, colon1;
 	private String inputText;
 
+	// 랜덤 인덱스 접근 변수
 	private String id = "jihuhw";
 	private int index = 0;
 	private int randomIndex = 0;
-	
-	private int speed;
-	private double acc = 0.0; 
-	private double totalChar=0.0;
 
+	// 타이머 사용 변수
+	private double speed = 0.0;
+	private long beforeTime, afterTime;
+	private double acc = 0.0;
+	private double totalChar = 0.0;
+
+	// DAO, DTO
 	private BlockDAO blockDAO = BlockDAO.getInstance();
 	private List<BlockDTO> blocks = blockDAO.getBlockById(id);
+
+	// 타이머 쓰레드 객체
+	private Thread timerThread;
+	private boolean terminationFlag = false;
 
 	// 메인 윈도우 출력
 	public BlockExercise() {
@@ -72,6 +84,7 @@ public class BlockExercise extends JFrame {
 			panelNorth.add(getBtnReset());
 			panelNorth.add(getBtnAdd());
 			panelNorth.add(getBtnDelete());
+			panelNorth.add(getPanelTimer());
 			// 위쪽에 패딩 추가
 			panelNorth.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 		}
@@ -86,6 +99,7 @@ public class BlockExercise extends JFrame {
 			// 블록 연습 시작하기
 			btnStart.addActionListener(e -> {
 				gameStart();
+				startTimer(); // 타이머 시작
 			});
 		}
 		return btnStart;
@@ -97,7 +111,8 @@ public class BlockExercise extends JFrame {
 			btnReset = new JButton();
 			btnReset.setText("초기화");
 			btnReset.addActionListener(e -> {
-				refreshTextArea();
+				resetTimer(); // 타이머 초기화
+				refreshTextArea(); // 텍스트 영역 초기화
 			});
 		}
 		return btnReset;
@@ -127,6 +142,26 @@ public class BlockExercise extends JFrame {
 			});
 		}
 		return btnDelete;
+	}
+
+	// 타이머 패널 생성
+	private JPanel getPanelTimer() {
+		if (panelTimer == null) {
+			// 패널, 라벨 생성, 부착
+			panelTimer = new JPanel();
+			panelTimer.setPreferredSize(new Dimension(450,70));
+			colon1 = new JLabel(" : ");
+			labelMin = new JLabel("00");
+			labelSec = new JLabel("00");
+			panelTimer.add(labelMin);
+			panelTimer.add(colon1);
+			panelTimer.add(labelSec);
+			// 라벨 폰트, 크기 설정
+			labelMin.setFont(new Font("courier", Font.BOLD, 30));
+			labelSec.setFont(new Font("courier", Font.BOLD, 30));
+			colon1.setFont(new Font("courier", Font.BOLD, 30));
+		}
+		return panelTimer;
 	}
 
 	// 중앙 패널 생성
@@ -176,7 +211,7 @@ public class BlockExercise extends JFrame {
 			StyleConstants.setFontSize(defaultStyle, txtCenterPane.getFont().getSize());
 
 			StringBuilder sb = new StringBuilder();
-			sb.append("현재 블록 목록: \n\n");
+			sb.append("현재 블록 문제 목록: \n\n");
 			for (BlockDTO board : blocks) {
 				sb.append(board.getBlockTitle()).append("\n");
 			}
@@ -199,7 +234,7 @@ public class BlockExercise extends JFrame {
 		// 텍스트에리어 초기화
 		blocks = blockDAO.getBlockById(id);
 		StringBuilder sb = new StringBuilder();
-		sb.append("현재 블록 목록: \n\n");
+		sb.append("현재 블록 문제 목록: \n\n");
 		for (BlockDTO board : blocks) {
 			sb.append(board.getBlockTitle()).append("\n");
 		}
@@ -225,7 +260,6 @@ public class BlockExercise extends JFrame {
 		sb.setLength(0);
 		// 입력한 값의 길이가 하이라이트된 문장의 사이즈와 동일할 경우, 다음 문장 출력
 		if (input.length() == lines[index].length()) {
-			System.out.println(lines[index].length());
 			// 맞은 문자 개수
 			for (int j = 0; j < lines[index].length(); j++) {
 				if (input.charAt(j) == lines[index].charAt(j)) {
@@ -255,23 +289,40 @@ public class BlockExercise extends JFrame {
 		}
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
+			// 타이머 종료
+			afterTime = System.currentTimeMillis();
+			// 정확도 계산
+			acc = (acc / totalChar) * 100;
+			// 타수 계산
+			long diffSec = (afterTime - beforeTime) / 1000;
+			speed = totalChar * 60 / diffSec;
+			// 기록 DB에 저장
+			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
+			// 정확도, 타수 출력
+			JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "\n정확도: " + (int) acc + "%");
+			// 변수 초기화
 			index = 0;
+			acc = 0.0;
+			totalChar = 0.0;
+			speed = 0.0;
+			// 화면 초기화
+			resetTimer();
 			refreshTextArea();
-			acc = (acc/totalChar)*100;
-//		    BlockDAO.getInstance().insertScore(id, acc/totalChar, speed);
-			System.out.println();
 		}
 	}
 
 	// 블록 문제 시작하기
 	private void gameStart() {
+		// 타이머 시작
+		beforeTime = System.currentTimeMillis();
 		// 접근할 인덱스 랜덤으로 설정
 		randomIndex = (int) (Math.random() * blocks.size());
 		// 추가, 삭제 버튼 비활성화
 		btnAdd.setEnabled(false);
 		btnDelete.setEnabled(false);
-		// 텍스트필드 활성화
+		// 텍스트필드 활성화, 포커스
 		txtNorth.setEditable(true);
+		txtNorth.requestFocusInWindow();
 		labelCenter.setText("문장을 입력한 후 엔터를 눌러주세요:");
 		// 블록 문제 출력
 		validateText("초기 문제 출력");
@@ -288,5 +339,51 @@ public class BlockExercise extends JFrame {
 		if (index >= 0) {
 			doc.setCharacterAttributes(index, text.length(), style, true);
 		}
+	}
+
+	// 타이머 시작
+	private void startTimer() {
+	    // 버튼 비활성화, 플래그 설정
+	    btnStart.setEnabled(false);
+		terminationFlag = true;
+		// 타이머 쓰레드 실행
+		timerThread = new Thread(() -> {
+			while (terminationFlag) {
+				updateTimer();
+				try {
+					Thread.sleep(1000); // 1초마다 업데이트
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		timerThread.start();
+	}
+
+	// 타이머 업데이트
+	private void updateTimer() {
+		// 지나간 시간 계산
+		long currentTime = System.currentTimeMillis();
+		long elapsedTime = currentTime - beforeTime;
+		long seconds = elapsedTime / 1000;
+		long minutes = seconds / 60;
+		long remainingSeconds = seconds % 60;
+
+		// 타이머 라벨 업데이트
+		SwingUtilities.invokeLater(() -> {
+			labelMin.setText(String.format("%02d", minutes));
+			labelSec.setText(String.format("%02d", remainingSeconds));
+		});
+	}
+
+	// 타이머 초기화
+	private void resetTimer() {
+	    // 버튼 활성화
+	    btnStart.setEnabled(true);
+	    // 타이머 라벨 초기화
+	    labelMin.setText("00");
+	    labelSec.setText("00");
+	    // 타이머 중지
+		terminationFlag = false;
 	}
 }

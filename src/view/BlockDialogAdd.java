@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import exceptions.EmptyTitleContentException;
 import model.BlockDAO;
 import model.BlockDTO;
 
@@ -46,14 +49,14 @@ public class BlockDialogAdd extends JDialog {
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dispose(); 
+				dispose();
 			}
 		});
 
 		JPanel titlePanel = new JPanel();
 		titlePanel.add(new JLabel("제목:"));
 		titlePanel.add(textFieldTitle);
-//		titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0)); // 텍스트필드에 패딩 설정
+		titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0)); // 텍스트필드에 패딩 설정
 
 		JPanel contentPanel = new JPanel();
 		contentPanel.add(new JLabel("내용:"));
@@ -74,25 +77,44 @@ public class BlockDialogAdd extends JDialog {
 		setLocationRelativeTo(parent);
 	}
 
-    // DB에 블록 문제 추가
+	// DB에 블록 문제 추가
 	private void addBlock() {
-		String id = "jihuhw";
-	    String title = textFieldTitle.getText();
-	    String content = textAreaContent.getText();
+	    try {
+	        String id = "jihuhw";
+	        String title = textFieldTitle.getText();
+	        String content = textAreaContent.getText();
 
-	    BlockDTO blockDTO = new BlockDTO();
-	    blockDTO.setId(id); 
-	    blockDTO.setBlockTitle(title);
-	    blockDTO.setBlockText(content);
+	        // 공백을 입력할 경우 예외처리
+	        if (title.isEmpty()) {
+	            throw new EmptyTitleContentException();
+	        }
+	        if (content.isEmpty()) {
+	        	throw new EmptyTitleContentException();
+	        }
 
-	    BlockDAO blockDAO = BlockDAO.getInstance();
-	    blockDAO.insertBlock(blockDTO);
+	        BlockDTO blockDTO = new BlockDTO();
+	        blockDTO.setId(id);
+	        blockDTO.setBlockTitle(title);
+	        blockDTO.setBlockText(content);
 
-	    JOptionPane.showMessageDialog(this, "블록 문제가 추가되었습니다.");
+	        BlockDAO blockDAO = BlockDAO.getInstance();
 
-	    textFieldTitle.setText("");
-	    textAreaContent.setText("");
+	        blockDAO.insertBlock(blockDTO);
 
-	    ((BlockExercise) getParent()).refreshTextArea();
+	        // 필드, 화면 초기화
+	        textFieldTitle.setText("");
+	        textAreaContent.setText("");
+	        ((BlockExercise) getParent()).refreshTextArea();
+
+	        JOptionPane.showMessageDialog(this, "블록 문제가 추가되었습니다.");
+
+	    } catch (EmptyTitleContentException e) {
+	        JOptionPane.showMessageDialog(this, e.getMessage());
+	    } catch (SQLIntegrityConstraintViolationException e) {	// 중복된 제목일 경우 예외처리
+	        JOptionPane.showMessageDialog(this, "중복된 제목입니다.");
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(this, "SQL에서 오류가 발생했습니다.");
+	        e.printStackTrace();
+	    }
 	}
 }

@@ -3,8 +3,11 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 public class BlockDAO extends SpeedCoderDAO {
 
@@ -18,8 +21,8 @@ public class BlockDAO extends SpeedCoderDAO {
         return instance;
     }
 
-    // 블록 문제 추가하기
-    public void insertBlock(BlockDTO blockDTO) {
+ // 블록 문제 추가하기
+    public void insertBlock(BlockDTO blockDTO) throws SQLException {
         connect();
         try {
             String sql = "INSERT INTO block (id, block_title, block_text) VALUES (?, ?, ?)";
@@ -29,7 +32,11 @@ public class BlockDAO extends SpeedCoderDAO {
             pstmt.setString(3, blockDTO.getBlockText());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                throw (SQLIntegrityConstraintViolationException) e;
+            } else {
+                e.printStackTrace();
+            }
         } finally {
             close();
         }
@@ -104,12 +111,13 @@ public class BlockDAO extends SpeedCoderDAO {
     public void insertScore(String id, int acc, int speed) {
     	try {
 			connect();
-			String sql = "INSERT INTO score (id, acc, speed, kind) VALUES (?, ?, ?, ?)";
+			String sql = "INSERT INTO score (id, acc, speed, kind, regdate) VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
 			pstmt.setInt(2, acc);
 			pstmt.setInt(3, speed);
 			pstmt.setString(4, "block");
+			pstmt.setTimestamp(5, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
             e.printStackTrace();
