@@ -317,68 +317,68 @@ public class BlockExercise extends JFrame {
 	}
 
 	// 엔터 입력시 정답인지 검증
-	private void validateText(String input) throws IndexOutOfBoundsException {
-		// 랜덤 블록 문제 선택
-		StringBuilder sb = new StringBuilder();
-		sb.append(blocks.get(randomIndex).getBlockText());
-		// 가져온 문제를 줄바꿈을 기준으로 파싱
-		String lines[] = sb.toString().split("\\r?\\n");
-		sb.setLength(0);
-		// 입력한 값의 길이가 하이라이트된 문장의 사이즈와 동일할 경우, 다음 문장 출력
-		if (input.length() == lines[index].trim().length()) {
-			// 맞은 문자 개수
-			for (int j = 0; j < lines[index].trim().length(); j++) {
-				if (input.charAt(j) == lines[index].trim().charAt(j)) {
-					acc++;
+		private void validateText(String input) throws IndexOutOfBoundsException {
+			// 랜덤 블록 문제 선택
+			StringBuilder sb = new StringBuilder();
+			sb.append(blocks.get(randomIndex).getBlockText());
+			// 가져온 문제를 줄바꿈을 기준으로 파싱
+			String lines[] = sb.toString().split("\\r?\\n");
+			sb.setLength(0);
+			// 입력한 값의 길이가 하이라이트된 문장의 사이즈와 동일할 경우, 다음 문장 출력
+			if (input.length() == lines[index].trim().length()) {
+				// 맞은 문자 개수
+				for (int j = 0; j < lines[index].trim().length(); j++) {
+					if (input.charAt(j) == lines[index].trim().charAt(j)) {
+						acc++;
+					}
+					totalChar++;
 				}
-				totalChar++;
+				// 인덱스 증가, 남은 문장 출력
+				index++;
+				for (int i = index; i < lines.length; i++) {
+					sb.append(lines[i]).append("\n");
+				}
+				txtCenterPane.setText(sb.toString());
+				// 하이라이트 적용
+				if (index < lines.length) {
+					highlightFirstLine(txtCenterPane);
+				}
+				// 현재 타수 리프레쉬
+//				long diffSec = (inputTotalTime / enterCount) / 1000;
+//				double speed = totalChar * 60 / diffSec;
+//				currentSpeed.setText(Math.round(speed)+"타/분");
 			}
-			// 인덱스 증가, 남은 문장 출력
-			index++;
-			for (int i = index; i < lines.length; i++) {
-				sb.append(lines[i]).append("\n");
-			}
-			txtCenterPane.setText(sb.toString());
-			// 하이라이트 적용
-			if (index < lines.length) {
+			// 시작하기 버튼 눌렀을 경우
+			else if (input.equals("초기 문제 출력")) {
+				for (String s : lines) {
+					sb.append(s).append("\n");
+				}
+				txtCenterPane.setText(sb.toString());
+				// 하이라이트 적용
 				highlightFirstLine(txtCenterPane);
 			}
-			// 현재 타수 리프레쉬
-//			long diffSec = (inputTotalTime / enterCount) / 1000;
-//			double speed = totalChar * 60 / diffSec;
-//			currentSpeed.setText(Math.round(speed)+"타/분");
-		}
-		// 시작하기 버튼 눌렀을 경우
-		else if (input.equals("초기 문제 출력")) {
-			for (String s : lines) {
-				sb.append(s).append("\n");
+			// 모든 문장을 입력했을 경우
+			if (index == lines.length) {
+				// 정확도 계산
+				acc = (acc / totalChar) * 100;
+				// 타수 계산
+				long diffSec = (inputTotalTime / enterCount) / 1000;
+				speed = totalChar * 60 / diffSec;
+				// 기록 DB에 저장
+				blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
+				stopTimer();
+				// 정확도, 타수 출력
+				JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "타/분\n정확도: " + (int) acc + "%");
+				// 변수 초기화
+				index = 0;
+				acc = 0.0;
+				totalChar = 0.0;
+				speed = 0.0;
+				// 화면 초기화
+				resetTimer();
+				refreshTextArea();
 			}
-			txtCenterPane.setText(sb.toString());
-			// 하이라이트 적용
-			highlightFirstLine(txtCenterPane);
 		}
-		// 모든 문장을 입력했을 경우
-		if (index == lines.length) {
-			// 정확도 계산
-			acc = (acc / totalChar) * 100;
-			// 타수 계산
-			long diffSec = (inputTotalTime / enterCount) / 1000;
-			speed = totalChar * 60 / diffSec;
-			// 기록 DB에 저장
-			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
-			stopTimer();
-			// 정확도, 타수 출력
-			JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "타/분\n정확도: " + (int) acc + "%");
-			// 변수 초기화
-			index = 0;
-			acc = 0.0;
-			totalChar = 0.0;
-			speed = 0.0;
-			// 화면 초기화
-			resetTimer();
-			refreshTextArea();
-		}
-	}
 
 	// 블록 문제 시작하기
 	private void gameStart() throws IndexOutOfBoundsException {
