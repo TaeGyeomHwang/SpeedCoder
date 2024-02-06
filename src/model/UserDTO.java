@@ -3,7 +3,7 @@ package model;
 import lombok.Data;
 
 @Data
-public class SignupDTO {
+public class UserDTO {
 
 	private String id;
     private String pw;

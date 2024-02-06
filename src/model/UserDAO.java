@@ -6,20 +6,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignupDAO extends SpeedCoderDAO{
+public class UserDAO extends SpeedCoderDAO{
 
-	private static final SignupDAO instance = new SignupDAO();
+	private static final UserDAO instance = new UserDAO();
 	
-	private SignupDAO() {
+	private UserDAO() {
 		
 	}
 	
-	public static SignupDAO getInstance() {
+	public static UserDAO getInstance() {
 		return instance;
 	}
 	
 	// 회원 정보 추가하기
-    public void insertSignup(SignupDTO signupDTO) {
+    public void insertSignup(UserDTO signupDTO) {
         connect();
         try {
             String sql = "INSERT INTO user (id, pw) VALUES (?, ?)";
@@ -35,8 +35,8 @@ public class SignupDAO extends SpeedCoderDAO{
     }
     
     // 전체 회원 정보 가져오기
-    public List<SignupDTO> getSignups() {
-        List<SignupDTO> signupList = new ArrayList<>();
+    public List<UserDTO> getSignups() {
+        List<UserDTO> signupList = new ArrayList<>();
         connect();
         try {
             String sql = "SELECT * FROM user ";
@@ -44,7 +44,7 @@ public class SignupDAO extends SpeedCoderDAO{
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-            	SignupDTO signup = new SignupDTO();
+            	UserDTO signup = new UserDTO();
             	signup.setId(rs.getString("id"));
             	signup.setPw(rs.getString("pw"));
             	signupList.add(signup);
