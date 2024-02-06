@@ -32,7 +32,7 @@ import model.BlockDTO;
 public class BlockDialogDelete extends JDialog {
 	private JTable table;
 	private int rowIndex = -1;
-	private String id = "jihuhw";
+	private String id = Login.getLoginedId();
 
 	public BlockDialogDelete(Frame parent) {
 		super(parent, "블록 삭제하기", true);
