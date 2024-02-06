@@ -94,48 +94,48 @@ public class WordDAO extends SpeedCoderDAO {
 			close();
 		}
 	}
-	
+
 	// 게임 종료 후 스코어 저장
-    public void saveScore(ScoreDTO score) {
-        connect(); // 데이터베이스 연결
-        try {
-            String sql = "INSERT INTO scores (id, kind, speed, acc) VALUES (?, ?, ?, ?)";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, score.getId());
-            pstmt.setString(2, score.getKind());
-            pstmt.setInt(3, score.getSpeed());
-            pstmt.setInt(4, score.getAcc());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close();
-        }
-    }
+	public void insertScore(String id, int acc, int speed) {
+		connect(); // 데이터베이스 연결
+		try {
+			String sql = "INSERT INTO scores (id, acc, speed, kind, regdate) VALUES (?, ?, ?, ?, ?)";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "code123");
+			pstmt.setInt(2, acc);
+			pstmt.setInt(3, speed);
+			pstmt.setString(4, "word");
+			pstmt.setTimestamp(5, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+	}
 
-    // 사용자별 스코어 검색
-    public List<ScoreDTO> getScores(String id) {
-        List<ScoreDTO> scores = new ArrayList<>();
-        connect(); // 데이터베이스 연결
-        try {
-            String sql = "SELECT * FROM scores WHERE id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                ScoreDTO score = new ScoreDTO();
-                score.setId(rs.getString("id"));
-                score.setKind(rs.getString("kind"));
-                score.setSpeed(rs.getInt("speed"));
-                score.setAcc(rs.getInt("acc"));
-                scores.add(score);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close();
-        }
-        return scores;
-    }
+	// 사용자별 스코어 검색
+	public List<ScoreDTO> getScores(String id) {
+		List<ScoreDTO> scores = new ArrayList<>();
+		connect(); // 데이터베이스 연결
+		try {
+			String sql = "SELECT * FROM scores WHERE id = ?";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ScoreDTO score = new ScoreDTO();
+				score.setId(rs.getString("id"));
+				score.setKind(rs.getString("kind"));
+				score.setSpeed(rs.getInt("speed"));
+				score.setAcc(rs.getInt("acc"));
+				scores.add(score);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return scores;
+	}
 }
-
