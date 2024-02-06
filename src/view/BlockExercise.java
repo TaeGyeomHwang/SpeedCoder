@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -340,7 +341,7 @@ public class BlockExercise extends JFrame {
 			txtCenterPane.setText(sb.toString());
 			// 하이라이트 적용
 			if (index < lines.length) {
-				highlightText(lines[index]);
+				highlightFirstLine(txtCenterPane);
 			}
 			// 현재 타수 리프레쉬
 //			long diffSec = (inputTotalTime / enterCount) / 1000;
@@ -354,7 +355,7 @@ public class BlockExercise extends JFrame {
 			}
 			txtCenterPane.setText(sb.toString());
 			// 하이라이트 적용
-			highlightText(lines[0]);
+			highlightFirstLine(txtCenterPane);
 		}
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
@@ -396,17 +397,27 @@ public class BlockExercise extends JFrame {
 		validateText("초기 문제 출력");
 	}
 
-	// 텍스트에 하이라이트 추가
-	private void highlightText(String text) {
-		StyledDocument doc = txtCenterPane.getStyledDocument();
-		Style style = txtCenterPane.addStyle("highlight", null);
-		StyleConstants.setBackground(style, Color.YELLOW);
+	private void highlightFirstLine(JTextPane textPane) {
+	    StyledDocument doc = textPane.getStyledDocument();
+	    Style style = textPane.addStyle("highlight", null);
+	    StyleConstants.setBackground(style, Color.YELLOW);
 
-		String content = txtCenterPane.getText();
-		int index = content.indexOf(text);
-		if (index >= 0) {
-			doc.setCharacterAttributes(index, text.length(), style, true);
-		}
+	    // 이전 강조 지우기
+	    doc.setCharacterAttributes(0, doc.getLength(), textPane.getStyle(StyleContext.DEFAULT_STYLE), true);
+
+	    // 첫 번째 문장 찾기
+	    int endOfFirstLine = 0;
+	    try {
+	        endOfFirstLine = doc.getText(0, doc.getLength()).indexOf("\n");
+	        if (endOfFirstLine < 0) {
+	            endOfFirstLine = doc.getLength(); // 문장이 하나면 끝까지 강조
+	        }
+	    } catch (BadLocationException e) {
+	        e.printStackTrace();
+	    }
+
+	    // 첫 번째 문장 강조
+	    doc.setCharacterAttributes(0, endOfFirstLine, style, true);
 	}
 
 	// 타이머 시작
