@@ -31,7 +31,8 @@ public class Main extends JFrame {
 			btnWordExcercise.setBounds(125, 90, 250, 55);
 			btnWordExcercise.addActionListener(e -> {
 				dispose();
-				new WordExercise();
+				WordExercise word = new WordExercise();
+				word.setVisible(true);
 			});
 		}
 		return btnWordExcercise;

@@ -43,6 +43,7 @@ public class WordExercise extends JFrame {
 	private Thread timerThread;
 	private JPanel panelTimer;
 	private JComponent colon1;
+	private int inputCount;
 
 	public WordExercise() {
 		setTitle("단어 연습");
@@ -57,6 +58,8 @@ public class WordExercise extends JFrame {
 
 		// 시작 버튼을 누른 후에만 텍스트 필드에서 Enter를 눌렀을 때 동작하도록 설정
 		textEnter.addActionListener(new ActionListener() {
+			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -69,12 +72,14 @@ public class WordExercise extends JFrame {
 				// Enter 입력 횟수 증가
 				enterCount++;
 				enter += enteredWord.length();
+				inputCount = 0;
 				// 입력란 초기화
 				textEnter.setText("");
 
 				// 게임 종료 확인
 				checkGameEnd();
 			}
+			
 		});
 		setTimer();
 
@@ -90,7 +95,6 @@ public class WordExercise extends JFrame {
 			btnAddWord = new JButton("단어 추가");
 			btnDeleteWord = new JButton("단어 삭제");
 			topPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-//			topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20));
 			topPanel.setPreferredSize(new Dimension(500, 100));
 			// 시작버튼
 			btnStart.addActionListener(new ActionListener() {
@@ -360,7 +364,8 @@ public class WordExercise extends JFrame {
 
 		// 팝업으로 타수와 정확도 표시
 		JOptionPane.showMessageDialog(this, "타수 : " + speed + "\n" + "정확도 : " + acc);
-
+	
+		WordDAO.getInstance().insertScore(acc, speed);
 		// 단어 목록 갱신
 		refreshWordList();
 
@@ -431,12 +436,5 @@ public class WordExercise extends JFrame {
 	private void stopTimer() {
 		// 타이머 중지
 		terminationFlag = false;
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			WordExercise wordExercise = new WordExercise();
-			wordExercise.setVisible(true);
-		});
 	}
 }

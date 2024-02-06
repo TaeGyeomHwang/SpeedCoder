@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import view.Login;
+
 public class WordDAO extends SpeedCoderDAO {
 
 	private static final WordDAO instance = new WordDAO();
@@ -84,9 +86,10 @@ public class WordDAO extends SpeedCoderDAO {
 	public void deleteWord(String word) {
 		connect(); // 데이터베이스 연결
 		try {
-			String sql = "DELETE FROM word WHERE word_text = ?";
+			String sql = "DELETE FROM word WHERE word_text = ? and id=?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, word);
+			pstmt.setString(2, Login.getLoginedId());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -96,12 +99,12 @@ public class WordDAO extends SpeedCoderDAO {
 	}
 
 	// 게임 종료 후 스코어 저장
-	public void insertScore(String id, int acc, int speed) {
+	public void insertScore(int acc, int speed) {
 		connect(); // 데이터베이스 연결
 		try {
-			String sql = "INSERT INTO scores (id, acc, speed, kind, regdate) VALUES (?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO score (id, acc, speed, kind, regdate) VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "code123");
+			pstmt.setString(1, Login.getLoginedId());
 			pstmt.setInt(2, acc);
 			pstmt.setInt(3, speed);
 			pstmt.setString(4, "word");
@@ -119,7 +122,7 @@ public class WordDAO extends SpeedCoderDAO {
 		List<ScoreDTO> scores = new ArrayList<>();
 		connect(); // 데이터베이스 연결
 		try {
-			String sql = "SELECT * FROM scores WHERE id = ?";
+			String sql = "SELECT * FROM score WHERE id = ?";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();

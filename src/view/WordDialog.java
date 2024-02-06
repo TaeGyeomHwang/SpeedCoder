@@ -66,7 +66,7 @@ public class WordDialog extends JDialog {
 				}
 
 				// 데이터베이스에 단어 추가
-				dao.addWord("code123", word);
+				dao.addWord(Login.getLoginedId(), word);
 
 				JOptionPane.showMessageDialog(WordDialog.this, "단어를 추가했습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
 
