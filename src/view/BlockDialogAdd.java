@@ -18,10 +18,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import exceptions.EmptyTitleContentException;
 import model.BlockDAO;
 import model.BlockDTO;
-
-import exception.EmptyTitleContentException;
 
 public class BlockDialogAdd extends JDialog {
 	private JTextField textFieldTitle;
