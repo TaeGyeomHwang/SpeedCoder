@@ -80,7 +80,7 @@ public class BlockDialogAdd extends JDialog {
 	// DB에 블록 문제 추가
 	private void addBlock() {
 	    try {
-	        String id = "jihuhw";
+	        String id = Login.getLoginedId();
 	        String title = textFieldTitle.getText();
 	        String content = textAreaContent.getText();
 

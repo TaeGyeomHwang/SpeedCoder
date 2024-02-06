@@ -39,7 +39,7 @@ public class BlockExercise extends JFrame {
 	private String inputText;
 
 	// 랜덤 인덱스 접근 변수
-	private String id = "jihuhw";
+	private String id = Login.getLoginedId();
 	private int index = 0;
 	private int randomIndex = 0;
 
