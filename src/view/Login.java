@@ -3,6 +3,7 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,6 +13,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import model.UserDAO;
+import model.UserDTO;
+
 public class Login extends JFrame{
 	private static String enteredText;
 	private JLabel lblTitle;
@@ -19,10 +23,12 @@ public class Login extends JFrame{
 	private JLabel lblPw;
 	private Font fontTitle;
 	private Font fontSignup;
-	private JTextField textFieldId;
-	private JPasswordField passwordFieldPw;
+	private JTextField txtFieldId;
+	private JPasswordField pwFieldPw;
 	private JButton btnLogin;
 	private JButton btnSignup;
+	
+	private static String loginedId;
 
 	public Login() {
 		this.setTitle("SPEED C( )DER - Login");
@@ -96,20 +102,20 @@ public class Login extends JFrame{
 	
 	// 아이디 텍스트 필드
 	private JTextField getIdTextField() {
-		if(textFieldId == null) {
-			textFieldId = new JTextField();
+		if(txtFieldId == null) {
+			txtFieldId = new JTextField();
 		}
-		textFieldId.setBounds(125, 200, 250, 40);
-		return textFieldId;
+		txtFieldId.setBounds(125, 200, 250, 40);
+		return txtFieldId;
 	}
 	
 	// 비밀먼호 패스워드 필드
 	private JPasswordField getPwTextField() {
-		if(passwordFieldPw == null) {
-			passwordFieldPw = new JPasswordField();
+		if(pwFieldPw == null) {
+			pwFieldPw = new JPasswordField();
 		}
-		passwordFieldPw.setBounds(125, 250, 250, 40);
-		return passwordFieldPw;
+		pwFieldPw.setBounds(125, 250, 250, 40);
+		return pwFieldPw;
 	}
 	
 	/* 버튼 */
@@ -120,10 +126,7 @@ public class Login extends JFrame{
 			btnLogin.setText("로그인");
 			btnLogin.setBounds(130, 300, 110, 40);
 			btnLogin.addActionListener(e -> {
-				JOptionPane.showMessageDialog(Login.this, "ID님 안녕하세요!");
-				dispose();
-				Main main = new Main();
-				main.setVisible(true);
+				LoginFn();
 				// 조건문을 통해 "ID님 안녕하세요!" 팝업 출력 후 메인 화면으로 전환 또는
 				// 실패의 경우 "잘못 입력했습니다." 출력하며 텍스트 필드와 패스워드 필드를 초기화함
 			});
@@ -141,23 +144,52 @@ public class Login extends JFrame{
 				dispose();
 				Signup signup = new Signup();
 				signup.setVisible(true);
-				// 회원가입 버튼을 클릭하는 경우 회원가입 화면을 보여줌(다이얼로그 형식)
-				// 회원가입 화면은 아이디를 입력받는 텍스트 필드, 패스워드 필드, 패스워드 확인 필드, 회원가입 버튼, 취소 버튼으로 구성
-				// 회원 가입 성공의 경우 화면에 "회원가입이 완료되었습니다." 를 팝업을 띄우고 닫으면 로그인 화면을 출력한다.
-				// 취소 버튼을 누를 경우 회원가입 화면을 닫고 로그인 화면을 출력한다.
 			});
 		}
 		return btnSignup;
 	}
 
-    public static String getEnteredText() {
-        return enteredText;
+	private void LoginFn() {
+		
+		boolean accountExist = false;
+		String id = txtFieldId.getText();
+		char[] pw = pwFieldPw.getPassword();
+		String strPw = new String(pw);
+		
+		UserDAO signupDAO = UserDAO.getInstance();
+		List<UserDTO> signups = signupDAO.getSignups();	//전체 회원 정보 가져오기 메소드
+		
+		for(UserDTO signupDTO : signups){
+			if(id.equals(signupDTO.getId())&&strPw.equals(signupDTO.getPw())) {
+				accountExist = true;
+				break;
+			}
+		}
+		
+		if(accountExist) {
+			Login.loginedId = id;
+			JOptionPane.showMessageDialog(Login.this, loginedId + "님 안녕하세요!");
+			dispose();
+			Main main = new Main();
+			main.setVisible(true);
+		}else {
+			JOptionPane.showMessageDialog(Login.this, "아이디 또는 비밀번호를 잘못 입력하셨습니다.");
+//			txtFieldId.setText("");
+			pwFieldPw.setText("");
+		}
+	}
+	
+	
+	// 타 클래스 id 접근을 위한 getter/setter
+    public static String getLoginedId() {
+        return loginedId;
     }
 
-    public static void setEnteredText(String text) {
-        enteredText = text;
-    }
-    
+    //setLoginedID가 필요한가?
+//    public static void setLoginedId(String text) {
+//    	loginedId = text;
+//    }
+
 //    private void disposeWindow() {
 //        UserData.setEnteredText(textField.getText());
 //        dispose();
