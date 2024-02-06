@@ -70,7 +70,7 @@ public class BlockDialogAdd extends JDialog {
 		panel.add(contentPanel);
 		panel.add(buttonPanel);
 
-		panel.setPreferredSize(new Dimension(800, 300));
+		panel.setPreferredSize(new Dimension(800, 350));
 
 		getContentPane().add(panel);
 		pack();
@@ -98,7 +98,6 @@ public class BlockDialogAdd extends JDialog {
 	        blockDTO.setBlockText(content);
 
 	        BlockDAO blockDAO = BlockDAO.getInstance();
-
 	        blockDAO.insertBlock(blockDTO);
 
 	        // 필드, 화면 초기화

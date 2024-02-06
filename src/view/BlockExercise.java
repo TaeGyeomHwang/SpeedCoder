@@ -2,16 +2,19 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,11 +34,11 @@ import model.BlockDTO;
 
 public class BlockExercise extends JFrame {
 	// 컴포넌트
-	private JPanel panelNorth, panelCenter, panelTimer;
+	private JPanel panelNorth, panelCenter, panelTimer, panelInfo;
 	private JButton btnStart, btnReset, btnAdd, btnDelete;
 	private JTextField txtNorth;
 	private JTextPane txtCenterPane;
-	private JLabel labelCenter, labelMin, labelSec, colon1;
+	private JLabel labelCenter, labelMin, labelSec, colon1, currentSpeed, currentAcc;
 	private String inputText;
 
 	// 랜덤 인덱스 접근 변수
@@ -43,11 +46,16 @@ public class BlockExercise extends JFrame {
 	private int index = 0;
 	private int randomIndex = 0;
 
-	// 타이머 사용 변수
+	// 타수, 정확도 사용 변수
 	private double speed = 0.0;
-	private long beforeTime, afterTime;
+	private long beforeTime = 0;
+	private long inputStartTime = 0;
+	private long inputEndTime = 0;
+	private long inputTotalTime = 0;
 	private double acc = 0.0;
 	private double totalChar = 0.0;
+	private int inputCount = 0;
+	private int enterCount;
 
 	// DAO, DTO
 	private BlockDAO blockDAO = BlockDAO.getInstance();
@@ -60,7 +68,7 @@ public class BlockExercise extends JFrame {
 	// 메인 윈도우 출력
 	public BlockExercise() {
 		this.setTitle("블록 연습");
-		this.setSize(800, 500);
+		this.setSize(500, 650);
 		this.getContentPane().add(getPanelNorth(), BorderLayout.NORTH);
 		this.getContentPane().add(getPanelCenter(), BorderLayout.CENTER);
 		locationCenter();
@@ -79,13 +87,19 @@ public class BlockExercise extends JFrame {
 	private JPanel getPanelNorth() {
 		if (panelNorth == null) {
 			panelNorth = new JPanel();
-			// 패널에 버튼 부착
-			panelNorth.add(getBtnStart());
-			panelNorth.add(getBtnReset());
-			panelNorth.add(getBtnAdd());
-			panelNorth.add(getBtnDelete());
-			panelNorth.add(getPanelTimer());
-			// 위쪽에 패딩 추가
+			panelNorth.setLayout(new BoxLayout(panelNorth, BoxLayout.Y_AXIS));
+			JPanel btnPanel = new JPanel(new FlowLayout());
+			JPanel infoPanel = new JPanel(new FlowLayout());
+			JPanel timerPanel = new JPanel(new FlowLayout());
+			btnPanel.add(getBtnStart());
+			btnPanel.add(getBtnReset());
+			btnPanel.add(getBtnAdd());
+			btnPanel.add(getBtnDelete());
+			timerPanel.add(getPanelTimer());
+			infoPanel.add(getPanelInfo());
+			panelNorth.add(btnPanel);
+			panelNorth.add(timerPanel);
+			panelNorth.add(infoPanel);
 			panelNorth.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 		}
 		return panelNorth;
@@ -98,8 +112,15 @@ public class BlockExercise extends JFrame {
 			btnStart.setText("시작하기");
 			// 블록 연습 시작하기
 			btnStart.addActionListener(e -> {
-				gameStart();
-				startTimer(); // 타이머 시작
+				enterCount = 0;
+				try {
+					gameStart();
+					startTimer(); // 타이머 시작
+				} catch (IndexOutOfBoundsException ex) {
+					JOptionPane.showMessageDialog(this, "블록 문제가 없습니다");
+					resetTimer(); // 타이머 초기화
+					refreshTextArea(); // 텍스트 영역 초기화
+				}
 			});
 		}
 		return btnStart;
@@ -111,7 +132,9 @@ public class BlockExercise extends JFrame {
 			btnReset = new JButton();
 			btnReset.setText("초기화");
 			btnReset.addActionListener(e -> {
-				resetTimer(); // 타이머 초기화
+				// 타이머 초기화
+				stopTimer();
+				resetTimer();
 				refreshTextArea(); // 텍스트 영역 초기화
 			});
 		}
@@ -149,19 +172,47 @@ public class BlockExercise extends JFrame {
 		if (panelTimer == null) {
 			// 패널, 라벨 생성, 부착
 			panelTimer = new JPanel();
-			panelTimer.setPreferredSize(new Dimension(450,70));
 			colon1 = new JLabel(" : ");
 			labelMin = new JLabel("00");
 			labelSec = new JLabel("00");
 			panelTimer.add(labelMin);
 			panelTimer.add(colon1);
 			panelTimer.add(labelSec);
-			// 라벨 폰트, 크기 설정
+			// 라벨 폰트 설정
 			labelMin.setFont(new Font("courier", Font.BOLD, 30));
 			labelSec.setFont(new Font("courier", Font.BOLD, 30));
 			colon1.setFont(new Font("courier", Font.BOLD, 30));
 		}
 		return panelTimer;
+	}
+
+	// 현재 정보 라벨 생성
+	private JPanel getPanelInfo() {
+		if (panelInfo == null) {
+			// 패널 생성, 레이아웃 설정
+			panelInfo = new JPanel();
+			panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+			JLabel label1 = new JLabel("현재 타수 : ");
+			currentSpeed = new JLabel("-타/분");
+			JLabel label2 = new JLabel(" 현재 정확도 : ");
+			currentAcc = new JLabel("-%");
+			// 서브 패널 생성, 컴포넌트 부착
+			JPanel speedPanel = new JPanel();
+			JPanel accPanel = new JPanel();
+			speedPanel.add(label1);
+			speedPanel.add(currentSpeed);
+			accPanel.add(label2);
+			accPanel.add(currentAcc);
+			// 패널에 서브패널 부착
+			panelInfo.add(speedPanel);
+			panelInfo.add(accPanel);
+			// 라벨 폰트 설정
+			currentSpeed.setFont(new Font("courier", Font.BOLD, 15));
+			label1.setFont(new Font("courier", Font.BOLD, 15));
+			currentAcc.setFont(new Font("courier", Font.BOLD, 15));
+			label2.setFont(new Font("courier", Font.BOLD, 15));
+		}
+		return panelInfo;
 	}
 
 	// 중앙 패널 생성
@@ -189,9 +240,21 @@ public class BlockExercise extends JFrame {
 			txtNorth = new JTextField();
 			txtNorth.setEditable(false);
 			txtNorth.addActionListener(e -> {
+				enterCount++;
+				inputCount = 0;
+				inputEndTime = System.currentTimeMillis();
+				inputTotalTime += inputEndTime - inputStartTime;
 				inputText = txtNorth.getText();
 				txtNorth.setText("");
 				validateText(inputText);
+			});
+			txtNorth.addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					inputCount++;
+					if (inputCount == 1) {
+						inputStartTime = System.currentTimeMillis();
+					}
+				}
 			});
 		}
 		return txtNorth;
@@ -239,6 +302,8 @@ public class BlockExercise extends JFrame {
 			sb.append(board.getBlockTitle()).append("\n");
 		}
 		txtCenterPane.setText(sb.toString());
+		currentSpeed.setText("-타/분");
+		currentAcc.setText("-%");
 
 		// 컴포넌트 초기화
 		btnAdd.setEnabled(true);
@@ -251,7 +316,7 @@ public class BlockExercise extends JFrame {
 	}
 
 	// 엔터 입력시 정답인지 검증
-	private void validateText(String input) {
+	private void validateText(String input) throws IndexOutOfBoundsException {
 		// 랜덤 블록 문제 선택
 		StringBuilder sb = new StringBuilder();
 		sb.append(blocks.get(randomIndex).getBlockText());
@@ -259,15 +324,15 @@ public class BlockExercise extends JFrame {
 		String lines[] = sb.toString().split("\\r?\\n");
 		sb.setLength(0);
 		// 입력한 값의 길이가 하이라이트된 문장의 사이즈와 동일할 경우, 다음 문장 출력
-		if (input.length() == lines[index].length()) {
+		if (input.length() == lines[index].trim().length()) {
 			// 맞은 문자 개수
-			for (int j = 0; j < lines[index].length(); j++) {
-				if (input.charAt(j) == lines[index].charAt(j)) {
+			for (int j = 0; j < lines[index].trim().length(); j++) {
+				if (input.charAt(j) == lines[index].trim().charAt(j)) {
 					acc++;
 				}
 				totalChar++;
 			}
-			// 인덱스 증가
+			// 인덱스 증가, 남은 문장 출력
 			index++;
 			for (int i = index; i < lines.length; i++) {
 				sb.append(lines[i]).append("\n");
@@ -277,6 +342,10 @@ public class BlockExercise extends JFrame {
 			if (index < lines.length) {
 				highlightText(lines[index]);
 			}
+			// 현재 타수 리프레쉬
+//			long diffSec = (inputTotalTime / enterCount) / 1000;
+//			double speed = totalChar * 60 / diffSec;
+//			currentSpeed.setText(Math.round(speed)+"타/분");
 		}
 		// 시작하기 버튼 눌렀을 경우
 		else if (input.equals("초기 문제 출력")) {
@@ -289,17 +358,16 @@ public class BlockExercise extends JFrame {
 		}
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
-			// 타이머 종료
-			afterTime = System.currentTimeMillis();
 			// 정확도 계산
 			acc = (acc / totalChar) * 100;
 			// 타수 계산
-			long diffSec = (afterTime - beforeTime) / 1000;
+			long diffSec = (inputTotalTime / enterCount) / 1000;
 			speed = totalChar * 60 / diffSec;
 			// 기록 DB에 저장
 			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
+			stopTimer();
 			// 정확도, 타수 출력
-			JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "\n정확도: " + (int) acc + "%");
+			JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "타/분\n정확도: " + (int) acc + "%");
 			// 변수 초기화
 			index = 0;
 			acc = 0.0;
@@ -312,7 +380,7 @@ public class BlockExercise extends JFrame {
 	}
 
 	// 블록 문제 시작하기
-	private void gameStart() {
+	private void gameStart() throws IndexOutOfBoundsException {
 		// 타이머 시작
 		beforeTime = System.currentTimeMillis();
 		// 접근할 인덱스 랜덤으로 설정
@@ -343,8 +411,6 @@ public class BlockExercise extends JFrame {
 
 	// 타이머 시작
 	private void startTimer() {
-	    // 버튼 비활성화, 플래그 설정
-	    btnStart.setEnabled(false);
 		terminationFlag = true;
 		// 타이머 쓰레드 실행
 		timerThread = new Thread(() -> {
@@ -378,12 +444,13 @@ public class BlockExercise extends JFrame {
 
 	// 타이머 초기화
 	private void resetTimer() {
-	    // 버튼 활성화
-	    btnStart.setEnabled(true);
-	    // 타이머 라벨 초기화
-	    labelMin.setText("00");
-	    labelSec.setText("00");
-	    // 타이머 중지
+		labelMin.setText("00");
+		labelSec.setText("00");
+
+	}
+
+	// 타이머 정지
+	private void stopTimer() {
 		terminationFlag = false;
 	}
 }
