@@ -156,11 +156,11 @@ public class Login extends JFrame{
 		char[] pw = pwFieldPw.getPassword();
 		String strPw = new String(pw);
 		
-		UserDAO signupDAO = UserDAO.getInstance();
-		List<UserDTO> signups = signupDAO.getSignups();	//전체 회원 정보 가져오기 메소드
+		UserDAO userDAO = UserDAO.getInstance();
+		List<UserDTO> users = userDAO.getSignups();	//전체 회원 정보 가져오기 메소드
 		
-		for(UserDTO signupDTO : signups){
-			if(id.equals(signupDTO.getId())&&strPw.equals(signupDTO.getPw())) {
+		for(UserDTO userDTO : users){
+			if(id.equals(userDTO.getId())&&strPw.equals(userDTO.getPw())) {
 				accountExist = true;
 				break;
 			}

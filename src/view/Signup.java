@@ -181,12 +181,12 @@ public class Signup extends JFrame{
 		char[] pw = pwFieldPw.getPassword();
 		char[] pwVerify = pwFieldPwVerify.getPassword();
 		
-		UserDAO signupDAO = UserDAO.getInstance();
-		List<UserDTO> signups = signupDAO.getSignups();	//전체 회원 정보 가져오기 메소드
+		UserDAO userDAO = UserDAO.getInstance();
+		List<UserDTO> users = userDAO.getSignups();	//전체 회원 정보 가져오기 메소드
 
 		//입력받은 아이디가 중복이거나 null일 경우 idCehck 변수 true 설정
-		for(UserDTO signupDTO : signups){
-			if(id.equals(signupDTO.getId())||id.equals(null)) {	
+		for(UserDTO userDTO : users){
+			if(id.equals(userDTO.getId())||id.equals(null)) {	
 				idCheck = true;
 			}
 		}

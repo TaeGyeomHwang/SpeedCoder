@@ -5,12 +5,16 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+
+import model.ScoreDAO;
+import model.ScoreDTO;
 
 public class MyInfo extends JFrame{
 
@@ -53,6 +57,15 @@ public class MyInfo extends JFrame{
 		this.getContentPane().add(getBlockAvgHitLabel());		
 		
 		this.locationCenter();
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				dispose();
+				Main main = new Main();
+				main.setVisible(true);
+			}
+		});
 	
 	}
 	
@@ -138,18 +151,18 @@ public class MyInfo extends JFrame{
 	private JTable getBlockTable() {
 		if(tblBlock == null) {
 			String[] columnNames = {"번호", "타수", "정확도(%)"};
-			Object[][] rowData = {
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 }
-			};
+			
+			ScoreDAO scoreDAO = ScoreDAO.getInstance();
+			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "block");
+			Object[][] rowData = new Object[10][3];
+			
+			int row=0;
+			for(ScoreDTO scoreDTO : scores) {
+				rowData[row][0] = row+1;
+				rowData[row][1] = scoreDTO.getSpeed();
+				rowData[row][2] = scoreDTO.getAcc();
+				row++;
+			}
 			tblBlock = new JTable(rowData, columnNames);
 			tblBlock.setBounds(280, 200, 150, 160);
 			
