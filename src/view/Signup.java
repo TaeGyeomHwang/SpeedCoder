@@ -3,7 +3,9 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,9 +30,6 @@ public class Signup extends JFrame{
 	private JPasswordField pwFieldPwVerify; 
 	private JButton btnSignup;
 	private JButton btnCancel;
-	
-	private String loginID;
-	
 	
 	public Signup() {
 		this.setTitle("SPEED C( )DER - Signup");
@@ -153,7 +152,7 @@ public class Signup extends JFrame{
 			btnSignup.setText("회원가입");
 			btnSignup.setBounds(155, 320, 110, 40);
 			btnSignup.addActionListener(e -> {
-				JOptionPane.showMessageDialog(Signup.this, "회원가입이 완료되었습니다.");
+				Signup();
 				dispose();
 				Login login = new Login();
 				login.setVisible(true);
@@ -177,18 +176,44 @@ public class Signup extends JFrame{
 		return btnCancel;
 	}
 	
-	//
-	private void addUser() {
+	//회원가입 버튼 기능 
+	private void Signup() {
+		
+		boolean idCheck=false;	//아이디가 존재하면 true 값 가짐.
+		String id = txtFieldId.getText();
+		char[] pw = pwFieldPw.getPassword();
+		char[] pwVerify = pwFieldPwVerify.getPassword();
 		
 		SignupDAO signupDAO = SignupDAO.getInstance();
 		List<SignupDTO> signups = signupDAO.getSignups();
 
 		for(SignupDTO signupDTO : signups){
-			if(txtFieldId.getText() != signupDTO.getId()&&pwFieldPw.getText()==pwFieldPwVerify.getText()) {
-				
+			if(id.equals(signupDTO.getId())||id.equals(null)) {
+				idCheck = true;
 			}
-		}	
+		}
 		
+		System.out.println(pw.length);
+		System.out.println(pw);
+		if(idCheck==true) {
+			JOptionPane.showMessageDialog(this, "해당 아이디는 사용할 수 없습니다.");
+		}else {	//아이디가 존재하지 않는 경우
+			if (pw.length!=0 && Arrays.equals(pw, pwVerify)) {
+/*	회원가입 기능 구현 테스트 위해 주석처리함	 */
+//				SignupDTO signupDTO = new SignupDTO();
+//				
+//				signupDTO.setId(id);
+//				String strPw = new String(pw); 
+//				signupDTO.setPw(strPw);
+//				
+//				signupDAO.insertSignup(signupDTO);
+				JOptionPane.showMessageDialog(this, "회원가입이 완료되었습니다.");				
+			} else {
+				JOptionPane.showMessageDialog(this, "비밀번호와 비밀번호 확인란에 입력된 문자가 동일해야 합니다.");
+			}
+		}
+		txtFieldId.setText("");
+		pwFieldPw.setText("");		
 	}
 	
 	//창 중앙 정렬
