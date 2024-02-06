@@ -152,7 +152,7 @@ public class Signup extends JFrame{
 			btnSignup.setText("회원가입");
 			btnSignup.setBounds(155, 320, 110, 40);
 			btnSignup.addActionListener(e -> {
-				Signup();
+				SignupFn();
 				dispose();
 				Login login = new Login();
 				login.setVisible(true);
@@ -177,7 +177,7 @@ public class Signup extends JFrame{
 	}
 	
 	//회원가입 버튼 기능 
-	private void Signup() {
+	private void SignupFn() {
 		
 		boolean idCheck=false;	//아이디가 존재하면 true 값 가짐.
 		String id = txtFieldId.getText();
@@ -185,19 +185,18 @@ public class Signup extends JFrame{
 		char[] pwVerify = pwFieldPwVerify.getPassword();
 		
 		SignupDAO signupDAO = SignupDAO.getInstance();
-		List<SignupDTO> signups = signupDAO.getSignups();
+		List<SignupDTO> signups = signupDAO.getSignups();	//전체 회원 정보 가져오기 메소드
 
+		//입력받은 아이디가 중복이거나 null일 경우 idCehck 변수 true 설정
 		for(SignupDTO signupDTO : signups){
-			if(id.equals(signupDTO.getId())||id.equals(null)) {
+			if(id.equals(signupDTO.getId())||id.equals(null)) {	
 				idCheck = true;
 			}
 		}
-		
-		System.out.println(pw.length);
-		System.out.println(pw);
 		if(idCheck==true) {
 			JOptionPane.showMessageDialog(this, "해당 아이디는 사용할 수 없습니다.");
-		}else {	//아이디가 존재하지 않는 경우
+		}else {	//아이디 검증 통과한 경우
+			//비밀번호가 입력되었으면서 검증란과 동일한 경우 if 문, 아닌 경우 else
 			if (pw.length!=0 && Arrays.equals(pw, pwVerify)) {
 /*	회원가입 기능 구현 테스트 위해 주석처리함	 */
 //				SignupDTO signupDTO = new SignupDTO();
@@ -209,9 +208,10 @@ public class Signup extends JFrame{
 //				signupDAO.insertSignup(signupDTO);
 				JOptionPane.showMessageDialog(this, "회원가입이 완료되었습니다.");				
 			} else {
-				JOptionPane.showMessageDialog(this, "비밀번호와 비밀번호 확인란에 입력된 문자가 동일해야 합니다.");
+				JOptionPane.showMessageDialog(this, "비밀번호와 비밀번호 확인란에 입력된 문자가 동일해야하며 공백으로 설정할 수 없습니다.");
 			}
 		}
+		//다이얼 로그 이후 프레임 창이 닫혀서 공백 설정 필요성에 대해 하위 코드 어떻게 할지 결정 필요
 		txtFieldId.setText("");
 		pwFieldPw.setText("");		
 	}
