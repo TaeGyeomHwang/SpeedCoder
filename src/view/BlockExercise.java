@@ -53,10 +53,10 @@ public class BlockExercise extends JFrame {
 	private long inputStartTime = 0;
 	private long inputEndTime = 0;
 	private long inputTotalTime = 0;
+	private long currentTime = 0;
 	private double acc = 0.0;
-	private double totalChar = 0.0;
 	private int inputCount = 0;
-	private int enterCount;
+	private int totalInputCount = 0;
 
 	// DAO, DTO
 	private BlockDAO blockDAO = BlockDAO.getInstance();
@@ -113,7 +113,6 @@ public class BlockExercise extends JFrame {
 			btnStart.setText("시작하기");
 			// 블록 연습 시작하기
 			btnStart.addActionListener(e -> {
-				enterCount = 0;
 				try {
 					gameStart();
 					startTimer(); // 타이머 시작
@@ -241,13 +240,14 @@ public class BlockExercise extends JFrame {
 			txtNorth = new JTextField();
 			txtNorth.setEditable(false);
 			txtNorth.addActionListener(e -> {
-				enterCount++;
-				inputCount = 0;
 				inputEndTime = System.currentTimeMillis();
-				inputTotalTime += inputEndTime - inputStartTime;
+				currentTime = inputEndTime - inputStartTime;
+				inputTotalTime += currentTime;
 				inputText = txtNorth.getText();
 				txtNorth.setText("");
 				validateText(inputText);
+				totalInputCount += inputCount;
+				inputCount = 0;
 			});
 			txtNorth.addKeyListener(new KeyAdapter() {
 				public void keyPressed(KeyEvent e) {
@@ -303,8 +303,8 @@ public class BlockExercise extends JFrame {
 			sb.append(board.getBlockTitle()).append("\n");
 		}
 		txtCenterPane.setText(sb.toString());
-		currentSpeed.setText("-타/분");
-		currentAcc.setText("-%");
+		currentSpeed.setText("- 타/분");
+		currentAcc.setText("- %");
 
 		// 컴포넌트 초기화
 		btnAdd.setEnabled(true);
@@ -317,71 +317,78 @@ public class BlockExercise extends JFrame {
 	}
 
 	// 엔터 입력시 정답인지 검증
-		private void validateText(String input) throws IndexOutOfBoundsException {
-			// 랜덤 블록 문제 선택
-			StringBuilder sb = new StringBuilder();
-			sb.append(blocks.get(randomIndex).getBlockText());
-			// 가져온 문제를 줄바꿈을 기준으로 파싱
-			String lines[] = sb.toString().split("\\r?\\n");
-			sb.setLength(0);
-			// 입력한 값의 길이가 하이라이트된 문장의 사이즈와 동일할 경우, 다음 문장 출력
-			if (input.length() == lines[index].trim().length()) {
-				// 맞은 문자 개수
-				for (int j = 0; j < lines[index].trim().length(); j++) {
-					if (input.charAt(j) == lines[index].trim().charAt(j)) {
-						acc++;
-					}
-					totalChar++;
+	private void validateText(String input) throws IndexOutOfBoundsException {
+		// 랜덤 블록 문제 선택
+		StringBuilder sb = new StringBuilder();
+		sb.append(blocks.get(randomIndex).getBlockText());
+		// 가져온 문제를 줄바꿈을 기준으로 파싱
+		String lines[] = sb.toString().split("\\r?\\n");
+		sb.setLength(0);
+		// 입력한 값의 길이가 하이라이트된 문장의 사이즈와 동일할 경우, 다음 문장 출력
+		if (input.length() == lines[index].trim().length()) {
+			int currentCorrect = 0;
+			// 맞은 문자 개수
+			for (int j = 0; j < lines[index].trim().length(); j++) {
+				if (input.charAt(j) == lines[index].trim().charAt(j)) {
+					currentCorrect++;
 				}
-				// 인덱스 증가, 남은 문장 출력
-				index++;
-				for (int i = index; i < lines.length; i++) {
-					sb.append(lines[i]).append("\n");
-				}
-				txtCenterPane.setText(sb.toString());
-				// 하이라이트 적용
-				if (index < lines.length) {
-					highlightFirstLine(txtCenterPane);
-				}
-				// 현재 타수 리프레쉬
-//				long diffSec = (inputTotalTime / enterCount) / 1000;
-//				double speed = totalChar * 60 / diffSec;
-//				currentSpeed.setText(Math.round(speed)+"타/분");
 			}
-			// 시작하기 버튼 눌렀을 경우
-			else if (input.equals("초기 문제 출력")) {
-				for (String s : lines) {
-					sb.append(s).append("\n");
-				}
-				txtCenterPane.setText(sb.toString());
-				// 하이라이트 적용
+			acc += currentCorrect;
+			double stringLength = lines[index].trim().length();
+			double stringAcc = (currentCorrect / stringLength) * 100.0;
+			// 인덱스 증가, 남은 문장 출력
+			index++;
+			for (int i = index; i < lines.length; i++) {
+				sb.append(lines[i]).append("\n");
+			}
+			txtCenterPane.setText(sb.toString());
+			// 하이라이트 적용
+			if (index < lines.length - 1) {
 				highlightFirstLine(txtCenterPane);
 			}
-			// 모든 문장을 입력했을 경우
-			if (index == lines.length) {
-				// 정확도 계산
-				acc = (acc / totalChar) * 100;
-				// 타수 계산
-				long diffSec = (inputTotalTime / enterCount) / 1000;
-				speed = totalChar * 60 / diffSec;
-				// 기록 DB에 저장
-				blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
-				stopTimer();
-				// 정확도, 타수 출력
-				JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "타/분\n정확도: " + (int) acc + "%");
-				// 변수 초기화
-				index = 0;
-				acc = 0.0;
-				totalChar = 0.0;
-				speed = 0.0;
-				// 화면 초기화
-				resetTimer();
-				refreshTextArea();
-			}
+			// 현재 타수 리프레쉬
+			double diffSec = currentTime / 1000.0;
+			double speed = inputCount * 60.0 / diffSec;
+			currentSpeed.setText(Math.round(speed) + "타/분");
+			// 현재 정확도 리프레쉬
+			currentAcc.setText((int) stringAcc + "%");
+
 		}
+		// 시작하기 버튼 눌렀을 경우
+		else if (input.equals("초기 문제 출력")) {
+			for (String s : lines) {
+				sb.append(s).append("\n");
+			}
+			txtCenterPane.setText(sb.toString());
+			// 하이라이트 적용
+			highlightFirstLine(txtCenterPane);
+		}
+		// 모든 문장을 입력했을 경우
+		if (index == lines.length) {
+			// 정확도 계산
+			acc = (acc / blocks.get(randomIndex).getBlockText().trim().length()) * 100;
+			// 타수 계산
+			double diffSec = inputTotalTime / 1000.0;
+			speed = totalInputCount * 60 / diffSec;
+			// 기록 DB에 저장
+			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
+			stopTimer();
+			// 정확도, 타수 출력
+			JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "타/분\n정확도: " + (int) acc + "%");
+			// 화면 초기화
+			resetTimer();
+			refreshTextArea();
+			highlightReset(txtCenterPane);
+		}
+	}
 
 	// 블록 문제 시작하기
 	private void gameStart() throws IndexOutOfBoundsException {
+		// 변수 초기화
+		index = 0;
+		acc = 0.0;
+		speed = 0.0;
+		totalInputCount = 0;
 		// 타이머 시작
 		beforeTime = System.currentTimeMillis();
 		// 접근할 인덱스 랜덤으로 설정
@@ -397,27 +404,35 @@ public class BlockExercise extends JFrame {
 		validateText("초기 문제 출력");
 	}
 
+	// 첫 번째 문장 강조 메소드
 	private void highlightFirstLine(JTextPane textPane) {
-	    StyledDocument doc = textPane.getStyledDocument();
-	    Style style = textPane.addStyle("highlight", null);
-	    StyleConstants.setBackground(style, Color.YELLOW);
+		StyledDocument doc = textPane.getStyledDocument();
+		Style style = textPane.addStyle("highlight", null);
+		StyleConstants.setBackground(style, Color.YELLOW);
 
-	    // 이전 강조 지우기
-	    doc.setCharacterAttributes(0, doc.getLength(), textPane.getStyle(StyleContext.DEFAULT_STYLE), true);
+		// 이전 강조 지우기
+		doc.setCharacterAttributes(0, doc.getLength(), textPane.getStyle(StyleContext.DEFAULT_STYLE), true);
 
-	    // 첫 번째 문장 찾기
-	    int endOfFirstLine = 0;
-	    try {
-	        endOfFirstLine = doc.getText(0, doc.getLength()).indexOf("\n");
-	        if (endOfFirstLine < 0) {
-	            endOfFirstLine = doc.getLength(); // 문장이 하나면 끝까지 강조
-	        }
-	    } catch (BadLocationException e) {
-	        e.printStackTrace();
-	    }
+		// 첫 번째 문장 찾기
+		int endOfFirstLine = 0;
+		try {
+			endOfFirstLine = doc.getText(0, doc.getLength()).indexOf("\n");
+			if (endOfFirstLine < 0) {
+				endOfFirstLine = doc.getLength(); // 문장이 하나면 끝까지 강조
+			}
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 
-	    // 첫 번째 문장 강조
-	    doc.setCharacterAttributes(0, endOfFirstLine, style, true);
+		// 첫 번째 문장 강조
+		doc.setCharacterAttributes(0, endOfFirstLine, style, true);
+	}
+
+	// 하이라이트 초기화 메소드
+	private void highlightReset(JTextPane textPane) {
+		StyledDocument doc = textPane.getStyledDocument();
+		// 이전 강조 지우기
+		doc.setCharacterAttributes(0, doc.getLength(), textPane.getStyle(StyleContext.DEFAULT_STYLE), true);
 	}
 
 	// 타이머 시작
