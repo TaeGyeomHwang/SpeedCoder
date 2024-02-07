@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 
@@ -18,7 +19,7 @@ public class Main extends JFrame {
 		this.getContentPane().add(getWordExerciseBtn());
 		this.getContentPane().add(getBlockExerciseBtn());
 		this.getContentPane().add(getMyInfoBtn());
-
+		this.getContentPane().setBackground(new Color(217, 230, 239));
 		this.locationCenter();
 		
 	}

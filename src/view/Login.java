@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,45 +17,48 @@ import javax.swing.SwingUtilities;
 import model.UserDAO;
 import model.UserDTO;
 
-public class Login extends JFrame{
-	private static String enteredText;
-	private JLabel lblTitle;
-	private JLabel lblId;
-	private JLabel lblPw;
-	private Font fontTitle;
-	private Font fontSignup;
-	private JTextField txtFieldId;
-	private JPasswordField pwFieldPw;
-	private JButton btnLogin;
-	private JButton btnSignup;
-	
-	private static String loginedId;
+public class Login extends JFrame {
+    private static String enteredText;
+    private JLabel lblTitle;
+    private JLabel lblId;
+    private JLabel lblPw;
+    private Font fontTitle;
+    private Font fontSignup;
+    private JTextField txtFieldId;
+    private JPasswordField pwFieldPw;
+    private JButton btnLogin;
+    private JButton btnSignup;
 
-	public Login() {
-		this.setTitle("SPEED C( )DER - Login");
-		this.setSize(500, 500);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);
-		
-		this.getContentPane().setLayout(null);
-		this.getContentPane().add(getTitleLabel());
-		this.getContentPane().add(getIdTextField());
-		this.getContentPane().add(getPwTextField());		
-		this.getContentPane().add(getLoginBtn());
-		this.getContentPane().add(getSignupBtn());
-		this.getContentPane().add(getIdLabel());
-		this.getContentPane().add(getPwLabel());
-		
-		
-		this.locationCenter();
-	}
+    private static String loginedId;
+
+    public Login() {
+        this.setTitle("SPEED C( )DER - Login");
+        this.setSize(500, 500);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+
+        ImageIcon backgroundImage = new ImageIcon(getClass().getResource("../logo.JPG"));
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, 500, 500);
+        this.add(backgroundLabel);
+
+        backgroundLabel.setLayout(null);
+        backgroundLabel.add(getTitleLabel());
+        backgroundLabel.add(getIdTextField());
+        backgroundLabel.add(getPwTextField());
+        backgroundLabel.add(getLoginBtn());
+        backgroundLabel.add(getSignupBtn());
+        backgroundLabel.add(getIdLabel());
+        backgroundLabel.add(getPwLabel());
+
+        this.locationCenter();
+    }
 	
 	/* 라벨 */
 	// 제목 라벨 설정
 	private JLabel getTitleLabel() {
 		if(lblTitle == null	) {
 			lblTitle = new JLabel();
-			lblTitle.setText("SPEED C( )DER");
 			lblTitle.setBounds(100, 80, 300, 50);
 			lblTitle.setFont(getTitleFont());
 		}
