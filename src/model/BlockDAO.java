@@ -7,8 +7,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 public class BlockDAO extends SpeedCoderDAO {
 
     private static final BlockDAO instance = new BlockDAO();

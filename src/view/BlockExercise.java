@@ -250,12 +250,23 @@ public class BlockExercise extends JFrame {
 				inputCount = 0;
 			});
 			txtNorth.addKeyListener(new KeyAdapter() {
-				public void keyPressed(KeyEvent e) {
-					inputCount++;
-					if (inputCount == 1) {
-						inputStartTime = System.currentTimeMillis();
-					}
-				}
+			    public void keyPressed(KeyEvent e) {
+			        int keyCode = e.getKeyCode();
+			        if (!isSpecialKey(keyCode)) {
+			            inputCount++;
+			            if (inputCount == 1) {
+			                inputStartTime = System.currentTimeMillis();
+			            }
+			        }
+			    }
+			    // 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
+			    private boolean isSpecialKey(int keyCode) {
+			        return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN) ||
+			               keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE ||
+			               keyCode == KeyEvent.VK_ALT || keyCode == KeyEvent.VK_ALT_GRAPH ||
+			               keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT ||
+			               keyCode == KeyEvent.VK_CAPS_LOCK;
+			    }
 			});
 		}
 		return txtNorth;
@@ -374,7 +385,8 @@ public class BlockExercise extends JFrame {
 			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
 			stopTimer();
 			// 정확도, 타수 출력
-			JOptionPane.showMessageDialog(this, "타수: " + (int) Math.round(speed) + "타/분\n정확도: " + (int) acc + "%");
+			JOptionPane.showMessageDialog(this,
+					"총 타수 : " + (int) Math.round(speed) + "타/분\n총 정확도 : " + (int) acc + "%");
 			// 화면 초기화
 			resetTimer();
 			refreshTextArea();
