@@ -7,6 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -34,22 +35,30 @@ public class MyInfo extends JFrame{
 	private Font fontNormal;
 	private Font fontAcc;
 	
+	private ImageIcon backgroundImage = new ImageIcon(getClass().getResource("../logo2.png"));
+	private JLabel backgroundLabel;
+	
 	public MyInfo() {
 		this.setTitle("SPEED C( )DER - MyInfo");
 		this.setSize(500, 550);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		
-		this.getContentPane().setLayout(null);
-		this.getContentPane().add(getTitleLabel());
-		this.getContentPane().add(getWordTableTitleLabel());
-		this.getContentPane().add(getBlockTableTitleLabel());
-		this.getContentPane().add(getWordTable());
-		this.getContentPane().add(getBlockTable());
-		this.getContentPane().add(getWordAvgAccLabel());		
-		this.getContentPane().add(getWordAvgHitLabel());		
-		this.getContentPane().add(getBlockAvgAccLabel());		
-		this.getContentPane().add(getBlockAvgHitLabel());		
+		
+        backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, 500, 500);
+        this.add(backgroundLabel);
+		
+        backgroundLabel.setLayout(null);
+        backgroundLabel.add(getTitleLabel());
+        backgroundLabel.add(getWordTableTitleLabel());
+        backgroundLabel.add(getBlockTableTitleLabel());
+        backgroundLabel.add(getWordTable());
+        backgroundLabel.add(getBlockTable());
+        backgroundLabel.add(getWordAvgAccLabel());		
+        backgroundLabel.add(getWordAvgHitLabel());		
+		backgroundLabel.add(getBlockAvgAccLabel());		
+		backgroundLabel.add(getBlockAvgHitLabel());		
 		
 		this.locationCenter();
 		
@@ -69,7 +78,6 @@ public class MyInfo extends JFrame{
 	private JLabel getTitleLabel() {
 		if(lblTitle == null	) {
 			lblTitle = new JLabel();
-			lblTitle.setText("SPEED C( )DER");
 			lblTitle.setBounds(105, 70, 300, 50);
 			lblTitle.setFont(getTitleFont());
 		}
@@ -101,88 +109,93 @@ public class MyInfo extends JFrame{
 	/* 테이블 */
 	// 단어 연습 순위표 테이블 설정
 	private JTable getWordTable() {
-		if(tblWord == null) {
-			String[] columnNames = {"번호", "타수", "정확도(%)"};
+	    if (tblWord == null) {
+	        String[] columnNames = {"번호", "타수", "정확도(%)"};
 
-			ScoreDAO scoreDAO = ScoreDAO.getInstance();
-			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "word");
-			Object[][] rowData = new Object[10][3];
-			
-			int row=0;
-			for(ScoreDTO scoreDTO : scores) {
-				rowData[row][0] = row+1;
-				rowData[row][1] = scoreDTO.getSpeed();
-				rowData[row][2] = scoreDTO.getAcc();
-				row++;
-			}
-			tblWord = new JTable(rowData, columnNames);
-			tblWord.setBounds(50, 200, 150, 160);
-			
-			//테이블 헤더 생성
-			JTableHeader header = tblWord.getTableHeader();
+	        ScoreDAO scoreDAO = ScoreDAO.getInstance();
+	        List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "word");
+	        Object[][] rowData = new Object[10][3];
+
+	        int row=0;
+	        for(ScoreDTO scoreDTO : scores) {
+	            rowData[row][0] = row+1;
+	            rowData[row][1] = scoreDTO.getSpeed();
+	            rowData[row][2] = scoreDTO.getAcc();
+	            row++;
+	        }
+	        tblWord = new JTable(rowData, columnNames);
+	        tblWord.setBounds(50, 200, 150, 160);
+
+	     // 테이블 헤더 생성
+	        JTableHeader header = tblWord.getTableHeader();
 	        header.setBounds(
-	        		tblWord.getBounds().x,
-	        		tblWord.getBounds().y - header.getPreferredSize().height,
-	        		tblWord.getBounds().width,
-	        		header.getPreferredSize().height
-	        		);
-	        
+	            tblWord.getBounds().x,
+	            tblWord.getBounds().y - header.getPreferredSize().height,
+	            tblWord.getBounds().width,
+	            header.getPreferredSize().height
+	        );
+
+	        backgroundLabel.add(header); 
+
 	        tblWord.getColumn("번호").setPreferredWidth(50);
 	        tblWord.getColumn("타수").setPreferredWidth(100);
 	        tblWord.getColumn("정확도(%)").setPreferredWidth(150);
-	        this.getContentPane().add(header);
-	        
+	        backgroundLabel.add(header); // Add header to the backgroundLabel
+
 	        //열 내용 가운데 정렬
 	        for (int i = 0; i < tblWord.getColumnCount(); i++) {
-	        	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-	        	centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-	        	tblWord.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+	            tblWord.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	        }
-		}
-		return tblWord;
+	    }
+	    return tblWord;
 	}
-	
+
 	// 블록 연습 순위표 테이블 설정
 	private JTable getBlockTable() {
-		if(tblBlock == null) {
-			String[] columnNames = {"번호", "타수", "정확도(%)"};
-			
-			ScoreDAO scoreDAO = ScoreDAO.getInstance();
-			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "block");
-			Object[][] rowData = new Object[10][3];
-			
-			int row=0;
-			for(ScoreDTO scoreDTO : scores) {
-				rowData[row][0] = row+1;
-				rowData[row][1] = scoreDTO.getSpeed();
-				rowData[row][2] = scoreDTO.getAcc();
-				row++;
-			}
-			tblBlock = new JTable(rowData, columnNames);
-			tblBlock.setBounds(280, 200, 150, 160);
-			
-			//테이블 헤더 생성
-			JTableHeader header = tblBlock.getTableHeader();
+	    if (tblBlock == null) {
+	        String[] columnNames = {"번호", "타수", "정확도(%)"};
+
+	        ScoreDAO scoreDAO = ScoreDAO.getInstance();
+	        List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "block");
+	        Object[][] rowData = new Object[10][3];
+
+	        int row=0;
+	        for(ScoreDTO scoreDTO : scores) {
+	            rowData[row][0] = row+1;
+	            rowData[row][1] = scoreDTO.getSpeed();
+	            rowData[row][2] = scoreDTO.getAcc();
+	            row++;
+	        }
+	        tblBlock = new JTable(rowData, columnNames);
+	        tblBlock.setBounds(280, 200, 150, 160);
+
+	     // 테이블 헤더 생성
+	        JTableHeader header = tblBlock.getTableHeader();
 	        header.setBounds(
-	        		tblBlock.getBounds().x,
-	        		tblBlock.getBounds().y - header.getPreferredSize().height,
-	        		tblBlock.getBounds().width,
-	        		header.getPreferredSize().height
-	        		);
-	        
+	            tblBlock.getBounds().x,
+	            tblBlock.getBounds().y - header.getPreferredSize().height,
+	            tblBlock.getBounds().width, 
+	            header.getPreferredSize().height
+	        );
+
+	        backgroundLabel.add(header); 
+
+
 	        tblBlock.getColumn("번호").setPreferredWidth(50);
 	        tblBlock.getColumn("타수").setPreferredWidth(100);
 	        tblBlock.getColumn("정확도(%)").setPreferredWidth(150);
-	        this.getContentPane().add(header);
-	        
+	        backgroundLabel.add(header); // Add header to the backgroundLabel
+
 	        //열 내용 가운데 정렬
 	        for (int i = 0; i < tblBlock.getColumnCount(); i++) {
-	        	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-	        	centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-	        	tblBlock.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+	            tblBlock.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	        }
-		}
-		return tblBlock;
+	    }
+	    return tblBlock;
 	}
 	
 	/* 하단 라벨 */
