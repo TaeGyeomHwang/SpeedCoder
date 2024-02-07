@@ -21,7 +21,7 @@ public class Main extends JFrame {
 		this.getContentPane().add(getMyInfoBtn());
 		this.getContentPane().setBackground(new Color(217, 230, 239));
 		this.locationCenter();
-		
+
 	}
 
 	// 단어 연습 버튼
