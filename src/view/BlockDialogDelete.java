@@ -100,7 +100,7 @@ public class BlockDialogDelete extends JDialog {
 	        }
 	    };
 	    table.getColumnModel().getColumn(0).setHeaderRenderer(headerRenderer);
-	    table.getTableHeader().setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+	    table.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		JPanel titlePanel = new JPanel();
 		titlePanel.add(new JLabel("삭제할 블록 문제를 선택해주세요 :"));
