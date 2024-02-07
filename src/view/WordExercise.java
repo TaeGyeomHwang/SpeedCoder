@@ -7,11 +7,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -27,27 +29,23 @@ import javax.swing.Timer;
 import model.WordDAO;
 
 public class WordExercise extends JFrame {
-	private JPanel topPanel, middlePanel, bottomPanel;
+	private JPanel topPanel, middlePanel, bottomPanel,panelTimer,panelInfo, btnPanel;
 	private JButton btnStart, btnReset, btnAddWord, btnDeleteWord;
 	private JTextArea txtContent;
 	private JTextField textEnter;
-	private JLabel txtlbl, lblWordList;
-	private Timer timer;
-	private long startTime;
-	private int enterCount;
-	private int enter;
-	private JLabel labelMin;
-	private JLabel labelSec;
-	private boolean terminationFlag;
-	private long beforeTime;
-	private Thread timerThread;
-	private JPanel panelTimer;
+	private JLabel txtlbl, lblWordList, typingSpeedLabel, accuracyLabel,labelMin,labelSec;
 	private JComponent colon1;
-	private int inputCount;
+	private Timer timer;
+	private Thread timerThread;
+	private long startTime,enterTime,keyTime,totalTime,beforeTime;
+	private double enterCount = 0.0,correctCount = 0.0;
+	private boolean terminationFlag;
+	private int inputCount = 0,str;
+
 
 	public WordExercise() {
 		setTitle("단어 연습");
-		setSize(500, 500);
+		setSize(500, 570);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setLayout(new BorderLayout());
@@ -56,31 +54,6 @@ public class WordExercise extends JFrame {
 		add(getMiddlePanel(), BorderLayout.CENTER);
 		add(getBottomPanel(), BorderLayout.SOUTH);
 
-		// 시작 버튼을 누른 후에만 텍스트 필드에서 Enter를 눌렀을 때 동작하도록 설정
-		textEnter.addActionListener(new ActionListener() {
-			
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				// 입력된 단어 가져오기
-				String enteredWord = textEnter.getText().trim();
-
-				// 텍스트 영역에서 해당 단어 삭제
-				deleteEnteredWord(enteredWord);
-
-				// Enter 입력 횟수 증가
-				enterCount++;
-				enter += enteredWord.length();
-				inputCount = 0;
-				// 입력란 초기화
-				textEnter.setText("");
-
-				// 게임 종료 확인
-				checkGameEnd();
-			}
-			
-		});
 		setTimer();
 
 		setLocationRelativeTo(null);
@@ -90,20 +63,29 @@ public class WordExercise extends JFrame {
 	private JPanel getTopPanel() {
 		if (topPanel == null) {
 			topPanel = new JPanel();
+			topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+			btnPanel = new JPanel();
+
 			btnStart = new JButton("시작하기");
 			btnReset = new JButton("초기화");
 			btnAddWord = new JButton("단어 추가");
 			btnDeleteWord = new JButton("단어 삭제");
 			topPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-			topPanel.setPreferredSize(new Dimension(500, 100));
 			// 시작버튼
 			btnStart.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// 시작버튼 눌렀을 때 변수 초기화
 					beforeTime = System.currentTimeMillis();
-					enter = 0;
-					enterCount = 0;
+					str = 0;
+					enterCount = 0.0;
+					enterTime = 0;
+					correctCount = 0.0;
+					
+					// 타수 및 정확도 초기화
+			        typingSpeedLabel.setText("현재 타수: -타/분");
+			        accuracyLabel.setText("현재 정확도: -%");
+					
 					// 시작하기 버튼을 누르면 밀리세컨드 단위로 타이머 시작
 					startTime = System.currentTimeMillis();
 					timer.start();
@@ -119,8 +101,10 @@ public class WordExercise extends JFrame {
 
 					// 게임을 시작할 수 있는지 확인
 					if (wordCount < 15) {
+						resetTimer();
 						JOptionPane.showMessageDialog(WordExercise.this, "단어가 15개 미만입니다. 게임을 시작할 수 없습니다.", "오류",
 								JOptionPane.ERROR_MESSAGE);
+						
 						return;
 					}
 
@@ -130,6 +114,11 @@ public class WordExercise extends JFrame {
 					// 시작 버튼을 누르면 단어 추가, 삭제 버튼 비활성화
 					btnAddWord.setEnabled(false);
 					btnDeleteWord.setEnabled(false);
+					
+					//텍스트필드 활성화
+					textEnter.setEnabled(true);
+					
+					
 					// 시작 버튼을 누르면 텍스트필드에 포커스
 					textEnter.requestFocusInWindow();
 				}
@@ -143,6 +132,7 @@ public class WordExercise extends JFrame {
 					timer.stop();
 					// 시작 시간 초기화
 					startTime = 0;
+					enterTime = 0;
 
 					// 텍스트 영역 초기화
 					txtContent.setText("");
@@ -156,6 +146,9 @@ public class WordExercise extends JFrame {
 					// 시작, 추가, 삭제 버튼 활성화
 					btnAddWord.setEnabled(true);
 					btnDeleteWord.setEnabled(true);
+					
+					//텍스트 필드 비활성화
+					textEnter.setEnabled(false);
 
 					resetTimer();
 				}
@@ -178,11 +171,14 @@ public class WordExercise extends JFrame {
 				}
 			});
 
-			topPanel.add(btnStart);
-			topPanel.add(btnReset);
-			topPanel.add(btnAddWord);
-			topPanel.add(btnDeleteWord);
+			btnPanel.add(btnStart);
+			btnPanel.add(btnReset);
+			btnPanel.add(btnAddWord);
+			btnPanel.add(btnDeleteWord);
+			topPanel.add(btnPanel);
 			topPanel.add(getPanelTimer());
+			topPanel.add(getTypingSpeedPanel());
+			topPanel.add(getAccuracyPanel());
 		}
 		return topPanel;
 	}
@@ -233,7 +229,52 @@ public class WordExercise extends JFrame {
 			txtlbl.setFont(txtlbl.getFont().deriveFont(15.0f));
 
 			bottomPanel.add(centerPanel, BorderLayout.CENTER);
+			textEnter.addKeyListener(new KeyListener() {
+				public void keyTyped(KeyEvent e) {
+
+				}
+
+				public void keyPressed(KeyEvent e) {
+					// 키가 입력될 때마다 inputCount 증가
+					int keyCode = e.getKeyCode();
+					
+					if (!isSpecialKey(keyCode)) {
+			            inputCount++;
+			            if (inputCount == 1) {
+			                keyTime = System.currentTimeMillis();
+			                
+			            }
+			        }
+				}
+
+				public void keyReleased(KeyEvent e) {
+				}
+			});
+			// 시작 버튼을 누른 후에만 텍스트 필드에서 Enter를 눌렀을 때 동작하도록 설정
+			textEnter.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// 엔터를 입력할 때 시간
+					enterTime = System.currentTimeMillis();
+					// 입력된 단어 가져오기
+					String enteredWord = textEnter.getText().trim();
+
+					// Enter 입력 횟수 증가
+					enterCount++;
+					// 텍스트 영역에서 해당 단어 삭제
+					deleteEnteredWord(enteredWord);
+					
+					inputCount = 0;
+					keyTime = 0;
+					// 입력란 초기화
+					textEnter.setText("");
+					// 게임 종료 확인
+					checkGameEnd();
+				}
+
+			});
 		}
+		textEnter.setEnabled(false);
 		return bottomPanel;
 	}
 
@@ -241,6 +282,9 @@ public class WordExercise extends JFrame {
 	public void refreshWordList() {
 		WordDAO dao = WordDAO.getInstance();
 		List<String> words = dao.getWord();
+		// 타수 및 정확도 초기화
+        typingSpeedLabel.setText("현재 타수: -타/분");
+        accuracyLabel.setText("현재 정확도: -%");	
 
 		// 텍스트 영역을 초기화
 		txtContent.setText("");
@@ -249,6 +293,8 @@ public class WordExercise extends JFrame {
 		for (String word : words) {
 			txtContent.append(word + "\n");
 		}
+		//단어목록 개수를 보여줌
+		lblWordList.setText("단어 목록 : " + words.size() + "개");
 	}
 
 	// 입력된 단어를 삭제하는 메서드
@@ -272,6 +318,21 @@ public class WordExercise extends JFrame {
 			// 입력된 단어와 현재 줄의 내용을 비교하여 일치하지 않는 경우에만 추가
 			if (!line.trim().equals(enteredWord)) {
 				updatedContent.append(line);
+				double cAcc = correctCount / enterCount *100.0;
+				accuracyLabel.setText("현재 정확도: "+Math.round(cAcc)+"%");
+
+			}
+			if (line.trim().equals(enteredWord)) {
+				str += enteredWord.length();
+				// 현재 타수
+				long currentTime = enterTime - keyTime;
+				totalTime += currentTime;
+				double cSpeed = (enteredWord.length() * 60.0) / (currentTime / 1000.0);
+				//현재 정확도
+				correctCount++;
+				double cAcc = correctCount / enterCount *100.0;
+				typingSpeedLabel.setText("현재 타수: "+Math.round(cSpeed)+"타/분");
+				accuracyLabel.setText("현재 정확도: "+Math.round(cAcc)+"%");
 			}
 		}
 
@@ -281,8 +342,13 @@ public class WordExercise extends JFrame {
 		// 단어가 모두 삭제되면 게임 종료 후 초기 상태로 복귀
 		if (txtContent.getText().isEmpty()) {
 			// 게임 종료 후 초기 상태로 복귀
+			// 타수 및 정확도 초기화
+	        typingSpeedLabel.setText("현재 타수: -타/분");
+	        accuracyLabel.setText("현재 정확도: -%");
+	        
 			btnAddWord.setEnabled(true);
 			btnDeleteWord.setEnabled(true);
+			textEnter.setEnabled(false);
 		}
 	}
 
@@ -336,6 +402,10 @@ public class WordExercise extends JFrame {
 			// 게임 종료 후 초기 상태로 복귀
 			btnAddWord.setEnabled(true);
 			btnDeleteWord.setEnabled(true);
+			textEnter.setEnabled(false);
+			// 타수 및 정확도 초기화
+	        typingSpeedLabel.setText("현재 타수: -타/분");
+	        accuracyLabel.setText("현재 정확도: -%");
 			stopTimer();
 			// 타수와 정확도 계산 및 팝업 표시
 			calculate();
@@ -346,16 +416,9 @@ public class WordExercise extends JFrame {
 	}
 
 	private void calculate() {
-		// 현재 시간을 가져옴
-		long endTime = System.currentTimeMillis();
-		// 게임이 종료된 시간에서 시작 시간을 뺌으로써 총 걸린 시간을 계산
-		long elapsedTimeInMillis = endTime - startTime;
-		// 밀리초를 초로 변환
-		double elapsedSeconds = elapsedTimeInMillis / 1000.0;
-
 		// 타수 계산: (총 입력한 문자 수 * 60) / 걸린 시간(초)
 		// 총 입력한 문자 수는 총 입력 횟수(enter를 눌렀을 때 입력한 모든 단어 갯수를 합하고, enterCount를 뺀 것)
-		double typingSpeed = (enter * 60.0) / elapsedSeconds;
+		double typingSpeed = (str * 60.0) / (totalTime / 1000.0);
 		int speed = (int) Math.round(typingSpeed);
 
 		// 정확도 계산
@@ -363,11 +426,13 @@ public class WordExercise extends JFrame {
 		int acc = (int) Math.round(accuracy);
 
 		// 팝업으로 타수와 정확도 표시
-		JOptionPane.showMessageDialog(this, "타수 : " + speed + "\n" + "정확도 : " + acc);
-	
+		JOptionPane.showMessageDialog(this, "총 타수 : " + speed + "\n" + "총 정확도 : " + acc);
+
 		WordDAO.getInstance().insertScore(acc, speed);
 		// 단어 목록 갱신
 		refreshWordList();
+		
+		
 
 	}
 
@@ -437,4 +502,49 @@ public class WordExercise extends JFrame {
 		// 타이머 중지
 		terminationFlag = false;
 	}
+
+	// 현재 타수 패널 생성
+	private JPanel getTypingSpeedPanel() {
+		JPanel typingSpeedPanel = new JPanel();
+		typingSpeedLabel = new JLabel("현재 타수: -타/분");
+		typingSpeedPanel.add(typingSpeedLabel);
+
+		typingSpeedLabel.setFont(new Font("courier", Font.BOLD, 15));
+		return typingSpeedPanel;
+
+	}
+
+	// 현재 정확도 패널 생성
+	private JPanel getAccuracyPanel() {
+		JPanel accuracyPanel = new JPanel();
+		accuracyLabel = new JLabel("현재 정확도: -%");
+		accuracyPanel.add(accuracyLabel);
+		accuracyLabel.setFont(new Font("courier", Font.BOLD, 15));
+		return accuracyPanel;
+	}
+
+	// 현재 정보 라벨 생성
+	private JPanel getPanelInfo() {
+		if (panelInfo == null) {
+			// 패널 생성, 레이아웃 설정
+			panelInfo = new JPanel();
+			panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+			// 서브 패널 생성, 컴포넌트 부착
+			JPanel getTypingSpeedPanel = getTypingSpeedPanel();
+			JPanel getAccuracyPanel = getAccuracyPanel();
+			// 패널에 서브패널 부착
+			panelInfo.add(getTypingSpeedPanel);
+			panelInfo.add(getAccuracyPanel);
+
+		}
+		return panelInfo;
+	}
+	  // 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
+    private boolean isSpecialKey(int keyCode) {
+        return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN) ||
+               keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE ||
+               keyCode == KeyEvent.VK_ALT || keyCode == KeyEvent.VK_ALT_GRAPH ||
+               keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT ||
+               keyCode == KeyEvent.VK_CAPS_LOCK;
+    }
 }
