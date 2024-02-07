@@ -12,7 +12,6 @@ public class BlockDAO extends SpeedCoderDAO {
     private static final BlockDAO instance = new BlockDAO();
 
     private BlockDAO() {
-        
     }
 
     public static BlockDAO getInstance() {
