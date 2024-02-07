@@ -19,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -79,6 +81,26 @@ public class BlockDialogDelete extends JDialog {
 				}
 			}
 		});
+		
+		// "제목" 컬럼명에 커스텀 렌더러 설정
+		DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer() {
+	        @Override
+	        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	            Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	            
+	            // 배경색 설정
+	            if (value != null && "제목".equals(value.toString())) {
+	                component.setBackground(new Color(230, 230, 230)); 
+	                ((JLabel) component).setHorizontalAlignment(SwingConstants.CENTER);
+	            } else {
+	                component.setBackground(table.getTableHeader().getBackground());
+	            }
+	            
+	            return component;
+	        }
+	    };
+	    table.getColumnModel().getColumn(0).setHeaderRenderer(headerRenderer);
+	    table.getTableHeader().setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
 
 		JPanel titlePanel = new JPanel();
 		titlePanel.add(new JLabel("삭제할 블록 문제를 선택해주세요 :"));
@@ -146,4 +168,5 @@ public class BlockDialogDelete extends JDialog {
 			tableModel.addRow(rowData);
 		}
 	}
+	
 }
