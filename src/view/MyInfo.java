@@ -34,11 +34,6 @@ public class MyInfo extends JFrame{
 	private Font fontNormal;
 	private Font fontAcc;
 	
-	private String wordAvgHit = "95%";
-	private String wordAvgAcc = "250타";
-	private String blockAvgHit = "95%";
-	private String blockAvgAcc = "250타";
-	
 	public MyInfo() {
 		this.setTitle("SPEED C( )DER - MyInfo");
 		this.setSize(500, 550);
@@ -108,18 +103,18 @@ public class MyInfo extends JFrame{
 	private JTable getWordTable() {
 		if(tblWord == null) {
 			String[] columnNames = {"번호", "타수", "정확도(%)"};
-			Object[][] rowData = {
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 },
-					{ 1, 250, 95 }
-			};
+
+			ScoreDAO scoreDAO = ScoreDAO.getInstance();
+			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "word");
+			Object[][] rowData = new Object[10][3];
+			
+			int row=0;
+			for(ScoreDTO scoreDTO : scores) {
+				rowData[row][0] = row+1;
+				rowData[row][1] = scoreDTO.getSpeed();
+				rowData[row][2] = scoreDTO.getAcc();
+				row++;
+			}
 			tblWord = new JTable(rowData, columnNames);
 			tblWord.setBounds(50, 200, 150, 160);
 			
@@ -195,8 +190,10 @@ public class MyInfo extends JFrame{
 	private JLabel getWordAvgHitLabel() {
 		if(lblWordAvgHit == null) {
 			lblWordAvgHit = new JLabel();
-			lblWordAvgHit.setText("평균 타수     :    " + wordAvgHit);
-			lblWordAvgHit.setBounds(48, 370, 170, 40);
+			
+			ScoreDAO scoreDAO = ScoreDAO.getInstance();
+			lblWordAvgHit.setText("평균 타수     :  " + scoreDAO.getSpeedAvg(Login.getLoginedId(), "word") + "타");
+			lblWordAvgHit.setBounds(48, 370, 200, 40);
 			lblWordAvgHit.setFont(getAccFont());
 		}
 		return lblWordAvgHit;
@@ -206,8 +203,10 @@ public class MyInfo extends JFrame{
 	private JLabel getWordAvgAccLabel() {
 		if(lblWordAvgAcc == null) {
 			lblWordAvgAcc = new JLabel();
-			lblWordAvgAcc.setText("평균 정확도  :   " + wordAvgAcc);
-			lblWordAvgAcc.setBounds(48, 405, 170, 40);
+			
+			ScoreDAO scoreDAO = ScoreDAO.getInstance();
+			lblWordAvgAcc.setText("평균 정확도  :   " + scoreDAO.getAccAvg(Login.getLoginedId(), "word") + "%");
+			lblWordAvgAcc.setBounds(48, 405, 200, 40);
 			lblWordAvgAcc.setFont(getAccFont());
 		}
 		return lblWordAvgAcc;
@@ -217,8 +216,9 @@ public class MyInfo extends JFrame{
 	private JLabel getBlockAvgHitLabel() {
 		if(lblBlockAvgHit == null) {
 			lblBlockAvgHit = new JLabel();
-			lblBlockAvgHit.setText("평균 타수     :    " + blockAvgHit);
-			lblBlockAvgHit.setBounds(278, 370, 170, 40);
+			ScoreDAO scoreDAO = ScoreDAO.getInstance();
+			lblBlockAvgHit.setText("평균 타수     :  " + scoreDAO.getSpeedAvg(Login.getLoginedId(), "block") + "타");
+			lblBlockAvgHit.setBounds(278, 370, 200, 40);
 			lblBlockAvgHit.setFont(getAccFont());
 		}
 		return lblBlockAvgHit;
@@ -228,8 +228,9 @@ public class MyInfo extends JFrame{
 	private JLabel getBlockAvgAccLabel() {
 		if(lblBlockAvgAcc == null) {
 			lblBlockAvgAcc = new JLabel();
-			lblBlockAvgAcc.setText("평균 정확도  :   " + blockAvgAcc);
-			lblBlockAvgAcc.setBounds(278, 405, 170, 40);
+			ScoreDAO scoreDAO = ScoreDAO.getInstance();
+			lblBlockAvgAcc.setText("평균 정확도  :   " + scoreDAO.getAccAvg(Login.getLoginedId(), "block") + "%");
+			lblBlockAvgAcc.setBounds(278, 405, 200, 40);
 			lblBlockAvgAcc.setFont(getAccFont());
 		}
 		return lblBlockAvgAcc;
