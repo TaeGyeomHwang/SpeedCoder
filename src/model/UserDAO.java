@@ -55,6 +55,5 @@ public class UserDAO extends SpeedCoderDAO{
             close();
         }
         return signupList;
-    }
-    
+    } 
 }

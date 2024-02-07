@@ -127,11 +127,40 @@ public class Login extends JFrame{
 			btnLogin.setBounds(130, 300, 110, 40);
 			btnLogin.addActionListener(e -> {
 				LoginFn();
-				// 조건문을 통해 "ID님 안녕하세요!" 팝업 출력 후 메인 화면으로 전환 또는
-				// 실패의 경우 "잘못 입력했습니다." 출력하며 텍스트 필드와 패스워드 필드를 초기화함
 			});
 		}
 		return btnLogin;
+	}
+	// 로그인 버튼 기능
+	private void LoginFn() {
+		
+		boolean accountExist = false;
+		String id = txtFieldId.getText();
+		char[] pw = pwFieldPw.getPassword();
+		String strPw = new String(pw);
+		
+		UserDAO userDAO = UserDAO.getInstance();
+		List<UserDTO> users = userDAO.getSignups();	//전체 회원 정보 가져오기 메소드
+		
+		//전체 회원 정보에서 입력받은 아이디 및 비밀번호가 일치하는 경우 accountExist 계정 존재 여부 true
+		for(UserDTO userDTO : users){
+			if(id.equals(userDTO.getId())&&strPw.equals(userDTO.getPw())) {
+				accountExist = true;
+				break;
+			}
+		}
+		
+		// if -> 계정이 있는 경우, else -> 계정이 없는 경우
+		if(accountExist) {
+			Login.loginedId = id;
+			JOptionPane.showMessageDialog(Login.this, loginedId + "님 안녕하세요!");
+			dispose();
+			Main main = new Main();
+			main.setVisible(true);
+		}else {
+			JOptionPane.showMessageDialog(Login.this, "아이디 또는 비밀번호를 잘못 입력하셨습니다.");
+			pwFieldPw.setText("");
+		}
 	}
 
 	// 회원가입 버튼
@@ -148,52 +177,11 @@ public class Login extends JFrame{
 		}
 		return btnSignup;
 	}
-
-	private void LoginFn() {
-		
-		boolean accountExist = false;
-		String id = txtFieldId.getText();
-		char[] pw = pwFieldPw.getPassword();
-		String strPw = new String(pw);
-		
-		UserDAO signupDAO = UserDAO.getInstance();
-		List<UserDTO> signups = signupDAO.getSignups();	//전체 회원 정보 가져오기 메소드
-		
-		for(UserDTO signupDTO : signups){
-			if(id.equals(signupDTO.getId())&&strPw.equals(signupDTO.getPw())) {
-				accountExist = true;
-				break;
-			}
-		}
-		
-		if(accountExist) {
-			Login.loginedId = id;
-			JOptionPane.showMessageDialog(Login.this, loginedId + "님 안녕하세요!");
-			dispose();
-			Main main = new Main();
-			main.setVisible(true);
-		}else {
-			JOptionPane.showMessageDialog(Login.this, "아이디 또는 비밀번호를 잘못 입력하셨습니다.");
-//			txtFieldId.setText("");
-			pwFieldPw.setText("");
-		}
-	}
 	
-	
-	// 타 클래스 id 접근을 위한 getter/setter
+	// 타 클래스에서 로그인 된 id 접근을 위한 getter
     public static String getLoginedId() {
         return loginedId;
     }
-
-    //setLoginedID가 필요한가?
-//    public static void setLoginedId(String text) {
-//    	loginedId = text;
-//    }
-
-//    private void disposeWindow() {
-//        UserData.setEnteredText(textField.getText());
-//        dispose();
-//    }
 	
 	//창 중앙 정렬
 	private void locationCenter() {

@@ -1,6 +1,9 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
@@ -9,14 +12,16 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
 import model.ScoreDAO;
 import model.ScoreDTO;
 
-public class MyInfo extends JFrame{
+public class MyInfoGraph extends JFrame{
 
 	private JLabel lblTitle;
 	private JLabel lblWordTableTitle;
@@ -30,13 +35,17 @@ public class MyInfo extends JFrame{
 	private JLabel lblBlockAvgHit;
 	private JLabel lblBlockAvgAcc;
 	
+	private JPanel pnlGraphics;
+	
 	private Font fontTitle;
 	private Font fontNormal;
 	private Font fontAcc;
 	
-	public MyInfo() {
+	private String loginedID = "code123";
+	
+	public MyInfoGraph() {
 		this.setTitle("SPEED C( )DER - MyInfo");
-		this.setSize(500, 550);
+		this.setSize(1000, 700);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		
@@ -44,12 +53,13 @@ public class MyInfo extends JFrame{
 		this.getContentPane().add(getTitleLabel());
 		this.getContentPane().add(getWordTableTitleLabel());
 		this.getContentPane().add(getBlockTableTitleLabel());
-		this.getContentPane().add(getWordTable());
-		this.getContentPane().add(getBlockTable());
-		this.getContentPane().add(getWordAvgAccLabel());		
-		this.getContentPane().add(getWordAvgHitLabel());		
-		this.getContentPane().add(getBlockAvgAccLabel());		
-		this.getContentPane().add(getBlockAvgHitLabel());		
+//		this.getContentPane().add(getWordTable());
+//		this.getContentPane().add(getBlockTable());
+		this.getContentPane().add(getPnlGraphics());
+//		this.getContentPane().add(getWordAvgAccLabel());		
+//		this.getContentPane().add(getWordAvgHitLabel());		
+//		this.getContentPane().add(getBlockAvgAccLabel());		
+//		this.getContentPane().add(getBlockAvgHitLabel());		
 		
 		this.locationCenter();
 		
@@ -63,6 +73,36 @@ public class MyInfo extends JFrame{
 		});
 	
 	}
+
+
+	/* 2D 그래프 */
+	// 그래프 GUI
+	private JPanel getPnlGraphics() {
+        if (pnlGraphics == null) {
+            pnlGraphics = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    drawFrame(g);
+                    drawMainLine(g);
+                }
+            };
+            pnlGraphics.setBounds(0, 180, 1200, 420);
+        }
+        return pnlGraphics;
+    }
+	
+	// 그래프 설정
+    private void drawFrame(Graphics g) {
+        g.setColor(Color.BLUE);
+        g.drawRect(60, 0, 420, 420);
+        g.drawRect(520, 0, 420, 420);
+    }
+    
+    private void drawMainLine(Graphics g) {
+    	g.setColor(Color.RED);
+    	g.drawLine(80, 400, 420, 400);
+    }
 	
 	/* 라벨 */
 	// 제목 라벨 설정
@@ -70,7 +110,7 @@ public class MyInfo extends JFrame{
 		if(lblTitle == null	) {
 			lblTitle = new JLabel();
 			lblTitle.setText("SPEED C( )DER");
-			lblTitle.setBounds(105, 70, 300, 50);
+			lblTitle.setBounds(360, 70, 300, 50);
 			lblTitle.setFont(getTitleFont());
 		}
 		return lblTitle;
@@ -81,7 +121,7 @@ public class MyInfo extends JFrame{
 		if(lblWordTableTitle == null) {
 			lblWordTableTitle = new JLabel();
 			lblWordTableTitle.setText("단어 연습");
-			lblWordTableTitle.setBounds(70, 140, 150, 40);
+			lblWordTableTitle.setBounds(200, 130, 150, 40);
 			lblWordTableTitle.setFont(getNormalFont());
 		}
 		return lblWordTableTitle;
@@ -92,11 +132,13 @@ public class MyInfo extends JFrame{
 		if(lblBlockTableTitle == null) {
 			lblBlockTableTitle = new JLabel();
 			lblBlockTableTitle.setText("블록 연습");
-			lblBlockTableTitle.setBounds(300, 140, 150, 40);
+			lblBlockTableTitle.setBounds(680, 130, 150, 40);
 			lblBlockTableTitle.setFont(getNormalFont());
 		}
 		return lblBlockTableTitle;
 	}
+	
+	
 	
 	/* 테이블 */
 	// 단어 연습 순위표 테이블 설정
@@ -116,7 +158,7 @@ public class MyInfo extends JFrame{
 				row++;
 			}
 			tblWord = new JTable(rowData, columnNames);
-			tblWord.setBounds(50, 200, 150, 160);
+			tblWord.setBounds(50, 220, 150, 160);
 			
 			//테이블 헤더 생성
 			JTableHeader header = tblWord.getTableHeader();
@@ -159,7 +201,7 @@ public class MyInfo extends JFrame{
 				row++;
 			}
 			tblBlock = new JTable(rowData, columnNames);
-			tblBlock.setBounds(280, 200, 150, 160);
+			tblBlock.setBounds(480, 220, 150, 160);
 			
 			//테이블 헤더 생성
 			JTableHeader header = tblBlock.getTableHeader();
@@ -254,20 +296,27 @@ public class MyInfo extends JFrame{
 	}
 	
 	// 평균 폰트 설정
-		private Font getAccFont() {
-			if(fontAcc == null) {
-				fontAcc = new Font("Malgun Gothic", Font.PLAIN, 15);			
-			}
-			return fontAcc;
+	private Font getAccFont() {
+		if(fontAcc == null) {
+			fontAcc = new Font("Malgun Gothic", Font.PLAIN, 15);			
 		}
+		return fontAcc;
+	}
 	
 	//창 중앙 정렬
-		private void locationCenter() {
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			Point centerPoint = ge.getCenterPoint();
-			int leftTopX = centerPoint.x - this.getWidth()/2;
-			int leftTopY = centerPoint.y - this.getHeight()/2;
-			this.setLocation(leftTopX, leftTopY);
-		}
-		
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
+	}
+	
+	// 테스트 용 임시 실행문
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			MyInfoGraph myInfoGraph = new MyInfoGraph();
+			myInfoGraph.setVisible(true);
+		});
+	}	
 }

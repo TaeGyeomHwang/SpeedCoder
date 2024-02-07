@@ -157,6 +157,50 @@ public class Signup extends JFrame{
 		}
 		return btnSignup;
 	}
+	
+	//회원가입 버튼 기능 
+		private void SignupFn() {
+			
+			boolean idCheck=false;	//아이디가 존재하면 true 값 가짐.
+			String id = txtFieldId.getText();
+			char[] pw = pwFieldPw.getPassword();
+			char[] pwVerify = pwFieldPwVerify.getPassword();
+			
+			UserDAO userDAO = UserDAO.getInstance();
+			List<UserDTO> users = userDAO.getSignups();	//전체 회원 정보 리스트 가져오기
+
+			//입력받은 아이디가 중복이거나 null일 경우 idCheck 변수 true 설정 (문제의 경우 idCheck = true)
+			for(UserDTO userDTO : users){
+				if(id.equals(userDTO.getId())||id.equals(null)) {	
+					idCheck = true;
+				}
+			}
+			if(idCheck==true) {	// 아이디 검사 오류 케이스
+				JOptionPane.showMessageDialog(Signup.this, "해당 아이디는 사용할 수 없습니다.");
+			}else {	//아이디 검사 성공 케이스
+				//비밀번호가 입력되었으면서 비밀번호 검증란과 동일한 경우 if 문, 아닌 경우 else
+				if (pw.length!=0 && Arrays.equals(pw, pwVerify)) {
+
+					UserDTO userDTO = new UserDTO();
+					
+					userDTO.setId(id);
+					String strPw = new String(pw); 
+					userDTO.setPw(strPw);
+					
+					userDAO.insertSignup(userDTO);
+					JOptionPane.showMessageDialog(Signup.this, "회원가입이 완료되었습니다.");
+					super.dispose();
+					Login login = new Login();
+					login.setVisible(true);
+				}else if(pw.length==0){	// 비밀번호가 입력되지 않은 경우
+					JOptionPane.showMessageDialog(Signup.this, "비밀번호를 공백으로 설정할 수 없습니다.");
+				}else {	// 비밀번호가 비밀번호 검증란과 일치하지 않은 경우
+					JOptionPane.showMessageDialog(Signup.this, "비밀번호와 비밀번호 확인란에 입력된 문자가 동일해야합니다.");
+				}
+			}
+			pwFieldPw.setText("");		
+			pwFieldPwVerify.setText("");		
+		}
 
 	// 나가기 버튼
 	private JButton getCancelBtn() {
@@ -171,51 +215,6 @@ public class Signup extends JFrame{
 			});
 		}
 		return btnCancel;
-	}
-	
-	//회원가입 버튼 기능 
-	private void SignupFn() {
-		
-		boolean idCheck=false;	//아이디가 존재하면 true 값 가짐.
-		String id = txtFieldId.getText();
-		char[] pw = pwFieldPw.getPassword();
-		char[] pwVerify = pwFieldPwVerify.getPassword();
-		
-		UserDAO signupDAO = UserDAO.getInstance();
-		List<UserDTO> signups = signupDAO.getSignups();	//전체 회원 정보 가져오기 메소드
-
-		//입력받은 아이디가 중복이거나 null일 경우 idCehck 변수 true 설정
-		for(UserDTO signupDTO : signups){
-			if(id.equals(signupDTO.getId())||id.equals(null)) {	
-				idCheck = true;
-			}
-		}
-		if(idCheck==true) {
-			JOptionPane.showMessageDialog(Signup.this, "해당 아이디는 사용할 수 없습니다.");
-		}else {	//아이디 검증 통과한 경우
-			//비밀번호가 입력되었으면서 검증란과 동일한 경우 if 문, 아닌 경우 else
-			if (pw.length!=0 && Arrays.equals(pw, pwVerify)) {
-/*	회원가입 기능 구현 테스트 위해 주석처리함	 */
-//				SignupDTO signupDTO = new SignupDTO();
-//				
-//				signupDTO.setId(id);
-//				String strPw = new String(pw); 
-//				signupDTO.setPw(strPw);
-//				
-//				signupDAO.insertSignup(signupDTO);
-				JOptionPane.showMessageDialog(Signup.this, "회원가입이 완료되었습니다.");
-				super.dispose();
-				Login login = new Login();
-				login.setVisible(true);
-			}else if(pw.length==0){
-				JOptionPane.showMessageDialog(Signup.this, "비밀번호를 공백으로 설정할 수 없습니다.");
-			}else {
-				JOptionPane.showMessageDialog(Signup.this, "비밀번호와 비밀번호 확인란에 입력된 문자가 동일해야합니다.");
-			}
-		}
-//		txtFieldId.setText("");
-		pwFieldPw.setText("");		
-		pwFieldPwVerify.setText("");		
 	}
 	
 	//창 중앙 정렬
