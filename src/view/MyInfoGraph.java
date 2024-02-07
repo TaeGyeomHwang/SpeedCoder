@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -85,6 +86,7 @@ public class MyInfoGraph extends JFrame{
                     super.paintComponent(g);
                     drawFrame(g);
                     drawMainLine(g);
+                    drawRod(g, 90, 380, "word");
                 }
             };
             pnlGraphics.setBounds(0, 180, 1200, 420);
@@ -95,13 +97,36 @@ public class MyInfoGraph extends JFrame{
 	// 그래프 설정
     private void drawFrame(Graphics g) {
         g.setColor(Color.BLUE);
-        g.drawRect(60, 0, 420, 420);
+        g.drawRect(50, 0, 420, 420);
         g.drawRect(520, 0, 420, 420);
     }
     
     private void drawMainLine(Graphics g) {
     	g.setColor(Color.RED);
-    	g.drawLine(80, 400, 420, 400);
+    	g.drawLine(90, 380, 430, 380);
+    	g.drawLine(90, 30, 90, 380);
+    	g.drawLine(560, 380, 900, 380);
+    	g.drawLine(560, 30, 560, 380);
+    }
+    
+    private void drawRod(Graphics g, int xPosition, int yPosition, int weight, int height, String kind) {
+    	
+    	g.setColor(Color.BLUE);
+    	
+    	ScoreDAO scoreDAO = ScoreDAO.getInstance();
+		List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), kind);
+		Object[][] rowData = new Object[10][3];
+		
+		int row=0;
+		for(ScoreDTO scoreDTO : scores) {
+			rowData[row][0] = row+1;
+			rowData[row][1] = scoreDTO.getSpeed();
+			rowData[row][2] = scoreDTO.getAcc();
+			row++;
+		}
+		
+//		g.fillRect(xPosition, yPosition-height, weight, height);
+
     }
 	
 	/* 라벨 */
