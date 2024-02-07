@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -7,11 +8,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
 
 import model.ScoreDAO;
 import model.ScoreDTO;
@@ -40,16 +42,22 @@ public class MyInfo extends JFrame{
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		
-		this.getContentPane().setLayout(null);
-		this.getContentPane().add(getTitleLabel());
-		this.getContentPane().add(getWordTableTitleLabel());
-		this.getContentPane().add(getBlockTableTitleLabel());
-		this.getContentPane().add(getWordTable());
-		this.getContentPane().add(getBlockTable());
-		this.getContentPane().add(getWordAvgAccLabel());		
-		this.getContentPane().add(getWordAvgHitLabel());		
-		this.getContentPane().add(getBlockAvgAccLabel());		
-		this.getContentPane().add(getBlockAvgHitLabel());		
+		// 배경 이미지 추가
+        ImageIcon backgroundImage = new ImageIcon(getClass().getResource("../logo3.png"));
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, 500, 600);
+        this.add(backgroundLabel);
+		
+        backgroundLabel.setLayout(null);
+        backgroundLabel.add(getTitleLabel());
+        backgroundLabel.add(getWordTableTitleLabel());
+        backgroundLabel.add(getBlockTableTitleLabel());
+        backgroundLabel.add(getWordTable());
+        backgroundLabel.add(getBlockTable());
+        backgroundLabel.add(getWordAvgAccLabel());		
+        backgroundLabel.add(getWordAvgHitLabel());		
+        backgroundLabel.add(getBlockAvgAccLabel());		
+        backgroundLabel.add(getBlockAvgHitLabel());		
 		
 		this.locationCenter();
 		
@@ -69,7 +77,6 @@ public class MyInfo extends JFrame{
 	private JLabel getTitleLabel() {
 		if(lblTitle == null	) {
 			lblTitle = new JLabel();
-			lblTitle.setText("SPEED C( )DER");
 			lblTitle.setBounds(105, 70, 300, 50);
 			lblTitle.setFont(getTitleFont());
 		}
@@ -100,89 +107,81 @@ public class MyInfo extends JFrame{
 	
 	/* 테이블 */
 	// 단어 연습 순위표 테이블 설정
-	private JTable getWordTable() {
-		if(tblWord == null) {
-			String[] columnNames = {"번호", "타수", "정확도(%)"};
+	private JScrollPane getWordTable() {
+	    if(tblWord == null) {
+	        String[] columnNames = {"번호", "타수", "정확도(%)"};
 
-			ScoreDAO scoreDAO = ScoreDAO.getInstance();
-			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "word");
-			Object[][] rowData = new Object[10][3];
-			
-			int row=0;
-			for(ScoreDTO scoreDTO : scores) {
-				rowData[row][0] = row+1;
-				rowData[row][1] = scoreDTO.getSpeed();
-				rowData[row][2] = scoreDTO.getAcc();
-				row++;
-			}
-			tblWord = new JTable(rowData, columnNames);
-			tblWord.setBounds(50, 200, 150, 160);
-			
-			//테이블 헤더 생성
-			JTableHeader header = tblWord.getTableHeader();
-	        header.setBounds(
-	        		tblWord.getBounds().x,
-	        		tblWord.getBounds().y - header.getPreferredSize().height,
-	        		tblWord.getBounds().width,
-	        		header.getPreferredSize().height
-	        		);
-	        
-	        tblWord.getColumn("번호").setPreferredWidth(50);
-	        tblWord.getColumn("타수").setPreferredWidth(100);
-	        tblWord.getColumn("정확도(%)").setPreferredWidth(150);
-	        this.getContentPane().add(header);
-	        
-	        //열 내용 가운데 정렬
+	        ScoreDAO scoreDAO = ScoreDAO.getInstance();
+	        List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "word");
+	        Object[][] rowData = new Object[scores.size()][3];
+
+	        int row=0;
+	        for(ScoreDTO scoreDTO : scores) {
+	            rowData[row][0] = row+1;
+	            rowData[row][1] = scoreDTO.getSpeed();
+	            rowData[row][2] = scoreDTO.getAcc();
+	            row++;
+	        }
+	        tblWord = new JTable(rowData, columnNames);
+
+	        // 열 내용 가운데 정렬
+	        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 	        for (int i = 0; i < tblWord.getColumnCount(); i++) {
-	        	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-	        	centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-	        	tblWord.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	            tblWord.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	        }
-		}
-		return tblWord;
+
+	        // JScrollPane에 테이블 추가
+	        JScrollPane scrollPane = new JScrollPane(tblWord);
+	        scrollPane.setBounds(50, 200, 150, 160);
+
+	        // JScrollPane 크기 설정
+	        int tableHeight = tblWord.getRowHeight() * tblWord.getRowCount();
+	        if (tableHeight > scrollPane.getHeight()) {
+	            scrollPane.setPreferredSize(new Dimension(scrollPane.getWidth(), tableHeight));
+	        }
+	        return scrollPane;
+	    }
+	    return new JScrollPane(tblWord);
 	}
-	
+
 	// 블록 연습 순위표 테이블 설정
-	private JTable getBlockTable() {
-		if(tblBlock == null) {
-			String[] columnNames = {"번호", "타수", "정확도(%)"};
-			
-			ScoreDAO scoreDAO = ScoreDAO.getInstance();
-			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "block");
-			Object[][] rowData = new Object[10][3];
-			
-			int row=0;
-			for(ScoreDTO scoreDTO : scores) {
-				rowData[row][0] = row+1;
-				rowData[row][1] = scoreDTO.getSpeed();
-				rowData[row][2] = scoreDTO.getAcc();
-				row++;
-			}
-			tblBlock = new JTable(rowData, columnNames);
-			tblBlock.setBounds(280, 200, 150, 160);
-			
-			//테이블 헤더 생성
-			JTableHeader header = tblBlock.getTableHeader();
-	        header.setBounds(
-	        		tblBlock.getBounds().x,
-	        		tblBlock.getBounds().y - header.getPreferredSize().height,
-	        		tblBlock.getBounds().width,
-	        		header.getPreferredSize().height
-	        		);
-	        
-	        tblBlock.getColumn("번호").setPreferredWidth(50);
-	        tblBlock.getColumn("타수").setPreferredWidth(100);
-	        tblBlock.getColumn("정확도(%)").setPreferredWidth(150);
-	        this.getContentPane().add(header);
-	        
-	        //열 내용 가운데 정렬
-	        for (int i = 0; i < tblBlock.getColumnCount(); i++) {
-	        	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-	        	centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-	        	tblBlock.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	private JScrollPane getBlockTable() {
+	    if(tblBlock == null) {
+	        String[] columnNames = {"번호", "타수", "정확도(%)"};
+
+	        ScoreDAO scoreDAO = ScoreDAO.getInstance();
+	        List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "block");
+	        Object[][] rowData = new Object[scores.size()][3];
+
+	        int row=0;
+	        for(ScoreDTO scoreDTO : scores) {
+	            rowData[row][0] = row+1;
+	            rowData[row][1] = scoreDTO.getSpeed();
+	            rowData[row][2] = scoreDTO.getAcc();
+	            row++;
 	        }
-		}
-		return tblBlock;
+	        tblBlock = new JTable(rowData, columnNames);
+
+	        // 열 내용 가운데 정렬
+	        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+	        for (int i = 0; i < tblBlock.getColumnCount(); i++) {
+	            tblBlock.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	        }
+
+	        // JScrollPane에 테이블 추가
+	        JScrollPane scrollPane = new JScrollPane(tblBlock);
+	        scrollPane.setBounds(280, 200, 150, 160);
+
+	        // JScrollPane 크기 설정
+	        int tableHeight = tblBlock.getRowHeight() * tblBlock.getRowCount();
+	        if (tableHeight > scrollPane.getHeight()) {
+	            scrollPane.setPreferredSize(new Dimension(scrollPane.getWidth(), tableHeight));
+	        }
+	        return scrollPane;
+	    }
+	    return new JScrollPane(tblBlock);
 	}
 	
 	/* 하단 라벨 */
