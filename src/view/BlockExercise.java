@@ -39,7 +39,7 @@ public class BlockExercise extends JFrame {
 	private JButton btnStart, btnReset, btnAdd, btnDelete;
 	private JTextField txtNorth;
 	private JTextPane txtCenterPane;
-	private JLabel labelCenter, labelMin, labelSec, colon1, currentSpeed, currentAcc;
+	private JLabel labelCenter, labelMin, labelSec, colon1, currentSpeed, currentAcc, labelMax, labelTypo;
 	private String inputText;
 
 	// 랜덤 인덱스 접근 변수
@@ -57,6 +57,8 @@ public class BlockExercise extends JFrame {
 	private double acc = 0.0;
 	private int inputCount = 0;
 	private int totalInputCount = 0;
+	private double maxSpeed = 0.0;
+	private int totalTypo = 0;
 
 	// DAO, DTO
 	private BlockDAO blockDAO = BlockDAO.getInstance();
@@ -102,6 +104,10 @@ public class BlockExercise extends JFrame {
 			panelNorth.add(timerPanel);
 			panelNorth.add(infoPanel);
 			panelNorth.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
+			btnPanel.setBackground(new Color(170, 207,243));
+			infoPanel.setBackground(new Color(170, 207,243));
+			timerPanel.setBackground(new Color(170, 207,243));
+			panelNorth.setBackground(new Color(170, 207,243));
 		}
 		return panelNorth;
 	}
@@ -182,6 +188,7 @@ public class BlockExercise extends JFrame {
 			labelMin.setFont(new Font("courier", Font.BOLD, 30));
 			labelSec.setFont(new Font("courier", Font.BOLD, 30));
 			colon1.setFont(new Font("courier", Font.BOLD, 30));
+			panelTimer.setBackground(new Color(170, 207,243));
 		}
 		return panelTimer;
 	}
@@ -194,15 +201,19 @@ public class BlockExercise extends JFrame {
 			panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
 			JLabel label1 = new JLabel("현재 타수 : ");
 			currentSpeed = new JLabel("-타/분");
+			labelMax = new JLabel("(최고타수: - 타/분)");
 			JLabel label2 = new JLabel(" 현재 정확도 : ");
 			currentAcc = new JLabel("-%");
+			labelTypo = new JLabel("(오타수: - 개)");
 			// 서브 패널 생성, 컴포넌트 부착
 			JPanel speedPanel = new JPanel();
 			JPanel accPanel = new JPanel();
 			speedPanel.add(label1);
 			speedPanel.add(currentSpeed);
+			speedPanel.add(labelMax);
 			accPanel.add(label2);
 			accPanel.add(currentAcc);
+			accPanel.add(labelTypo);
 			// 패널에 서브패널 부착
 			panelInfo.add(speedPanel);
 			panelInfo.add(accPanel);
@@ -211,6 +222,11 @@ public class BlockExercise extends JFrame {
 			label1.setFont(new Font("courier", Font.BOLD, 15));
 			currentAcc.setFont(new Font("courier", Font.BOLD, 15));
 			label2.setFont(new Font("courier", Font.BOLD, 15));
+			labelMax.setFont(new Font("courier",Font.PLAIN,13));
+			labelTypo.setFont(new Font("courier",Font.PLAIN,13));
+			speedPanel.setBackground(new Color(170, 207,243));
+			accPanel.setBackground(new Color(170, 207,243));
+			panelInfo.setBackground(new Color(170, 207,243));
 		}
 		return panelInfo;
 	}
@@ -230,6 +246,8 @@ public class BlockExercise extends JFrame {
 			panelCenter.add(northPanel, BorderLayout.NORTH);
 			panelCenter.add(new JScrollPane(getTxtCenterPane()), BorderLayout.CENTER); // JTextPane으로 변경
 			panelCenter.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // 중앙 패널 여백 설정
+			panelCenter.setBackground(new Color(170, 207,243));
+			northPanel.setBackground(new Color(170, 207,243));
 		}
 		return panelCenter;
 	}
@@ -250,23 +268,24 @@ public class BlockExercise extends JFrame {
 				inputCount = 0;
 			});
 			txtNorth.addKeyListener(new KeyAdapter() {
-			    public void keyPressed(KeyEvent e) {
-			        int keyCode = e.getKeyCode();
-			        if (!isSpecialKey(keyCode)) {
-			            inputCount++;
-			            if (inputCount == 1) {
-			                inputStartTime = System.currentTimeMillis();
-			            }
-			        }
-			    }
-			    // 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
-			    private boolean isSpecialKey(int keyCode) {
-			        return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN) ||
-			               keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE ||
-			               keyCode == KeyEvent.VK_ALT || keyCode == KeyEvent.VK_ALT_GRAPH ||
-			               keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT ||
-			               keyCode == KeyEvent.VK_CAPS_LOCK;
-			    }
+				public void keyPressed(KeyEvent e) {
+					int keyCode = e.getKeyCode();
+					if (!isSpecialKey(keyCode)) {
+						inputCount++;
+						if (inputCount == 1) {
+							inputStartTime = System.currentTimeMillis();
+						}
+					}
+				}
+
+				// 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
+				private boolean isSpecialKey(int keyCode) {
+					return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN)
+							|| keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE
+							|| keyCode == KeyEvent.VK_ALT || keyCode == KeyEvent.VK_ALT_GRAPH
+							|| keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT
+							|| keyCode == KeyEvent.VK_CAPS_LOCK;
+				}
 			});
 		}
 		return txtNorth;
@@ -315,7 +334,9 @@ public class BlockExercise extends JFrame {
 		}
 		txtCenterPane.setText(sb.toString());
 		currentSpeed.setText("- 타/분");
+		labelMax.setText("(최고타수: - 타/분)");
 		currentAcc.setText("- %");
+		labelTypo.setText("(오타수: - 개)");
 
 		// 컴포넌트 초기화
 		btnAdd.setEnabled(true);
@@ -347,6 +368,7 @@ public class BlockExercise extends JFrame {
 			acc += currentCorrect;
 			double stringLength = lines[index].trim().length();
 			double stringAcc = (currentCorrect / stringLength) * 100.0;
+			totalTypo = totalTypo + (int) (stringLength - currentCorrect);
 			// 인덱스 증가, 남은 문장 출력
 			index++;
 			for (int i = index; i < lines.length; i++) {
@@ -354,16 +376,18 @@ public class BlockExercise extends JFrame {
 			}
 			txtCenterPane.setText(sb.toString());
 			// 하이라이트 적용
-			if (index < lines.length - 1) {
+			if (index < lines.length) {
 				highlightFirstLine(txtCenterPane);
 			}
 			// 현재 타수 리프레쉬
 			double diffSec = currentTime / 1000.0;
 			double speed = inputCount * 60.0 / diffSec;
+			maxSpeed = Math.max(speed, maxSpeed);
 			currentSpeed.setText(Math.round(speed) + "타/분");
+			labelMax.setText("(최고타수: " + Math.round(maxSpeed) + "타)");
 			// 현재 정확도 리프레쉬
-			currentAcc.setText((int) stringAcc + "%");
-
+			currentAcc.setText(Math.round(stringAcc) + "%");
+			labelTypo.setText("(오타수: "+totalTypo+"개)");
 		}
 		// 시작하기 버튼 눌렀을 경우
 		else if (input.equals("초기 문제 출력")) {
@@ -377,7 +401,9 @@ public class BlockExercise extends JFrame {
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
 			// 정확도 계산
-			acc = (acc / blocks.get(randomIndex).getBlockText().trim().length()) * 100;
+			double totalLength = blocks.get(randomIndex).getBlockText().trim().replace("\n", "").length();
+			System.out.println(totalLength);
+			acc = (acc / totalLength) * 100;
 			// 타수 계산
 			double diffSec = inputTotalTime / 1000.0;
 			speed = totalInputCount * 60 / diffSec;
@@ -385,8 +411,8 @@ public class BlockExercise extends JFrame {
 			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
 			stopTimer();
 			// 정확도, 타수 출력
-			JOptionPane.showMessageDialog(this,
-					"총 타수 : " + (int) Math.round(speed) + "타/분\n총 정확도 : " + (int) acc + "%");
+			JOptionPane.showMessageDialog(this, "총 타수 : " + (int) Math.round(speed) + "타/분   (최고타수: " + Math.round(maxSpeed) + "타/분)"
+					+ "\n총 정확도 : " + (int) acc + "%   (오타수: " + totalTypo + "개)");
 			// 화면 초기화
 			resetTimer();
 			refreshTextArea();
@@ -401,6 +427,9 @@ public class BlockExercise extends JFrame {
 		acc = 0.0;
 		speed = 0.0;
 		totalInputCount = 0;
+		inputTotalTime = 0;
+		maxSpeed = 0;
+		totalTypo = 0;
 		// 타이머 시작
 		beforeTime = System.currentTimeMillis();
 		// 접근할 인덱스 랜덤으로 설정
@@ -420,7 +449,7 @@ public class BlockExercise extends JFrame {
 	private void highlightFirstLine(JTextPane textPane) {
 		StyledDocument doc = textPane.getStyledDocument();
 		Style style = textPane.addStyle("highlight", null);
-		StyleConstants.setBackground(style, Color.YELLOW);
+		StyleConstants.setBackground(style, new Color(170, 207,243));
 
 		// 이전 강조 지우기
 		doc.setCharacterAttributes(0, doc.getLength(), textPane.getStyle(StyleContext.DEFAULT_STYLE), true);
