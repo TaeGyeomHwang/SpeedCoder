@@ -343,6 +343,7 @@ public class BlockExercise extends JFrame {
 		btnAdd.setEnabled(true);
 		btnDelete.setEnabled(true);
 		txtNorth.setEditable(false);
+		txtNorth.setText("");
 		labelCenter.setText("블록 문제를 연습하려면 시작하기를 눌러주세요:");
 
 		// 스타일 초기화
