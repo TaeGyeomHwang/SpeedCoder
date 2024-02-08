@@ -63,7 +63,6 @@ public class WordExercise extends JFrame {
 		add(getTopPanel(), BorderLayout.NORTH);
 		add(getMiddlePanel(), BorderLayout.CENTER);
 		add(getBottomPanel(), BorderLayout.SOUTH);
-
 		setTimer();
 
 		setLocationRelativeTo(null);
@@ -269,6 +268,8 @@ public class WordExercise extends JFrame {
 			txtlbl = new JLabel("단어를 입력하세요:    ");
 			textEnter = new JTextField(35);
 
+			textEnter.setEnabled(false);
+			
 			JPanel centerPanel = new JPanel();
 
 			centerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20));
