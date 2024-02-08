@@ -3,6 +3,8 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -17,7 +19,7 @@ import javax.swing.SwingUtilities;
 import model.UserDAO;
 import model.UserDTO;
 
-public class Login extends JFrame {
+public class Login extends JFrame implements KeyListener {
 	private static String enteredText;
 	private JLabel lblTitle;
 	private JLabel lblId;
@@ -41,7 +43,7 @@ public class Login extends JFrame {
 		JLabel backgroundLabel = new JLabel(backgroundImage);
 		backgroundLabel.setBounds(0, 0, 500, 500);
 		this.add(backgroundLabel);
-
+		
 		backgroundLabel.setLayout(null);
 		backgroundLabel.add(getTitleLabel());
 		backgroundLabel.add(getIdTextField());
@@ -52,6 +54,8 @@ public class Login extends JFrame {
 		backgroundLabel.add(getPwLabel());
 
 		this.locationCenter();
+		txtFieldId.addKeyListener(this);
+		pwFieldPw.addKeyListener(this);
 	}
 
 	/* 라벨 */
@@ -196,11 +200,30 @@ public class Login extends JFrame {
 		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
 	}
-
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			Login login = new Login();
 			login.setVisible(true);
 		});
+	}
+	
+	// 엔터 입력 시 로그인 실행
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			LoginFn();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
