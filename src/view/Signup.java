@@ -3,6 +3,8 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import javax.swing.JTextField;
 import model.UserDAO;
 import model.UserDTO;
 
-public class Signup extends JFrame {
+public class Signup extends JFrame implements KeyListener{
 
     private JLabel lblTitle;
     private JLabel lblId;
@@ -56,6 +58,11 @@ public class Signup extends JFrame {
         backgroundLabel.add(getCancelBtn());
 
         this.locationCenter();
+        
+        // 키 입력 리스너 추가
+        txtFieldId.addKeyListener(this);
+		pwFieldPw.addKeyListener(this);
+		pwFieldPwVerify.addKeyListener(this);
     }
 
 	/* 라벨 */
@@ -215,7 +222,6 @@ public class Signup extends JFrame {
 				JOptionPane.showMessageDialog(Signup.this, "비밀번호와 비밀번호 확인란에 입력된 문자가 동일해야합니다.");
 			}
 		}
-//		txtFieldId.setText("");
 		pwFieldPw.setText("");
 		pwFieldPwVerify.setText("");
 	}
@@ -227,6 +233,26 @@ public class Signup extends JFrame {
 		int leftTopX = centerPoint.x - this.getWidth() / 2;
 		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
+	}
+	
+	// 엔터 입력 시 로그인 실행
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			SignupFn();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
