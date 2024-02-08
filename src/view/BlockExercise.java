@@ -37,7 +37,7 @@ import model.BlockDTO;
 public class BlockExercise extends JFrame {
 	// 컴포넌트
 	private JPanel panelNorth, panelCenter, panelTimer, panelInfo;
-	private JButton btnStart, btnReset, btnAdd, btnDelete;
+	private JButton btnStart, btnReset, btnAdd, btnDelete, btnMain;
 	private JTextField txtNorth;
 	private JTextPane txtCenterPane;
 	private JLabel labelCenter, labelMin, labelSec, colon1, currentSpeed, currentAcc, labelMax, labelTypo;
@@ -99,16 +99,17 @@ public class BlockExercise extends JFrame {
 			btnPanel.add(getBtnReset());
 			btnPanel.add(getBtnAdd());
 			btnPanel.add(getBtnDelete());
+			btnPanel.add(getBtnMain());
 			timerPanel.add(getPanelTimer());
 			infoPanel.add(getPanelInfo());
 			panelNorth.add(btnPanel);
 			panelNorth.add(timerPanel);
 			panelNorth.add(infoPanel);
 			panelNorth.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-			btnPanel.setBackground(new Color(170, 207,243));
-			infoPanel.setBackground(new Color(170, 207,243));
-			timerPanel.setBackground(new Color(170, 207,243));
-			panelNorth.setBackground(new Color(170, 207,243));
+			btnPanel.setBackground(new Color(170, 207, 243));
+			infoPanel.setBackground(new Color(170, 207, 243));
+			timerPanel.setBackground(new Color(170, 207, 243));
+			panelNorth.setBackground(new Color(170, 207, 243));
 		}
 		return panelNorth;
 	}
@@ -174,6 +175,20 @@ public class BlockExercise extends JFrame {
 		return btnDelete;
 	}
 
+	// 메인으로 버튼 생성
+	private JButton getBtnMain() {
+		if (btnMain == null) {
+			btnMain = new JButton();
+			btnMain.setText("메인으로");
+			btnMain.addActionListener(e -> {
+				dispose();
+				Main main = new Main();
+				main.setVisible(true);
+			});
+		}
+		return btnMain;
+	}
+
 	// 타이머 패널 생성
 	private JPanel getPanelTimer() {
 		if (panelTimer == null) {
@@ -189,7 +204,7 @@ public class BlockExercise extends JFrame {
 			labelMin.setFont(new Font("courier", Font.BOLD, 30));
 			labelSec.setFont(new Font("courier", Font.BOLD, 30));
 			colon1.setFont(new Font("courier", Font.BOLD, 30));
-			panelTimer.setBackground(new Color(170, 207,243));
+			panelTimer.setBackground(new Color(170, 207, 243));
 		}
 		return panelTimer;
 	}
@@ -223,11 +238,11 @@ public class BlockExercise extends JFrame {
 			label1.setFont(new Font("courier", Font.BOLD, 15));
 			currentAcc.setFont(new Font("courier", Font.BOLD, 15));
 			label2.setFont(new Font("courier", Font.BOLD, 15));
-			labelMax.setFont(new Font("courier",Font.PLAIN,13));
-			labelTypo.setFont(new Font("courier",Font.PLAIN,13));
-			speedPanel.setBackground(new Color(170, 207,243));
-			accPanel.setBackground(new Color(170, 207,243));
-			panelInfo.setBackground(new Color(170, 207,243));
+			labelMax.setFont(new Font("courier", Font.PLAIN, 13));
+			labelTypo.setFont(new Font("courier", Font.PLAIN, 13));
+			speedPanel.setBackground(new Color(170, 207, 243));
+			accPanel.setBackground(new Color(170, 207, 243));
+			panelInfo.setBackground(new Color(170, 207, 243));
 		}
 		return panelInfo;
 	}
@@ -247,8 +262,8 @@ public class BlockExercise extends JFrame {
 			panelCenter.add(northPanel, BorderLayout.NORTH);
 			panelCenter.add(new JScrollPane(getTxtCenterPane()), BorderLayout.CENTER); // JTextPane으로 변경
 			panelCenter.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // 중앙 패널 여백 설정
-			panelCenter.setBackground(new Color(170, 207,243));
-			northPanel.setBackground(new Color(170, 207,243));
+			panelCenter.setBackground(new Color(170, 207, 243));
+			northPanel.setBackground(new Color(170, 207, 243));
 		}
 		return panelCenter;
 	}
@@ -278,6 +293,7 @@ public class BlockExercise extends JFrame {
 						}
 					}
 				}
+
 				// 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
 				private boolean isSpecialKey(int keyCode) {
 					return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN)
@@ -388,7 +404,7 @@ public class BlockExercise extends JFrame {
 			labelMax.setText("(최고타수: " + Math.round(maxSpeed) + "타)");
 			// 현재 정확도 리프레쉬
 			currentAcc.setText(Math.round(stringAcc) + "%");
-			labelTypo.setText("(오타수: "+totalTypo+"개)");
+			labelTypo.setText("(오타수: " + totalTypo + "개)");
 		}
 		// 시작하기 버튼 눌렀을 경우
 		else if (input.equals("초기 문제 출력")) {
@@ -406,15 +422,13 @@ public class BlockExercise extends JFrame {
 			acc = (acc / totalLength) * 100;
 			// 타수 계산
 			double diffSec = inputTotalTime / 1000.0;
-			System.out.println(diffSec);
 			speed = totalInputCount * 60 / diffSec;
-			System.out.println(totalInputCount * 60);
 			// 기록 DB에 저장
 			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
 			stopTimer();
 			// 정확도, 타수 출력
-			JOptionPane.showMessageDialog(this, "총 타수 : " + (int) Math.round(speed) + "타/분   (최고타수: " + Math.round(maxSpeed) + "타/분)"
-					+ "\n총 정확도 : " + (int) acc + "%   (오타수: " + totalTypo + "개)");
+			JOptionPane.showMessageDialog(this, "총 타수 : " + (int) Math.round(speed) + "타/분   (최고타수: "
+					+ Math.round(maxSpeed) + "타/분)" + "\n총 정확도 : " + (int) acc + "%   (오타수: " + totalTypo + "개)");
 			// 화면 초기화
 			resetTimer();
 			refreshTextArea();
@@ -452,7 +466,7 @@ public class BlockExercise extends JFrame {
 	private void highlightFirstLine(JTextPane textPane) {
 		StyledDocument doc = textPane.getStyledDocument();
 		Style style = textPane.addStyle("highlight", null);
-		StyleConstants.setBackground(style, new Color(170, 207,243));
+		StyleConstants.setBackground(style, new Color(170, 207, 243));
 
 		// 이전 강조 지우기
 		doc.setCharacterAttributes(0, doc.getLength(), textPane.getStyle(StyleContext.DEFAULT_STYLE), true);
