@@ -33,7 +33,7 @@ import model.WordDTO;
 
 public class WordExercise extends JFrame {
 	private JPanel topPanel, middlePanel, bottomPanel, panelTimer, panelInfo, btnPanel, typingSpeedPanel, accuracyPanel;
-	private JButton btnStart, btnReset, btnAddWord, btnDeleteWord;
+	private JButton btnStart, btnReset, btnAddWord, btnDeleteWord, btnMain;
 	private JTextArea txtContent;
 	private JTextField textEnter;
 	private JLabel txtlbl, lblWordList, typingSpeedLabel, accuracyLabel, labelMin, labelSec, maxTypingspdLabel,
@@ -89,6 +89,7 @@ public class WordExercise extends JFrame {
 			btnReset = new JButton("초기화");
 			btnAddWord = new JButton("단어 추가");
 			btnDeleteWord = new JButton("단어 삭제");
+			btnMain = new JButton("메인으로");
 
 			topPanel.setBackground(new Color(250, 231, 198));
 			btnPanel.setBackground(new Color(250, 231, 198));
@@ -148,7 +149,7 @@ public class WordExercise extends JFrame {
 
 					// 시작 버튼을 누르면 텍스트필드에 포커스
 					textEnter.requestFocusInWindow();
-					//텍스트필드 게임 시작 누르면 초기화
+					// 텍스트필드 게임 시작 누르면 초기화
 					textEnter.setText("");
 				}
 			});
@@ -178,10 +179,10 @@ public class WordExercise extends JFrame {
 
 					// 텍스트 필드 비활성화
 					textEnter.setEnabled(false);
-					
-					//텍스트필드 게임 시작 누르면 초기화
+
+					// 텍스트필드 게임 시작 누르면 초기화
 					textEnter.setText("");
-					
+
 					resetTimer();
 				}
 			});
@@ -202,11 +203,24 @@ public class WordExercise extends JFrame {
 					dialog.setVisible(true);
 				}
 			});
+			// 메인으로 이동
+			btnMain.addActionListener(new ActionListener() {
+			    @Override
+			    public void actionPerformed(ActionEvent e) {
+			    	 // 현재 다이얼로그를 닫습니다.
+			        dispose();
+			        
+			        // 메인 화면으로 이동
+			        Main mainFrame = new Main();
+			        mainFrame.setVisible(true);
+			    }
+			});
 
 			btnPanel.add(btnStart);
 			btnPanel.add(btnReset);
 			btnPanel.add(btnAddWord);
 			btnPanel.add(btnDeleteWord);
+			btnPanel.add(btnMain);
 			topPanel.add(btnPanel);
 			topPanel.add(getPanelTimer());
 			topPanel.add(getTypingSpeedPanel());
@@ -335,7 +349,7 @@ public class WordExercise extends JFrame {
 		for (WordDTO word : words) {
 			txtContent.append(word.getWordText() + "\n");
 		}
-		
+
 		lblWordList.setText("단어 목록 : " + words.size());
 
 	}
