@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -62,18 +64,22 @@ public class WordDialog extends JDialog {
 				if (word.length() > 50) {
 					JOptionPane.showMessageDialog(WordDialog.this, "추가할 단어가 올바르지 않습니다.", "오류",
 							JOptionPane.ERROR_MESSAGE);
+					wordField.setText("");
 					return;
 				}
 
-				// 중복된 단어인지 확인
-				if (dao.getWord().contains(word)) {
+				try {
+					dao.addWord(id, word);
+				} catch (SQLIntegrityConstraintViolationException ex) { // 중복된 단어일 경우 예외처리
 					JOptionPane.showMessageDialog(WordDialog.this, "추가할 단어가 올바르지 않습니다.", "오류",
 							JOptionPane.ERROR_MESSAGE);
+					wordField.setText("");
 					return;
-				}
-
-				// 데이터베이스에 단어 추가
-				dao.addWord(id, word);
+				} catch (SQLException ex) {
+					JOptionPane.showMessageDialog(WordDialog.this, "SQL에서 오류가 발생했습니다.", "오류",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+			    }
 
 				JOptionPane.showMessageDialog(WordDialog.this, "단어를 추가했습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
 

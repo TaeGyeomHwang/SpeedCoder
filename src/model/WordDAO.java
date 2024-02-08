@@ -3,6 +3,7 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class WordDAO extends SpeedCoderDAO {
 		return wordList;
 	}
 
-	public void addWord(String id, String word) {
+	public void addWord(String id, String word) throws SQLException {
 		connect(); // 데이터베이스 연결
 		try {
 			String sql = "INSERT INTO word (id ,word_text) VALUES (?, ?)";
@@ -71,10 +72,14 @@ public class WordDAO extends SpeedCoderDAO {
 			pstmt.setString(2, word);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close();
-		}
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                throw (SQLIntegrityConstraintViolationException) e;
+            } else {
+                e.printStackTrace();
+            }
+        } finally {
+            close();
+        }
 	}
 
 // 단어 목록 갱신
