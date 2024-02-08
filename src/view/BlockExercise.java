@@ -24,6 +24,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -274,50 +276,37 @@ public class BlockExercise extends JFrame {
 			txtNorth = new JTextField();
 			txtNorth.setEditable(false);
 			txtNorth.addActionListener(e -> {
-				
+				System.out.println("타이머 종료");
+				inputEndTime = System.currentTimeMillis();
+				currentTime = inputEndTime - inputStartTime;
+				inputTotalTime += currentTime;
+				inputText = txtNorth.getText();
+				txtNorth.setText("");
+				totalInputCount += inputCount;
+				validateText(inputText);
+				inputCount = 0;
 			});
-			txtNorth.addKeyListener(new KeyListener() {
-				@Override
-				public void keyTyped(KeyEvent e) {// 문자 키를 눌렀을 때
-					
-				}
-				@Override
-				public void keyReleased(KeyEvent e) {// 키를 떼었을 때
-					int keyCode = e.getKeyCode();
-					if (!isSpecialKey(keyCode)) {
-						inputCount++;
-						if (inputCount == 1) {
-							System.out.println("타이머 시작");
-							inputStartTime = System.currentTimeMillis();
-						}
-					}
-					if(keyCode== 10 || keyCode==13) {
-						System.out.println("타이머 종료");
-						inputEndTime = System.currentTimeMillis();
-						currentTime = inputEndTime - inputStartTime;
-						inputTotalTime += currentTime;
-						inputText = txtNorth.getText();
-						txtNorth.setText("");
-						totalInputCount += inputCount;
-						validateText(inputText);
-						inputCount = 0;
-					}
-				}
-				@Override
-				public void keyPressed(KeyEvent e) {
-					
-				}
-			});
+			txtNorth.getDocument().addDocumentListener(new DocumentListener() {
+	            @Override
+	            public void insertUpdate(DocumentEvent e) {
+	                inputCount++;
+	                if (inputCount == 1) {
+	                    System.out.println("타이머 시작");
+	                    inputStartTime = System.currentTimeMillis();
+	                }
+	            }
+	            
+	            @Override
+	            public void removeUpdate(DocumentEvent e) {
+	            }
+	            
+	            @Override
+	            public void changedUpdate(DocumentEvent e) {
+	            }
+	        });
+
 		}
 		return txtNorth;
-	}
-
-	// 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
-	private boolean isSpecialKey(int keyCode) {
-		return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN) || keyCode == KeyEvent.VK_BACK_SPACE
-				|| keyCode == KeyEvent.VK_DELETE ||  keyCode == KeyEvent.VK_ALT
-				|| keyCode == KeyEvent.VK_ALT_GRAPH || keyCode == 263 || keyCode == 0 || keyCode == 10 || keyCode == 13 || keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT
-				|| keyCode == KeyEvent.VK_CAPS_LOCK;
 	}
 
 	// 텍스트 에리어 생성
@@ -396,7 +385,7 @@ public class BlockExercise extends JFrame {
 				}
 				totalLength++;
 			}
-			System.out.println("전체 문자수: "+lines[index].trim().length());
+			System.out.println("전체 문자수: " + lines[index].trim().length());
 			acc += currentCorrect;
 			double stringLength = lines[index].trim().length();
 			double stringAcc = (currentCorrect / stringLength) * 100.0;
@@ -437,7 +426,8 @@ public class BlockExercise extends JFrame {
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
 			// 정확도 계산
-			System.out.println(totalLength);
+			System.out.println("맞은 문자수: "+acc);
+			System.out.println("전체 문자수: "+totalLength);
 			acc = (acc / totalLength) * 100;
 			// 타수 계산
 			double diffSec = inputTotalTime / 1000.0;
@@ -465,6 +455,7 @@ public class BlockExercise extends JFrame {
 		inputTotalTime = 0;
 		maxSpeed = 0;
 		totalTypo = 0;
+		totalLength = 0;
 		// 타이머 시작
 		beforeTime = System.currentTimeMillis();
 		// 접근할 인덱스 랜덤으로 설정
