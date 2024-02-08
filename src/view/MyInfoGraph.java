@@ -86,7 +86,7 @@ public class MyInfoGraph extends JFrame{
                     super.paintComponent(g);
                     drawFrame(g);
                     drawMainLine(g);
-                    drawRod(g, 90, 380, "word");
+//                    drawRod(g, 90, 380, "word");
                 }
             };
             pnlGraphics.setBounds(0, 180, 1200, 420);

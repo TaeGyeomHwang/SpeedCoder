@@ -2,6 +2,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +36,8 @@ public class WordDialog extends JDialog {
 		inputPanel.add(wordField);
 		inputPanel.add(addButton);
 		inputPanel.add(cancelButton);
-
+		
+		inputPanel.setBackground(new Color(250, 231, 198));
 		add(inputPanel, BorderLayout.CENTER);
 
 		addButton.addActionListener(new ActionListener() {

@@ -1,6 +1,8 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,11 +10,13 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import model.WordDAO;
@@ -85,13 +89,36 @@ public class DeleteWordDialog extends JDialog {
 
 		// 다이얼로그에 추가
 		JPanel panel = new JPanel(new BorderLayout());
+		panel.setBackground(new Color(250, 231, 198));
 		panel.add(scrollPane, BorderLayout.CENTER);
 		JPanel btnPanel = new JPanel();
+		scrollPane.setBackground(new Color(250, 231, 198));
+		btnPanel.setBackground(new Color(250, 231, 198));
 		btnPanel.add(btnDelete);
 		btnPanel.add(btnCancel);
 		panel.add(btnPanel, BorderLayout.SOUTH);
 		add(panel);
 
 		setLocationRelativeTo(parent);
+		
+		DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer() {
+		    @Override
+		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		        Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		        
+		        // 배경색 설정
+		        if (value != null && "단어".equals(value.toString())) {
+		            component.setBackground(new Color(250, 231, 198)); 
+		            ((JLabel) component).setHorizontalAlignment(SwingConstants.CENTER);
+		        } else {
+		            component.setBackground(table.getTableHeader().getBackground());
+		        }
+		        
+		        return component;
+		    }
+		};
+
+		// 테이블의 헤더에 렌더러를 설정합니다.
+		table.getTableHeader().setDefaultRenderer(headerRenderer);
 	}
 }
