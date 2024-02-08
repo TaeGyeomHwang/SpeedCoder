@@ -341,7 +341,7 @@ public class WordExercise extends JFrame {
 		accuracyLabel.setText("현재 정확도: -%");
 		maxTypingspdLabel.setText("(최고 타수 : -타/분)");
 		incorrectLabel.setText("(오답 개수 : -개)");
-
+		
 		// 텍스트 영역을 초기화
 		txtContent.setText("");
 
@@ -392,7 +392,7 @@ public class WordExercise extends JFrame {
 				// 현재 정확도
 				correctCount++;
 				aCc = (int) (enterCount - correctCount);
-				double cAcc = correctCount / enterCount * 100.0;
+				cAcc = correctCount / enterCount * 100.0;
 				typingSpeedLabel.setText("현재 타수: " + Math.round(cSpeed) + "타/분");
 				accuracyLabel.setText("현재 정확도: " + Math.round(cAcc) + "%");
 				maxTypingspdLabel.setText("(최고 타수 : " + maxTypingSpeed + "타/분)");
@@ -470,11 +470,6 @@ public class WordExercise extends JFrame {
 			textEnter.setEnabled(false);
 			// 단어 목록 보이게
 			lblWordList.setVisible(true);
-			// 현재 타수 및 현재 정확도, 최고 타수, 오답 개수 초기화
-			typingSpeedLabel.setText("현재 타수: -타/분");
-			accuracyLabel.setText("현재 정확도: -%");
-			maxTypingspdLabel.setText("(최고 타수 : -타/분)");
-			incorrectLabel.setText("(오답 개수 : -개)");
 			stopTimer();
 			// 타수와 정확도 계산 및 팝업 표시
 			calculate();
@@ -492,16 +487,16 @@ public class WordExercise extends JFrame {
 
 		// 정확도 계산
 		double accuracy = 100 - ((((double) enterCount - 15.0) / 15.0) * 100.0);
-		int acc = (int) Math.round(accuracy);
+		
 
 		// 총 입력 횟수에서 정답 개수(15)를 뺀 것이 오답 횟수
 		int incorrectCount = (int) (enterCount - 15);
 
 		// 팝업으로 타수와 정확도, 최고 타수, 오답률 표시
 		JOptionPane.showMessageDialog(this, "총 타수 : " + speed + "타" + "(최고 타수 : " + maxTypingSpeed + "타)" + "\n"
-				+ "총 정확도 : " + acc + "%" + "(오답 개수 : " + incorrectCount + "개)");
+				+ "총 정확도 : " + Math.round(cAcc) + "%" + "(오답 개수 : " + incorrectCount + "개)");
 
-		WordDAO.getInstance().insertScore(acc, speed);
+		WordDAO.getInstance().insertScore((int) Math.round(cAcc), speed);
 		// 단어 목록 갱신
 		refreshWordList();
 
