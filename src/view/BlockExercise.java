@@ -201,10 +201,10 @@ public class BlockExercise extends JFrame {
 			panelInfo = new JPanel();
 			panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
 			JLabel label1 = new JLabel("현재 타수 : ");
-			currentSpeed = new JLabel("-타/분");
+			currentSpeed = new JLabel("- 타/분");
 			labelMax = new JLabel("(최고타수: - 타/분)");
 			JLabel label2 = new JLabel(" 현재 정확도 : ");
-			currentAcc = new JLabel("-%");
+			currentAcc = new JLabel("- %");
 			labelTypo = new JLabel("(오타수: - 개)");
 			// 서브 패널 생성, 컴포넌트 부착
 			JPanel speedPanel = new JPanel();
