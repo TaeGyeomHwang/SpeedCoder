@@ -122,6 +122,14 @@ public class MyInfo extends JFrame {
 				rowData[row][2] = scoreDTO.getAcc();
 				row++;
 			}
+			if(scores.size()<10) {
+				for(int i=scores.size();i<10; i++) {
+					rowData[row][0] = "-";
+					rowData[row][1] = "-";
+					rowData[row][2] = "-";
+					row++;
+				}
+			}
 			tblWord = new JTable(rowData, columnNames);
 			tblWord.setBounds(50, 200, 150, 160);
 
@@ -162,6 +170,14 @@ public class MyInfo extends JFrame {
 				rowData[row][1] = scoreDTO.getSpeed();
 				rowData[row][2] = scoreDTO.getAcc();
 				row++;
+			}
+			if(scores.size()<10) {
+				for(int i=scores.size();i<10; i++) {
+					rowData[row][0] = "-";
+					rowData[row][1] = "-";
+					rowData[row][2] = "-";
+					row++;
+				}
 			}
 			tblBlock = new JTable(rowData, columnNames);
 			tblBlock.setBounds(280, 200, 150, 160);
