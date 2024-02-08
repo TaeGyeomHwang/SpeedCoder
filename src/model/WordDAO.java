@@ -39,12 +39,13 @@ public class WordDAO extends SpeedCoderDAO {
 	}
 
 //전체 단어 가져오기
-	public List<WordDTO> getWords() {
+	public List<WordDTO> getWords(String id) {
 		List<WordDTO> wordList = new ArrayList<>();
 		connect();
 		try {
-			String sql = "SELECT * FROM word";
+			String sql = "SELECT * FROM word where id = ?";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
 
 			while (rs.next()) {

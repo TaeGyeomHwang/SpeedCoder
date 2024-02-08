@@ -20,12 +20,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import model.WordDAO;
+import model.WordDTO;
 
 public class DeleteWordDialog extends JDialog {
 	private JTable table;
 	private JButton btnDelete;
 	private JButton btnCancel;
 	private WordExercise parentFrame;
+	
+	private String id = Login.getLoginedId();
+	private WordDAO dao = WordDAO.getInstance();
+	private List<WordDTO> words = dao.getWords(id);
 
 	public DeleteWordDialog(WordExercise parent) {
 		super(parent, "단어 삭제", true);
@@ -33,14 +38,11 @@ public class DeleteWordDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(300, 200);
 
-		WordDAO dao = WordDAO.getInstance();
-		List<String> words = dao.getWord();
-
 		// 테이블 모델 생성
 		String[] columns = { "단어" };
 		Object[][] data = new Object[words.size()][1];
 		for (int i = 0; i < words.size(); i++) {
-			data[i][0] = words.get(i);
+			data[i][0] = words.get(i).getWordText();
 		}
 		DefaultTableModel tableModel = new DefaultTableModel(data, columns);
 
@@ -68,8 +70,7 @@ public class DeleteWordDialog extends JDialog {
 					// 삭제 성공 메시지 팝업
 					JOptionPane.showMessageDialog(DeleteWordDialog.this, "단어를 삭제했습니다.", "성공",
 							JOptionPane.INFORMATION_MESSAGE);
-					// 다이얼로그 종료
-					dispose();
+					
 				} else {
 					// 선택된 단어가 없는 경우 메시지 팝업
 					JOptionPane.showMessageDialog(DeleteWordDialog.this, "단어를 선택해주세요.", "오류",

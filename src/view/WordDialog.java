@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,11 +16,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import model.WordDAO;
+import model.WordDTO;
 
 public class WordDialog extends JDialog {
 	private JTextField wordField;
 	private JButton addButton;
 	private JButton cancelButton;
+	
+	private String id = Login.getLoginedId();
+	private WordDAO dao = WordDAO.getInstance();
+	private List<WordDTO> words = dao.getWords(id);
 
 	public WordDialog(WordExercise wordExercise) {
 		super(wordExercise, "단어 추가", true);
@@ -60,7 +66,6 @@ public class WordDialog extends JDialog {
 				}
 
 				// 중복된 단어인지 확인
-				WordDAO dao = WordDAO.getInstance();
 				if (dao.getWord().contains(word)) {
 					JOptionPane.showMessageDialog(WordDialog.this, "추가할 단어가 올바르지 않습니다.", "오류",
 							JOptionPane.ERROR_MESSAGE);
@@ -68,12 +73,11 @@ public class WordDialog extends JDialog {
 				}
 
 				// 데이터베이스에 단어 추가
-				dao.addWord(Login.getLoginedId(), word);
+				dao.addWord(id, word);
 
 				JOptionPane.showMessageDialog(WordDialog.this, "단어를 추가했습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
 
-				// 닫기
-				dispose();
+				
 
 				// 메인 화면 새로고침
 				wordExercise.refreshWordList();
