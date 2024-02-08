@@ -421,7 +421,7 @@ public class WordExercise extends JFrame {
 			for (int j = 0; j < maxSpaces; j++) {
 				wordWithSpaces.append(" ");
 			}
-			wordWithSpaces.append(words.get(i));
+			wordWithSpaces.append(words.get(i).getWordText());
 
 			txtContent.append(wordWithSpaces.toString() + "\n");
 		}
