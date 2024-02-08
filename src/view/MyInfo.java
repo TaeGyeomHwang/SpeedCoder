@@ -109,7 +109,7 @@ public class MyInfo extends JFrame {
 	// 단어 연습 순위표 테이블 설정
 	private JTable getWordTable() {
 		if (tblWord == null) {
-			String[] columnNames = { "번호", "타수", "정확도(%)" };
+			String[] columnNames = { "최신순", "타수", "정확도(%)" };
 
 			ScoreDAO scoreDAO = ScoreDAO.getInstance();
 			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "word");
@@ -132,7 +132,7 @@ public class MyInfo extends JFrame {
 
 			backgroundLabel.add(header);
 
-			tblWord.getColumn("번호").setPreferredWidth(50);
+			tblWord.getColumn("최신순").setPreferredWidth(80);
 			tblWord.getColumn("타수").setPreferredWidth(100);
 			tblWord.getColumn("정확도(%)").setPreferredWidth(150);
 			backgroundLabel.add(header); // Add header to the backgroundLabel
@@ -150,7 +150,7 @@ public class MyInfo extends JFrame {
 	// 블록 연습 순위표 테이블 설정
 	private JTable getBlockTable() {
 		if (tblBlock == null) {
-			String[] columnNames = { "번호", "타수", "정확도(%)" };
+			String[] columnNames = { "최신순", "타수", "정확도(%)" };
 
 			ScoreDAO scoreDAO = ScoreDAO.getInstance();
 			List<ScoreDTO> scores = scoreDAO.getScoreByIdDesc(Login.getLoginedId(), "block");
@@ -173,7 +173,7 @@ public class MyInfo extends JFrame {
 
 			backgroundLabel.add(header);
 
-			tblBlock.getColumn("번호").setPreferredWidth(50);
+			tblBlock.getColumn("최신순").setPreferredWidth(80);
 			tblBlock.getColumn("타수").setPreferredWidth(100);
 			tblBlock.getColumn("정확도(%)").setPreferredWidth(150);
 			backgroundLabel.add(header); // Add header to the backgroundLabel

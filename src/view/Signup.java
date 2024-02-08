@@ -183,12 +183,12 @@ public class Signup extends JFrame {
 		char[] pw = pwFieldPw.getPassword();
 		char[] pwVerify = pwFieldPwVerify.getPassword();
 
-		UserDAO signupDAO = UserDAO.getInstance();
-		List<UserDTO> signups = signupDAO.getSignups(); // 전체 회원 정보 가져오기 메소드
+		UserDAO userDAO = UserDAO.getInstance();
+		List<UserDTO> users = userDAO.getSignups(); // 전체 회원 정보 가져오기 메소드
 
 		// 입력받은 아이디가 중복이거나 null일 경우 idCehck 변수 true 설정
-		for (UserDTO signupDTO : signups) {
-			if (id.equals(signupDTO.getId()) || id.equals(null)) {
+		for (UserDTO userDTO : users) {
+			if (id.equals(userDTO.getId()) || id.equals("")) {
 				idCheck = true;
 			}
 		}
@@ -198,13 +198,13 @@ public class Signup extends JFrame {
 			// 비밀번호가 입력되었으면서 검증란과 동일한 경우 if 문, 아닌 경우 else
 			if (pw.length != 0 && Arrays.equals(pw, pwVerify)) {
 				/* 회원가입 기능 구현 테스트 위해 주석처리함 */
-//				SignupDTO signupDTO = new SignupDTO();
-//				
-//				signupDTO.setId(id);
-//				String strPw = new String(pw); 
-//				signupDTO.setPw(strPw);
-//				
-//				signupDAO.insertSignup(signupDTO);
+				UserDTO userDTO = new UserDTO();
+				
+				userDTO.setId(id);
+				String strPw = new String(pw); 
+				userDTO.setPw(strPw);
+				
+				userDAO.insertSignup(userDTO);
 				JOptionPane.showMessageDialog(Signup.this, "회원가입이 완료되었습니다.");
 				super.dispose();
 				Login login = new Login();
