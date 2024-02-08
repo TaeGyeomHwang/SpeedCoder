@@ -278,7 +278,6 @@ public class BlockExercise extends JFrame {
 						}
 					}
 				}
-
 				// 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
 				private boolean isSpecialKey(int keyCode) {
 					return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN)
