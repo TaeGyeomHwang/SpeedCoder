@@ -207,13 +207,24 @@ public class Signup extends JFrame implements KeyListener{
 
 		// 입력받은 아이디가 중복이거나 null일 경우 idCehck 변수 true 설정
 		for (UserDTO userDTO : users) {
-			if (id.equals(userDTO.getId()) || id.equals("")) {
+			if (id.equals(userDTO.getId()) || id.contains(" ") || id.equals("")) {
 				idCheck = true;
 			}
 		}
 		if (idCheck == true) {
 			JOptionPane.showMessageDialog(Signup.this, "해당 아이디는 사용할 수 없습니다.");
 		} else { // 아이디 검증 통과한 경우
+			String pwStr ="";
+			char[] pwArr = pwFieldPw.getPassword();
+			for(char c: pwArr) {
+				if(c==' ') {
+					JOptionPane.showMessageDialog(Signup.this, "비밀번호를 공백으로 설정할 수 없습니다.");
+					pwFieldPw.setText("");
+					pwFieldPwVerify.setText("");
+					return ;
+				}
+			}
+			
 			// 비밀번호가 입력되었으면서 검증란과 동일한 경우 if 문, 아닌 경우 else
 			if (pw.length != 0 && Arrays.equals(pw, pwVerify)) {
 				UserDTO userDTO = new UserDTO();
