@@ -290,23 +290,27 @@ public class WordExercise extends JFrame {
 			textEnter.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
-					// 엔터를 입력할 때 시간
-					enterTime = System.currentTimeMillis();
-					// 입력된 단어 가져오기
-					String enteredWord = textEnter.getText().trim();
+					if(!textEnter.getText().equals("")) {
+						// 엔터를 입력할 때 시간
+						enterTime = System.currentTimeMillis();
+						// 입력된 단어 가져오기
+						String enteredWord = textEnter.getText().trim();
 
-					// Enter 입력 횟수 증가
-					enterCount++;
-					// 텍스트 영역에서 해당 단어 삭제
-					deleteEnteredWord(enteredWord);
+						// Enter 입력 횟수 증가
+						enterCount++;
+						// 텍스트 영역에서 해당 단어 삭제
+						deleteEnteredWord(enteredWord);
 
-					inputCount = 0;
-					keyTime = 0;
-					// 입력란 초기화
-					textEnter.setText("");
-					// 게임 종료 확인
-					checkGameEnd();
+						inputCount = 0;
+						keyTime = 0;
+						// 입력란 초기화
+						textEnter.setText("");
+						// 게임 종료 확인
+						checkGameEnd();
+					}else {
+						// 입력란 초기화
+						textEnter.setText("");
+					}
 				}
 
 			});
@@ -633,7 +637,7 @@ public class WordExercise extends JFrame {
 	// 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
 	private boolean isSpecialKey(int keyCode) {
 		return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN) || keyCode == KeyEvent.VK_BACK_SPACE
-				|| keyCode == KeyEvent.VK_DELETE || keyCode == KeyEvent.VK_ALT || keyCode == KeyEvent.VK_ALT_GRAPH
+				|| keyCode == KeyEvent.VK_DELETE || keyCode == KeyEvent.VK_ENTER || keyCode == KeyEvent.VK_ALT || keyCode == KeyEvent.VK_ALT_GRAPH
 				|| keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT || keyCode == KeyEvent.VK_CAPS_LOCK;
 	}
 }
