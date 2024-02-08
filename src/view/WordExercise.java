@@ -118,7 +118,7 @@ public class WordExercise extends JFrame {
 					typingSpeedLabel.setText("현재 타수: -타/분");
 					accuracyLabel.setText("현재 정확도: -%");
 					maxTypingspdLabel.setText("(최고 타수 : -타/분)");
-					incorrectLabel.setText("(오답 개수 : -개)");
+					incorrectLabel.setText("(오타수 : -개)");
 
 					// 시작하기 버튼을 누르면 밀리세컨드 단위로 타이머 시작
 					startTime = System.currentTimeMillis();
@@ -297,7 +297,7 @@ public class WordExercise extends JFrame {
 //				textEnter.setText("");
 //				
 //				// 게임 종료 확인
-//				checkGameEnd();
+//				checkGameEnd(); 
 //			});
 //			textEnter.getDocument().addDocumentListener(new DocumentListener() {
 //	            @Override
@@ -323,11 +323,10 @@ public class WordExercise extends JFrame {
 				}
 				@Override
 				public void keyReleased(KeyEvent e) {//키를 떼었을 때
-					System.out.println(textEnter.getText());
 					int keyCode = e.getKeyCode();
 					if (!isSpecialKey(keyCode)) {
 						inputCount++;
-						System.out.println(inputCount);
+						
 						if (inputCount == 1) { 
 							keyTime = System.currentTimeMillis();
 						}
@@ -375,7 +374,7 @@ public class WordExercise extends JFrame {
 		typingSpeedLabel.setText("현재 타수: -타/분");
 		accuracyLabel.setText("현재 정확도: -%");
 		maxTypingspdLabel.setText("(최고 타수 : -타/분)");
-		incorrectLabel.setText("(오답 개수 : -개)");
+		incorrectLabel.setText("(오타수 : -개)");
 		
 		// 텍스트 영역을 초기화
 		txtContent.setText("");
@@ -445,7 +444,7 @@ public class WordExercise extends JFrame {
 			typingSpeedLabel.setText("현재 타수: -타/분");
 			accuracyLabel.setText("현재 정확도: -%");
 			maxTypingspdLabel.setText("(최고 타수 : -타/분)");
-			incorrectLabel.setText("(오답 개수 : -개)");
+			incorrectLabel.setText("(오타수 : -개)");
 
 			btnAddWord.setEnabled(true);
 			btnDeleteWord.setEnabled(true);
@@ -528,8 +527,8 @@ public class WordExercise extends JFrame {
 		int incorrectCount = (int) (enterCount - 15);
 
 		// 팝업으로 타수와 정확도, 최고 타수, 오답률 표시
-		JOptionPane.showMessageDialog(this, "총 타수 : " + speed + "타" + "(최고 타수 : " + maxTypingSpeed + "타)" + "\n"
-				+ "총 정확도 : " + Math.round(cAcc) + "%" + "(오답 개수 : " + incorrectCount + "개)");
+		JOptionPane.showMessageDialog(this, "총 타수 : " + speed + "타  " + "  (최고 타수 : " + maxTypingSpeed + "타)" + "\n"
+				+ "총 정확도 : " + Math.round(cAcc) + "%  " + "  (오타수 : " + incorrectCount + "개)");
 
 		WordDAO.getInstance().insertScore((int) Math.round(cAcc), speed);
 		// 단어 목록 갱신
@@ -636,7 +635,7 @@ public class WordExercise extends JFrame {
 			accuracyPanel.setLayout(new FlowLayout());
 
 			accuracyLabel = new JLabel("현재 정확도: -%");
-			incorrectLabel = new JLabel("(오답 개수 : -개");
+			incorrectLabel = new JLabel("(오타수 : -개");
 
 			accuracyPanel.add(accuracyLabel);
 			accuracyPanel.add(incorrectLabel);
