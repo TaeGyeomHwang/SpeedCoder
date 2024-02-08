@@ -152,13 +152,13 @@ public class BlockDialogDelete extends JDialog {
 			BlockDAO blockDAO = BlockDAO.getInstance();
 			blockDAO.deleteBoard(id, title);
 			// 팝업 출력
-			JOptionPane.showMessageDialog(this, "블록 문제 삭제");
+			JOptionPane.showMessageDialog(this, "블록 문제를 삭제했습니다");
 			// 테이블, 텍스트에리어 초기화
 			refreshTable();
 			((BlockExercise) getParent()).refreshTextArea();
 		} else {
 			// 팝업 출력
-			JOptionPane.showMessageDialog(this, "문제를 선택해주세요.");
+			JOptionPane.showMessageDialog(this, "블록 문제를 선택해주세요.");
 		}
 	}
 
