@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -60,6 +59,7 @@ public class BlockExercise extends JFrame {
 	private int totalInputCount = 0;
 	private double maxSpeed = 0.0;
 	private int totalTypo = 0;
+	private double totalLength = 0.0;
 
 	// DAO, DTO
 	private BlockDAO blockDAO = BlockDAO.getInstance();
@@ -274,37 +274,50 @@ public class BlockExercise extends JFrame {
 			txtNorth = new JTextField();
 			txtNorth.setEditable(false);
 			txtNorth.addActionListener(e -> {
-				inputEndTime = System.currentTimeMillis();
-				currentTime = inputEndTime - inputStartTime;
-				inputTotalTime += currentTime;
-				inputText = txtNorth.getText();
-				txtNorth.setText("");
-				totalInputCount += inputCount;
-				validateText(inputText);
-				inputCount = 0;
+				
 			});
-			txtNorth.addKeyListener(new KeyAdapter() {
-				public void keyPressed(KeyEvent e) {
+			txtNorth.addKeyListener(new KeyListener() {
+				@Override
+				public void keyTyped(KeyEvent e) {// 문자 키를 눌렀을 때
+					
+				}
+				@Override
+				public void keyReleased(KeyEvent e) {// 키를 떼었을 때
 					int keyCode = e.getKeyCode();
 					if (!isSpecialKey(keyCode)) {
 						inputCount++;
 						if (inputCount == 1) {
+							System.out.println("타이머 시작");
 							inputStartTime = System.currentTimeMillis();
 						}
 					}
+					if(keyCode== 10 || keyCode==13) {
+						System.out.println("타이머 종료");
+						inputEndTime = System.currentTimeMillis();
+						currentTime = inputEndTime - inputStartTime;
+						inputTotalTime += currentTime;
+						inputText = txtNorth.getText();
+						txtNorth.setText("");
+						totalInputCount += inputCount;
+						validateText(inputText);
+						inputCount = 0;
+					}
 				}
-
-				// 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
-				private boolean isSpecialKey(int keyCode) {
-					return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN)
-							|| keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE
-							|| keyCode == KeyEvent.VK_ALT || keyCode == KeyEvent.VK_ALT_GRAPH
-							|| keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT
-							|| keyCode == KeyEvent.VK_CAPS_LOCK;
+				@Override
+				public void keyPressed(KeyEvent e) {
+					
 				}
 			});
 		}
 		return txtNorth;
+	}
+
+	// 입력한 키 값이 텍스트 필드에 입력되는 값이 아닌 경우
+	private boolean isSpecialKey(int keyCode) {
+		return (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_DOWN) || keyCode == KeyEvent.VK_BACK_SPACE
+				|| keyCode == KeyEvent.VK_DELETE ||  keyCode == KeyEvent.VK_ALT
+				|| keyCode == KeyEvent.VK_ALT_GRAPH || keyCode == 263 || keyCode == 0 || keyCode == 10 || keyCode == 13 || keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_SHIFT
+				|| keyCode == KeyEvent.VK_CAPS_LOCK;
 	}
 
 	// 텍스트 에리어 생성
@@ -381,13 +394,19 @@ public class BlockExercise extends JFrame {
 				if (input.charAt(j) == lines[index].trim().charAt(j)) {
 					currentCorrect++;
 				}
+				totalLength++;
 			}
+			System.out.println("전체 문자수: "+lines[index].trim().length());
 			acc += currentCorrect;
 			double stringLength = lines[index].trim().length();
 			double stringAcc = (currentCorrect / stringLength) * 100.0;
 			totalTypo = totalTypo + (int) (stringLength - currentCorrect);
-			// 인덱스 증가, 남은 문장 출력
+			// 인덱스 증가
 			index++;
+			// 다음 문장이 공백일 경우 스킵, 남은 문장 출력
+			while (index < lines.length && lines[index].trim().equals("")) {
+				index++;
+			}
 			for (int i = index; i < lines.length; i++) {
 				sb.append(lines[i]).append("\n");
 			}
@@ -418,7 +437,7 @@ public class BlockExercise extends JFrame {
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
 			// 정확도 계산
-			double totalLength = blocks.get(randomIndex).getBlockText().trim().replace("\n", "").length();
+			System.out.println(totalLength);
 			acc = (acc / totalLength) * 100;
 			// 타수 계산
 			double diffSec = inputTotalTime / 1000.0;
