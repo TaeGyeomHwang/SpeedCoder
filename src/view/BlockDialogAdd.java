@@ -22,6 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import exceptions.EmptyTitleContentException;
+import exceptions.TitleOverException;
 import model.BlockDAO;
 import model.BlockDTO;
 
@@ -114,6 +115,9 @@ public class BlockDialogAdd extends JDialog {
 	        if (content.isEmpty()) {
 	        	throw new EmptyTitleContentException();
 	        }
+	        if(title.length()>=50) {
+	        	throw new TitleOverException();
+	        }
 
 	        BlockDTO blockDTO = new BlockDTO();
 	        blockDTO.setId(id);
@@ -135,6 +139,8 @@ public class BlockDialogAdd extends JDialog {
 	        JOptionPane.showMessageDialog(this, e.getMessage());
 	    } catch (SQLIntegrityConstraintViolationException e) {	// 중복된 제목일 경우 예외처리
 	        JOptionPane.showMessageDialog(this, "중복된 제목입니다.");
+	    } catch (TitleOverException e) {
+	        JOptionPane.showMessageDialog(this, "제목이 올바르지 않습니다.");
 	    } catch (SQLException e) {
 	        JOptionPane.showMessageDialog(this, "SQL에서 오류가 발생했습니다.");
 	        e.printStackTrace();
