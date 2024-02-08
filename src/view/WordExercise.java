@@ -117,7 +117,7 @@ public class WordExercise extends JFrame {
 					// 타수 및 정확도 초기화
 					typingSpeedLabel.setText("현재 타수: -타/분");
 					accuracyLabel.setText("현재 정확도: -%");
-					maxTypingspdLabel.setText("(최고 타수 : -타/분)");
+					maxTypingspdLabel.setText("(최고타수 : -타/분)");
 					incorrectLabel.setText("(오타수 : -개)");
 
 					// 시작하기 버튼을 누르면 밀리세컨드 단위로 타이머 시작
@@ -373,7 +373,7 @@ public class WordExercise extends JFrame {
 		// 타수 및 정확도,현재 타수 및 오답 개수 초기화
 		typingSpeedLabel.setText("현재 타수: -타/분");
 		accuracyLabel.setText("현재 정확도: -%");
-		maxTypingspdLabel.setText("(최고 타수 : -타/분)");
+		maxTypingspdLabel.setText("(최고타수 : -타/분)");
 		incorrectLabel.setText("(오타수 : -개)");
 		
 		// 텍스트 영역을 초기화
@@ -429,7 +429,7 @@ public class WordExercise extends JFrame {
 				cAcc = correctCount / enterCount * 100.0;
 				typingSpeedLabel.setText("현재 타수: " + Math.round(cSpeed) + "타/분");
 				accuracyLabel.setText("현재 정확도: " + Math.round(cAcc) + "%");
-				maxTypingspdLabel.setText("(최고 타수 : " + maxTypingSpeed + "타/분)");
+				maxTypingspdLabel.setText("(최고타수 : " + maxTypingSpeed + "타/분)");
 				incorrectLabel.setText("(오답 개수 : " + Math.round(aCc) + "개)");
 			}
 		}
@@ -443,7 +443,7 @@ public class WordExercise extends JFrame {
 			// 타수 및 정확도 현재 타수 오답 개수 초기화
 			typingSpeedLabel.setText("현재 타수: -타/분");
 			accuracyLabel.setText("현재 정확도: -%");
-			maxTypingspdLabel.setText("(최고 타수 : -타/분)");
+			maxTypingspdLabel.setText("(최고타수 : -타/분)");
 			incorrectLabel.setText("(오타수 : -개)");
 
 			btnAddWord.setEnabled(true);
@@ -527,7 +527,7 @@ public class WordExercise extends JFrame {
 		int incorrectCount = (int) (enterCount - 15);
 
 		// 팝업으로 타수와 정확도, 최고 타수, 오답률 표시
-		JOptionPane.showMessageDialog(this, "총 타수 : " + speed + "타  " + "  (최고 타수 : " + maxTypingSpeed + "타)" + "\n"
+		JOptionPane.showMessageDialog(this, "총 타수 : " + speed + "타  " + "  (최고타수 : " + maxTypingSpeed + "타)" + "\n"
 				+ "총 정확도 : " + Math.round(cAcc) + "%  " + "  (오타수 : " + incorrectCount + "개)");
 
 		WordDAO.getInstance().insertScore((int) Math.round(cAcc), speed);
@@ -612,7 +612,7 @@ public class WordExercise extends JFrame {
 			typingSpeedPanel.setLayout(new FlowLayout());
 
 			typingSpeedLabel = new JLabel("현재 타수: -타/분");
-			maxTypingspdLabel = new JLabel("(최고 타수 : -타/분)");
+			maxTypingspdLabel = new JLabel("(최고타수 : -타/분)");
 
 			typingSpeedPanel.add(typingSpeedLabel);
 			typingSpeedPanel.add(maxTypingspdLabel);
