@@ -132,6 +132,7 @@ public class MyInfo extends JFrame {
 			}
 			tblWord = new JTable(rowData, columnNames);
 			tblWord.setBounds(50, 200, 150, 160);
+			tblWord.setDefaultEditor(Object.class, null);
 
 			// 테이블 헤더 생성
 			JTableHeader header = tblWord.getTableHeader();
@@ -181,6 +182,7 @@ public class MyInfo extends JFrame {
 			}
 			tblBlock = new JTable(rowData, columnNames);
 			tblBlock.setBounds(280, 200, 150, 160);
+			tblBlock.setDefaultEditor(Object.class, null);
 
 			// 테이블 헤더 생성
 			JTableHeader header = tblBlock.getTableHeader();
