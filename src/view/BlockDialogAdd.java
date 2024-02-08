@@ -109,7 +109,7 @@ public class BlockDialogAdd extends JDialog {
 	        String content = textAreaContent.getText();
 
 	        // 공백을 입력할 경우 예외처리
-	        if (title.isEmpty()) {
+	        if (title.isEmpty() || title.contains(" ")) {
 	            throw new EmptyTitleContentException();
 	        }
 	        if (content.isEmpty()) {
