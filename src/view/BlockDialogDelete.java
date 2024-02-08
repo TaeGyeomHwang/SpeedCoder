@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -128,6 +130,16 @@ public class BlockDialogDelete extends JDialog {
 		getContentPane().add(panel);
 		pack();
 		setLocationRelativeTo(parent);
+		
+		// ESC 입력시 창 닫기
+		table.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int keyCode = e.getKeyCode();
+				if (keyCode== KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+			}
+		});
 	}
 
 	// DB에 블록 문제 삭제

@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
@@ -79,6 +81,23 @@ public class BlockDialogAdd extends JDialog {
 		getContentPane().add(panel);
 		pack();
 		setLocationRelativeTo(parent);
+
+		textFieldTitle.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int keyCode = e.getKeyCode();
+				if (keyCode== KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+			}
+		});
+		textAreaContent.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int keyCode = e.getKeyCode();
+				if (keyCode== KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+			}
+		});
 	}
 
 	// DB에 블록 문제 추가
