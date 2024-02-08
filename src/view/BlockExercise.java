@@ -443,6 +443,7 @@ public class BlockExercise extends JFrame {
 		txtNorth.setEditable(true);
 		txtNorth.requestFocusInWindow();
 		labelCenter.setText("문장을 입력한 후 엔터를 눌러주세요:");
+		txtNorth.setText("");
 		// 블록 문제 출력
 		validateText("초기 문제 출력");
 	}
