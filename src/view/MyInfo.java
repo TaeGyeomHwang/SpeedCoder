@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -34,6 +35,8 @@ public class MyInfo extends JFrame {
 	private Font fontTitle;
 	private Font fontNormal;
 	private Font fontAcc;
+	
+	private JButton btnMain;
 
 	private ImageIcon backgroundImage = new ImageIcon(getClass().getResource("../logo2.png"));
 	private JLabel backgroundLabel;
@@ -58,7 +61,8 @@ public class MyInfo extends JFrame {
 		backgroundLabel.add(getWordAvgHitLabel());
 		backgroundLabel.add(getBlockAvgAccLabel());
 		backgroundLabel.add(getBlockAvgHitLabel());
-
+		backgroundLabel.add(getBtnMain());
+		btnMain.setBounds(190, 450, 100, 30);
 		this.locationCenter();
 
 		addWindowListener(new WindowAdapter() {
@@ -69,8 +73,21 @@ public class MyInfo extends JFrame {
 				main.setVisible(true);
 			}
 		});
-
 	}
+	
+	// 메인으로 버튼 생성
+		private JButton getBtnMain() {
+			if (btnMain == null) {
+				btnMain = new JButton();
+				btnMain.setText("메인으로");
+				btnMain.addActionListener(e -> {
+					dispose();
+					Main main = new Main();
+					main.setVisible(true);
+				});
+			}
+			return btnMain;
+		}
 
 	/* 라벨 */
 	// 제목 라벨 설정
