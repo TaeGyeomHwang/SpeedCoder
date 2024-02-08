@@ -102,6 +102,7 @@ public class BlockDialogDelete extends JDialog {
 	    table.getColumnModel().getColumn(0).setHeaderRenderer(headerRenderer);
 	    table.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	    table.setPreferredScrollableViewportSize(new Dimension(400, 300));
+	    table.setDefaultEditor(Object.class, null);
 	    resizeColumnWidth(table);
 
 		JPanel titlePanel = new JPanel();
@@ -138,6 +139,9 @@ public class BlockDialogDelete extends JDialog {
 				if (keyCode== KeyEvent.VK_ESCAPE) {
 					dispose();
 				}
+				if (keyCode == KeyEvent.VK_ENTER){
+					deleteButton.doClick();
+				}
 			}
 		});
 	}
@@ -173,14 +177,14 @@ public class BlockDialogDelete extends JDialog {
 		}
 	}
 	
-	// 텍스트에리어 초기화
+	// 테이블 초기화
 	private void refreshTable() {
 		final DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-		// 기존 행 지우기
+		// 기존 테이블 지우기
 		tableModel.setNumRows(0);
+		// 테이블 리프레쉬
 		BlockDAO blockDAO = BlockDAO.getInstance();
 		List<BlockDTO> blocks = blockDAO.getBlockById(id);
-		StringBuilder sb = new StringBuilder();
 		for (BlockDTO block : blocks) {
 			Object[] rowData = { block.getBlockTitle() };
 			tableModel.addRow(rowData);

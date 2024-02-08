@@ -129,7 +129,8 @@ public class BlockDialogAdd extends JDialog {
 	        ((BlockExercise) getParent()).refreshTextArea();
 
 	        JOptionPane.showMessageDialog(this, "블록 문제가 추가되었습니다.");
-
+	        // 포커스
+	        textFieldTitle.requestFocusInWindow();
 	    } catch (EmptyTitleContentException e) {
 	        JOptionPane.showMessageDialog(this, e.getMessage());
 	    } catch (SQLIntegrityConstraintViolationException e) {	// 중복된 제목일 경우 예외처리
