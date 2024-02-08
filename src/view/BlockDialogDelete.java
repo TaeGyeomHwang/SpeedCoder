@@ -71,11 +71,10 @@ public class BlockDialogDelete extends JDialog {
 		// 사이즈 조절
 		resizeColumnWidth(table);
 		// 컬럼 선택 시 마우스 이벤트
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				rowIndex = table.getSelectedRow();
 				if (rowIndex != -1) {
-					String title = (String) table.getValueAt(rowIndex, 0);
 					table.setSelectionBackground(new Color(170, 207,243));
 					table.repaint();
 				}
