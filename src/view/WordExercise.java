@@ -148,6 +148,8 @@ public class WordExercise extends JFrame {
 
 					// 시작 버튼을 누르면 텍스트필드에 포커스
 					textEnter.requestFocusInWindow();
+					//텍스트필드 게임 시작 누르면 초기화
+					textEnter.setText("");
 				}
 			});
 
@@ -176,7 +178,10 @@ public class WordExercise extends JFrame {
 
 					// 텍스트 필드 비활성화
 					textEnter.setEnabled(false);
-
+					
+					//텍스트필드 게임 시작 누르면 초기화
+					textEnter.setText("");
+					
 					resetTimer();
 				}
 			});
