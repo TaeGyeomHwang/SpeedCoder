@@ -117,6 +117,11 @@ public class BlockDialogDelete extends JDialog {
 		panel.add(tablePanel, BorderLayout.CENTER);
 		panel.add(buttonPanel, BorderLayout.SOUTH);
 		panel.setPreferredSize(new Dimension(550, 550));
+		
+		titlePanel.setBackground(new Color(170, 207,243));
+		tablePanel.setBackground(new Color(170, 207,243));
+		buttonPanel.setBackground(new Color(170, 207,243));
+		panel.setBackground(new Color(170, 207,243));
 
 		getContentPane().add(panel);
 		pack();

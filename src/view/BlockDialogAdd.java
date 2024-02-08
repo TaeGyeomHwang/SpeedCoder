@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -69,6 +70,9 @@ public class BlockDialogAdd extends JDialog {
 		panel.add(titlePanel);
 		panel.add(contentPanel);
 		panel.add(buttonPanel);
+		titlePanel.setBackground(new Color(170, 207,243));
+		contentPanel.setBackground(new Color(170, 207,243));
+		buttonPanel.setBackground(new Color(170, 207,243));
 
 		panel.setPreferredSize(new Dimension(800, 350));
 
