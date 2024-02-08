@@ -264,8 +264,8 @@ public class BlockExercise extends JFrame {
 				inputTotalTime += currentTime;
 				inputText = txtNorth.getText();
 				txtNorth.setText("");
-				validateText(inputText);
 				totalInputCount += inputCount;
+				validateText(inputText);
 				inputCount = 0;
 			});
 			txtNorth.addKeyListener(new KeyAdapter() {
@@ -403,11 +403,12 @@ public class BlockExercise extends JFrame {
 		if (index == lines.length) {
 			// 정확도 계산
 			double totalLength = blocks.get(randomIndex).getBlockText().trim().replace("\n", "").length();
-			System.out.println(totalLength);
 			acc = (acc / totalLength) * 100;
 			// 타수 계산
 			double diffSec = inputTotalTime / 1000.0;
+			System.out.println(diffSec);
 			speed = totalInputCount * 60 / diffSec;
+			System.out.println(totalInputCount * 60);
 			// 기록 DB에 저장
 			blockDAO.insertScore(id, (int) acc, (int) Math.round(speed));
 			stopTimer();
