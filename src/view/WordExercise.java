@@ -31,8 +31,7 @@ import javax.swing.Timer;
 import model.WordDAO;
 
 public class WordExercise extends JFrame {
-	private JPanel topPanel, middlePanel, bottomPanel, panelTimer, panelInfo, btnPanel, typingSpeedPanel, accuracyPanel,
-			incorrectPanel, maxTypingspd;
+	private JPanel topPanel, middlePanel, bottomPanel, panelTimer, panelInfo, btnPanel, typingSpeedPanel, accuracyPanel;
 	private JButton btnStart, btnReset, btnAddWord, btnDeleteWord;
 	private JTextArea txtContent;
 	private JTextField textEnter;
@@ -56,6 +55,8 @@ public class WordExercise extends JFrame {
 	public WordExercise() {
 		setTitle("단어 연습");
 		setSize(500, 570);
+
+
 
 		setLayout(new BorderLayout());
 
@@ -88,6 +89,11 @@ public class WordExercise extends JFrame {
 			btnReset = new JButton("초기화");
 			btnAddWord = new JButton("단어 추가");
 			btnDeleteWord = new JButton("단어 삭제");
+			
+			topPanel.setBackground(new Color(250, 231, 198));
+			btnPanel.setBackground(new Color(250, 231, 198));
+			
+
 			topPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 			// 시작버튼
 			btnStart.addActionListener(new ActionListener() {
@@ -204,8 +210,11 @@ public class WordExercise extends JFrame {
 			topPanel.add(btnPanel);
 			topPanel.add(getPanelTimer());
 			topPanel.add(getTypingSpeedPanel());
-			topPanel.add(getAccuracyPanel());
+			topPanel.add(getAccuracyPanel());			
 		}
+	
+		
+		
 		return topPanel;
 	}
 
@@ -234,6 +243,7 @@ public class WordExercise extends JFrame {
 			// 초기화할 때 데이터베이스에서 단어 목록을 가져와 표시
 			refreshWordList();
 		}
+		middlePanel.setBackground(new Color(250, 231, 198));
 		return middlePanel;
 	}
 
@@ -251,7 +261,7 @@ public class WordExercise extends JFrame {
 			centerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20));
 			centerPanel.add(txtlbl);
 			centerPanel.add(textEnter);
-
+			centerPanel.setBackground(new Color(250, 231, 198));
 			txtlbl.setFont(txtlbl.getFont().deriveFont(15.0f));
 
 			bottomPanel.add(centerPanel, BorderLayout.CENTER);
@@ -302,6 +312,8 @@ public class WordExercise extends JFrame {
 			});
 		}
 		textEnter.setEnabled(false);
+	
+
 		return bottomPanel;
 	}
 
@@ -349,7 +361,7 @@ public class WordExercise extends JFrame {
 				double cAcc = correctCount / enterCount * 100.0;
 				aCc = (int) (enterCount - correctCount);
 				accuracyLabel.setText("현재 정확도: " + Math.round(cAcc) + "%");
-				incorrectLabel.setText("(오답 개수 : " + aCc + "개)");
+				incorrectLabel.setText("(오답 개수 : " + Math.round(aCc) + "개)");
 			}
 			if (line.trim().equals(enteredWord)) {
 				str += enteredWord.length();
@@ -368,7 +380,7 @@ public class WordExercise extends JFrame {
 				typingSpeedLabel.setText("현재 타수: " + Math.round(cSpeed) + "타/분");
 				accuracyLabel.setText("현재 정확도: " + Math.round(cAcc) + "%");
 				maxTypingspdLabel.setText("(최고 타수 : " + maxTypingSpeed + "타/분)");
-				incorrectLabel.setText("(오답 개수 : " + aCc + "개)");
+				incorrectLabel.setText("(오답 개수 : " +  Math.round(aCc) + "개)");
 			}
 		}
 
@@ -498,6 +510,8 @@ public class WordExercise extends JFrame {
 			labelMin.setFont(new Font("courier", Font.BOLD, 30));
 			labelSec.setFont(new Font("courier", Font.BOLD, 30));
 			colon1.setFont(new Font("courier", Font.BOLD, 30));
+			
+			panelTimer.setBackground(new Color(250, 231, 198));
 		}
 		return panelTimer;
 	}
@@ -564,6 +578,9 @@ public class WordExercise extends JFrame {
 			typingSpeedLabel.setFont(new Font("courier", Font.BOLD, 15));
 			maxTypingspdLabel.setFont(new Font("courier", Font.BOLD, 13));
 			
+			typingSpeedPanel.setBackground(new Color(250, 231, 198));
+			maxTypingspdLabel.setBackground(new Color(250, 231, 198));
+			
 		}
 
 		return typingSpeedPanel;
@@ -584,6 +601,9 @@ public class WordExercise extends JFrame {
 
 			accuracyLabel.setFont(new Font("courier", Font.BOLD, 15));
 			incorrectLabel.setFont(new Font("courier", Font.BOLD, 13));
+			
+			accuracyPanel.setBackground(new Color(250, 231, 198));
+			incorrectLabel.setBackground(new Color(250, 231, 198));
 
 		}
 
@@ -602,7 +622,10 @@ public class WordExercise extends JFrame {
 			// 패널에 서브패널 부착
 			panelInfo.add(getTypingSpeedPanel);
 			panelInfo.add(getAccuracyPanel);
-
+			
+			
+			panelInfo.setBackground(new Color(250, 231, 198));
+	
 		}
 		return panelInfo;
 	}
