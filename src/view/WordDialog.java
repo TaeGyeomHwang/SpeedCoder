@@ -22,7 +22,7 @@ public class WordDialog extends JDialog {
 	private JTextField wordField;
 	private JButton addButton;
 	private JButton cancelButton;
-	
+
 	private String id = Login.getLoginedId();
 	private WordDAO dao = WordDAO.getInstance();
 	private List<WordDTO> words = dao.getWords(id);
@@ -42,7 +42,7 @@ public class WordDialog extends JDialog {
 		inputPanel.add(wordField);
 		inputPanel.add(addButton);
 		inputPanel.add(cancelButton);
-		
+
 		inputPanel.setBackground(new Color(250, 231, 198));
 		add(inputPanel, BorderLayout.CENTER);
 
@@ -77,7 +77,8 @@ public class WordDialog extends JDialog {
 
 				JOptionPane.showMessageDialog(WordDialog.this, "단어를 추가했습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
 
-				
+				// 단어 추가 후 텍스트필드 초기화
+				wordField.setText("");
 
 				// 메인 화면 새로고침
 				wordExercise.refreshWordList();
