@@ -6,15 +6,19 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -37,7 +41,8 @@ public class DeleteWordDialog extends JDialog {
 		this.parentFrame = parent;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(300, 200);
-
+	
+		
 		// 테이블 모델 생성
 		String[] columns = { "단어" };
 		Object[][] data = new Object[words.size()][1];
@@ -118,6 +123,25 @@ public class DeleteWordDialog extends JDialog {
 		        return component;
 		    }
 		};
+		  // Enter 키 입력 시 btnDelete 버튼 클릭 이벤트 처리
+        table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+             .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "clickBtnDelete");
+
+        table.getActionMap().put("clickBtnDelete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnDelete.doClick();
+            }
+        });
+		 // Esc 키 입력 시 취소 버튼 클릭 이벤트 처리
+		btnCancel.registerKeyboardAction(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	btnCancel.doClick(); // 취소 버튼 클릭
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+		//테이블 클릭은됨. 수정은 x
+		table.setDefaultEditor(Object.class, null);
 
 		// 테이블의 헤더에 렌더러를 설정합니다.
 		table.getTableHeader().setDefaultRenderer(headerRenderer);
