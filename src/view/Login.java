@@ -161,6 +161,7 @@ public class Login extends JFrame implements KeyListener {
 
 		// if -> 계정이 있는 경우, else -> 계정이 없는 경우
 		if (accountExist) {
+			System.out.println(id);
 			Login.loginedId = id;
 			JOptionPane.showMessageDialog(Login.this, loginedId + "님 안녕하세요!");
 			dispose();

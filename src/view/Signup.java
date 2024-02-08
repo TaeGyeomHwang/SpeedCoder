@@ -3,6 +3,7 @@ package view;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
@@ -63,6 +64,17 @@ public class Signup extends JFrame implements KeyListener{
         txtFieldId.addKeyListener(this);
 		pwFieldPw.addKeyListener(this);
 		pwFieldPwVerify.addKeyListener(this);
+		
+		this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    dispose();
+                    Login login = new Login();
+                    login.setVisible(true);
+                }
+            }
+        });
     }
 
 	/* 라벨 */
@@ -204,7 +216,6 @@ public class Signup extends JFrame implements KeyListener{
 		} else { // 아이디 검증 통과한 경우
 			// 비밀번호가 입력되었으면서 검증란과 동일한 경우 if 문, 아닌 경우 else
 			if (pw.length != 0 && Arrays.equals(pw, pwVerify)) {
-				/* 회원가입 기능 구현 테스트 위해 주석처리함 */
 				UserDTO userDTO = new UserDTO();
 				
 				userDTO.setId(id);
@@ -240,6 +251,11 @@ public class Signup extends JFrame implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			SignupFn();
+		}
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			dispose();
+			Login login = new Login();
+			login.setVisible(true);
 		}
 	}
 
