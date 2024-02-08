@@ -35,9 +35,7 @@ public class BlockDialogDelete extends JDialog {
 
 	public BlockDialogDelete(Frame parent) {
 		super(parent, "블록 삭제하기", true);
-
-		JPanel panel = new JPanel();
-
+		
 		// 삭제하기 버튼
 		JButton deleteButton = new JButton("삭제하기");
 		deleteButton.addActionListener(new ActionListener() {
@@ -76,7 +74,7 @@ public class BlockDialogDelete extends JDialog {
 				rowIndex = table.getSelectedRow();
 				if (rowIndex != -1) {
 					String title = (String) table.getValueAt(rowIndex, 0);
-					table.setSelectionBackground(Color.yellow);
+					table.setSelectionBackground(new Color(170, 207,243));
 					table.repaint();
 				}
 			}
@@ -101,22 +99,26 @@ public class BlockDialogDelete extends JDialog {
 	    };
 	    table.getColumnModel().getColumn(0).setHeaderRenderer(headerRenderer);
 	    table.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	    table.setPreferredScrollableViewportSize(new Dimension(400, 300));
+	    resizeColumnWidth(table);
 
 		JPanel titlePanel = new JPanel();
 		titlePanel.add(new JLabel("삭제할 블록 문제를 선택해주세요 :"));
-		titlePanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0)); // 텍스트필드에 패딩 설정
 
-		JPanel tablePanel = new JPanel();
-		tablePanel.add(new JScrollPane(table));
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setPreferredSize(new Dimension(400, 200)); // 세로 크기 조절
+		JPanel tablePanel = new JPanel(new BorderLayout());
+		tablePanel.add(scrollPane, BorderLayout.CENTER);
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(deleteButton);
 		buttonPanel.add(cancelButton);
 
+		JPanel panel = new JPanel();
 		panel.add(titlePanel, BorderLayout.NORTH);
 		panel.add(tablePanel, BorderLayout.CENTER);
 		panel.add(buttonPanel, BorderLayout.SOUTH);
-		panel.setPreferredSize(new Dimension(550, 550));
+		panel.setPreferredSize(new Dimension(550, 300));
 		
 		titlePanel.setBackground(new Color(170, 207,243));
 		tablePanel.setBackground(new Color(170, 207,243));
@@ -131,7 +133,6 @@ public class BlockDialogDelete extends JDialog {
 	// DB에 블록 문제 삭제
 	private void deleteBlock() {
 		if (rowIndex != -1) {
-			System.out.println(rowIndex);
 			String title = (String) table.getValueAt(rowIndex, 0);
 			BlockDAO blockDAO = BlockDAO.getInstance();
 			blockDAO.deleteBoard(id, title);
