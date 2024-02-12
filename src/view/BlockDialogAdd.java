@@ -112,7 +112,7 @@ public class BlockDialogAdd extends JDialog {
 	        if (title.isEmpty() || title.contains(" ")) {
 	            throw new EmptyTitleContentException();
 	        }
-	        if (content.isEmpty()) {
+	        if (content.isEmpty() || content.equals(" ")) {
 	        	throw new EmptyTitleContentException();
 	        }
 	        if(title.length()>=50) {
