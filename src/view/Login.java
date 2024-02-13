@@ -39,7 +39,7 @@ public class Login extends JFrame implements KeyListener {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 
-		ImageIcon backgroundImage = new ImageIcon(getClass().getResource("../logo.png"));
+		ImageIcon backgroundImage = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
 		JLabel backgroundLabel = new JLabel(backgroundImage);
 		backgroundLabel.setBounds(0, 0, 500, 500);
 		this.add(backgroundLabel);

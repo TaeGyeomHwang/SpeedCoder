@@ -38,7 +38,7 @@ public class MyInfo extends JFrame {
 	
 	private JButton btnMain;
 
-	private ImageIcon backgroundImage = new ImageIcon(getClass().getResource("../logo2.png"));
+	private ImageIcon backgroundImage = new ImageIcon(getClass().getClassLoader().getResource("logo2.png"));
 	private JLabel backgroundLabel;
 
 	public MyInfo() {

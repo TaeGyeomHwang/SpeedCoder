@@ -41,7 +41,7 @@ public class Signup extends JFrame implements KeyListener{
         this.getContentPane().setLayout(null);
 
         // 배경 이미지 추가
-        ImageIcon backgroundImage = new ImageIcon(getClass().getResource("../logo2.png"));
+        ImageIcon backgroundImage = new ImageIcon(getClass().getClassLoader().getResource("logo2.png"));
         JLabel backgroundLabel = new JLabel(backgroundImage);
         backgroundLabel.setBounds(0, 0, 500, 500);
         this.add(backgroundLabel);
