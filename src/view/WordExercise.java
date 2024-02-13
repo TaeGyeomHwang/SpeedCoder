@@ -266,7 +266,7 @@ public class WordExercise extends JFrame {
 			bottomPanel.setLayout(new BorderLayout());
 
 			txtlbl = new JLabel("단어를 입력하세요:    ");
-			textEnter = new JTextField(35);
+			textEnter = new JTextField(30);
 
 			textEnter.setEnabled(false);
 			
