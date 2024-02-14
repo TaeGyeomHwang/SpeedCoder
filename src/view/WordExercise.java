@@ -346,11 +346,14 @@ public class WordExercise extends JFrame {
 						// 입력란 초기화
 						textEnter.setText("");
 						
+						textEnter.setEnabled(true);
+						
 						// 게임 종료 확인
 						checkGameEnd();
 					 	
 					}
-					textEnter.setEnabled(true);
+				
+					
 				}
 				
 				
