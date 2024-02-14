@@ -276,7 +276,6 @@ public class BlockExercise extends JFrame {
 			txtNorth = new JTextField();
 			txtNorth.setEditable(false);
 			txtNorth.addActionListener(e -> {
-				System.out.println("타이머 종료");
 				inputEndTime = System.currentTimeMillis();
 				currentTime = inputEndTime - inputStartTime;
 				inputTotalTime += currentTime;
@@ -291,7 +290,6 @@ public class BlockExercise extends JFrame {
 				public void insertUpdate(DocumentEvent e) {
 					inputCount++;
 					if (inputCount == 1) {
-						System.out.println("타이머 시작");
 						inputStartTime = System.currentTimeMillis();
 					}
 				}
@@ -385,7 +383,6 @@ public class BlockExercise extends JFrame {
 				}
 				totalLength++;
 			}
-			System.out.println("전체 문자수: " + lines[index].trim().length());
 			acc += currentCorrect;
 			double stringLength = lines[index].trim().length();
 			double stringAcc = (currentCorrect / stringLength) * 100.0;
@@ -426,8 +423,6 @@ public class BlockExercise extends JFrame {
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
 			// 정확도 계산
-			System.out.println("맞은 문자수: " + acc);
-			System.out.println("전체 문자수: " + totalLength);
 			acc = (acc / totalLength) * 100;
 			// 타수 계산
 			double diffSec = inputTotalTime / 1000.0;
