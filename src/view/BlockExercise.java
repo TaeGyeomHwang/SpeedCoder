@@ -287,23 +287,23 @@ public class BlockExercise extends JFrame {
 				inputCount = 0;
 			});
 			txtNorth.getDocument().addDocumentListener(new DocumentListener() {
-	            @Override
-	            public void insertUpdate(DocumentEvent e) {
-	                inputCount++;
-	                if (inputCount == 1) {
-	                    System.out.println("타이머 시작");
-	                    inputStartTime = System.currentTimeMillis();
-	                }
-	            }
-	            
-	            @Override
-	            public void removeUpdate(DocumentEvent e) {
-	            }
-	            
-	            @Override
-	            public void changedUpdate(DocumentEvent e) {
-	            }
-	        });
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+					inputCount++;
+					if (inputCount == 1) {
+						System.out.println("타이머 시작");
+						inputStartTime = System.currentTimeMillis();
+					}
+				}
+
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+				}
+
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+				}
+			});
 
 		}
 		return txtNorth;
@@ -426,8 +426,8 @@ public class BlockExercise extends JFrame {
 		// 모든 문장을 입력했을 경우
 		if (index == lines.length) {
 			// 정확도 계산
-			System.out.println("맞은 문자수: "+acc);
-			System.out.println("전체 문자수: "+totalLength);
+			System.out.println("맞은 문자수: " + acc);
+			System.out.println("전체 문자수: " + totalLength);
 			acc = (acc / totalLength) * 100;
 			// 타수 계산
 			double diffSec = inputTotalTime / 1000.0;
@@ -540,7 +540,6 @@ public class BlockExercise extends JFrame {
 	private void resetTimer() {
 		labelMin.setText("00");
 		labelSec.setText("00");
-
 	}
 
 	// 타이머 정지
