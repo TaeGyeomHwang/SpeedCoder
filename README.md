@@ -1,8 +1,6 @@
-!
-
-https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/e7b5587e-821e-4eb9-be28-56fdf21e3b6f
-
-[슬라이드1](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/6582410f-ae97-4931-9651-5c5e08b6d746)
+SPEED C()DER 타자 연습 프로그램
+=============
+![슬라이드1](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/6582410f-ae97-4931-9651-5c5e08b6d746)
 ![슬라이드2](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/d1897773-3b78-482c-a0cb-6b1e2dfd4699)
 ![슬라이드3](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/1115283e-413e-484b-b958-cebc8729864c)
 ![슬라이드4](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/d4d9f7ce-1199-4184-902c-99fdac2e2781)
@@ -13,6 +11,7 @@ https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/e7b5587e-821e-4eb9-b
 ![슬라이드9](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/5df89c5e-fe2c-4ab2-b0d3-8cc76bc52c4c)
 ![슬라이드10](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/9af0fb09-aa36-4027-ad0a-296512ea5e3b)
 ![슬라이드11](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/170fc57d-accb-46cc-9d9b-55a3fc2a3bca)
+https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/e7b5587e-821e-4eb9-be28-56fdf21e3b6f
 ![슬라이드12](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/a9b260cc-e6f0-4d78-bcc0-534d09b22996)
 ![슬라이드13](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/eb2b5f2d-4eb9-47cd-960d-ed11b5fd1f13)
 ![슬라이드14](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/e349f73f-0445-4f35-a882-ac27b70765bc)
