@@ -1,5 +1,3 @@
-SPEED C()DER 타자 연습 프로그램
-=============
 ![슬라이드1](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/6582410f-ae97-4931-9651-5c5e08b6d746)
 ![슬라이드2](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/d1897773-3b78-482c-a0cb-6b1e2dfd4699)
 ![슬라이드3](https://github.com/TaeGyeomHwang/speedCoder/assets/80676211/1115283e-413e-484b-b958-cebc8729864c)
